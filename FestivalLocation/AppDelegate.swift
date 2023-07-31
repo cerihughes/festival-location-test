@@ -23,9 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         madog.resolve(resolver: DefaultResolver())
-        let context = madog.renderUI(identifier: .navigation(), tokenData: .single(.intro), in: window) {
-            $0.isNavigationBarHidden = true
-        }
+        let context = madog.renderUI(identifier: .tabBar(), tokenData: .multi([.areas]), in: window)
         return context != nil
     }
 }
