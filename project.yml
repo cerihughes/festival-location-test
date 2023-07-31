@@ -1,0 +1,48 @@
+name: FestivalLocation
+schemes:
+  FestivalLocation:
+    build:
+      targets:
+        FestivalLocation: all
+        FestivalLocationTests: [test]
+    test:
+      gatherCoverageData: true
+      coverageTargets:
+        - FestivalLocation
+      targets: 
+        - FestivalLocationTests
+      commandLineArguments:
+        "-isRunningUnitTests YES": true
+options:
+  bundleIdPrefix: uk.co.cerihughes
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  Madog:
+    url: https://github.com/cerihughes/Madog
+    majorVersion: 7.0.0
+  SnapKit:
+    url: https://github.com/SnapKit/SnapKit
+    majorVersion: 5.0.0
+targets:
+  FestivalLocation:
+    type: application
+    platform: iOS
+    settings:
+      INFOPLIST_FILE: FestivalLocation/Info.plist
+      DEVELOPMENT_TEAM: Y56955G4Q8
+    sources:
+      - FestivalLocation
+    dependencies:
+      - package: Madog
+      - package: SnapKit
+    postCompileScripts:
+      - script: export PATH="/opt/homebrew/bin:$PATH";swiftlint
+        name: Swift Lint
+        basedOnDependencyAnalysis: false
+  FestivalLocationTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: FestivalLocationTests
+    dependencies:
+      - target: FestivalLocation
