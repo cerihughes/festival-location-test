@@ -18,6 +18,9 @@ options:
   deploymentTarget:
     iOS: "16.0"
 packages:
+  Realm:
+    url: https://github.com/realm/realm-swift
+    majorVersion: 10.0.0
   Madog:
     url: https://github.com/cerihughes/Madog
     majorVersion: 7.0.0
@@ -34,6 +37,7 @@ targets:
     sources:
       - FestivalLocation
     dependencies:
+      - package: Realm
       - package: Madog
       - package: SnapKit
     postCompileScripts:
