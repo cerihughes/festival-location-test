@@ -38,6 +38,7 @@ targets:
       - FestivalLocation
     dependencies:
       - package: Realm
+        product: RealmSwift
       - package: Madog
       - package: SnapKit
     postCompileScripts:
