@@ -23,8 +23,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         madog.resolve(resolver: DefaultResolver())
+
+        if let locationMonitor {
+            locationMonitor.start()
+        }
+
         let context = madog.renderUI(identifier: .tabBarNavigation(), tokenData: .multi([.addArea]), in: window)
         return context != nil
+    }
+
+    private var locationMonitor: LocationMonitor? {
+        guard let services = madog.serviceProviders[serviceProviderName] as? Services else { return nil }
+        return services.locationMonitor
     }
 }
 
