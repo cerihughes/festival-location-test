@@ -1,19 +1,23 @@
 import Foundation
 import RealmSwift
 
-class Area: Object {
-    @Persisted(primaryKey: true) var id: ObjectId
+// swiftlint: disable identifier_name
+class UniqueObject: Object {
+    @Persisted(primaryKey: true) var _id: ObjectId
+}
+// swiftlint: enable identifier_name
+
+class Area: UniqueObject {
     @Persisted var name: String
     @Persisted var latitude: Double
     @Persisted var longitude: Double
 }
 
-class Visit: Object {
+class Visit: UniqueObject {
     enum Kind: String {
         case entry, exit
     }
 
-    @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String
     @Persisted var timestamp: Date
     @Persisted private var kindString: String

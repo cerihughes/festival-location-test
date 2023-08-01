@@ -7,9 +7,19 @@ extension CLLocationCoordinate2D {
     }
 }
 
+extension Location {
+    func asCoordinate() -> CLLocationCoordinate2D {
+        .init(latitude: lat, longitude: lon)
+    }
+}
+
 extension Area {
     static func create(name: String, location: Location) -> Area {
         create(name: name, latitude: location.lat, longitude: location.lon)
+    }
+
+    var location: Location {
+        .init(lat: latitude, lon: longitude)
     }
 }
 

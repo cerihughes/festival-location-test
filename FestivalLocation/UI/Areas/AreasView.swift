@@ -27,6 +27,7 @@ class AreasView: UIView {
 
         mapView.showsUserLocation = true
         mapView.addGestureRecognizer(tapGestureRecogniser)
+        mapView.delegate = self
 
         mapView.snp.makeConstraints { make in
             make.edges.equalTo(safeAreaLayoutGuide)
@@ -42,6 +43,24 @@ class AreasView: UIView {
         }
     }
 
+    func removeAllAndRender(areas: [Area]) {
+        removeAllAreas()
+        render(areas: areas)
+    }
+
+    func render(areas: [Area]) {
+        areas.forEach {
+            let circle = MKCircle(center: $0.location.asCoordinate(), radius: 50)
+            mapView.addOverlay(circle)
+        }
+    }
+
+    func removeAllAreas() {
+        mapView.overlays.forEach {
+            mapView.removeOverlay($0)
+        }
+    }
+
     @objc private func mapTapped(_ gestureRecogniser: UITapGestureRecognizer) {
         guard gestureRecogniser.state == .ended else { return }
 
@@ -49,5 +68,15 @@ class AreasView: UIView {
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
 
         delegate?.areasView(self, didSelect: coordinate.asLocation())
+    }
+}
+
+extension AreasView: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        guard let overlay = overlay as? MKCircle else { return .init() }
+        let renderer = MKCircleRenderer(circle: overlay)
+        renderer.fillColor = .red
+        renderer.alpha = 0.75
+        return renderer
     }
 }

@@ -31,28 +31,32 @@ class AreasViewController: UIViewController {
 
         areasView.isMapTappable = false
         areasView.delegate = self
+
+        viewModel.delegate = self
         viewModel.authoriseIfNeeded()
+
+        areasView.removeAllAndRender(areas: viewModel.areas)
     }
 
     @objc private func addTapped(_ item: UIBarButtonItem) {
-        presentModal()
-    }
-
-    private func presentModal() {
-        let alert = UIAlertController(title: "Add Region", message: nil, preferredStyle: .actionSheet)
-        alert.addAction(.init(title: "Use Current Location", style: .default) { [weak self] _ in
-            self?.createRegionAtCurrentLocation()
+        let alertController = UIAlertController(title: "Add Region", message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(.init(title: "Use Current Location", style: .default) { [weak self] _ in
+            self?.createAreaAtCurrentLocation()
         })
-        alert.addAction(.init(title: "Select Location", style: .default) { [weak self] _ in
+        alertController.addAction(.init(title: "Select Location", style: .default) { [weak self] _ in
             self?.selectLocation()
         })
-        alert.addAction(.init(title: "Cancel", style: .cancel))
-        present(alert, animated: true, completion: nil)
+        alertController.addAction(.init(title: "Cancel", style: .cancel))
+
+        alertController.popoverPresentationController?.barButtonItem = item
+        alertController.popoverPresentationController?.sourceView = areasView
+
+        present(alertController, animated: true, completion: nil)
     }
 
-    private func createRegionAtCurrentLocation() {
+    private func createAreaAtCurrentLocation() {
         Task {
-            await viewModel.createRegionAtCurrentLocation()
+            await viewModel.createAreaAtCurrentLocation()
         }
     }
 
@@ -61,9 +65,19 @@ class AreasViewController: UIViewController {
     }
 }
 
+extension AreasViewController: AreasViewModelDelegate {
+    func areasViewModel(_ areasViewModel: AreasViewModel, didAddArea area: Area) {
+        areasView.render(areas: [area])
+    }
+
+    func areasViewModel(_ areasViewModel: AreasViewModel, didRemoveArea area: Area) {
+
+    }
+}
+
 extension AreasViewController: AreasViewDelegate {
     func areasView(_ areasView: AreasView, didSelect location: Location) {
         areasView.isMapTappable = false
-        viewModel.createRegion(at: location)
+        viewModel.createArea(at: location)
     }
 }

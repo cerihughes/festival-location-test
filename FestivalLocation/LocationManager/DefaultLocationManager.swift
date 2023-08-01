@@ -73,12 +73,6 @@ extension DefaultLocationManager: CLLocationManagerDelegate {
     }
 }
 
-private extension Location {
-    func asCoordinate() -> CLLocationCoordinate2D {
-        .init(latitude: lat, longitude: lon)
-    }
-}
-
 private extension CLAuthorizationStatus {
     func asAuthorisationStatus() -> AuthorisationStatus {
         switch self {
