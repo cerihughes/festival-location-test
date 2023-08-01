@@ -2,15 +2,15 @@ import MapKit
 import SnapKit
 import UIKit
 
-protocol AreasViewDelegate: AnyObject {
-    func areasView(_ areasView: AreasView, didSelect location: Location)
+protocol AddAreaViewDelegate: AnyObject {
+    func addAreaView(_ addAreaView: AddAreaView, didSelect location: Location)
 }
 
-class AreasView: UIView {
+class AddAreaView: UIView {
     let mapView = MKMapView()
     private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
 
-    weak var delegate: AreasViewDelegate?
+    weak var delegate: AddAreaViewDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -67,11 +67,11 @@ class AreasView: UIView {
         let point = gestureRecogniser.location(in: mapView)
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
 
-        delegate?.areasView(self, didSelect: coordinate.asLocation())
+        delegate?.addAreaView(self, didSelect: coordinate.asLocation())
     }
 }
 
-extension AreasView: MKMapViewDelegate {
+extension AddAreaView: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         guard let overlay = overlay as? MKCircle else { return .init() }
         let renderer = MKCircleRenderer(circle: overlay)

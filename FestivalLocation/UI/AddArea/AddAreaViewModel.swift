@@ -1,17 +1,17 @@
 import Foundation
 
-protocol AreasViewModelDelegate: AnyObject {
-    func areasViewModel(_ areasViewModel: AreasViewModel, didAddArea area: Area)
-    func areasViewModel(_ areasViewModel: AreasViewModel, didRemoveArea area: Area)
+protocol AddAreaViewModelDelegate: AnyObject {
+    func addAreaViewModel(_ addAreaViewModel: AddAreaViewModel, didAddArea area: Area)
+    func addAreaViewModel(_ addAreaViewModel: AddAreaViewModel, didRemoveArea area: Area)
 }
 
-class AreasViewModel {
+class AddAreaViewModel {
     private let locationRepository: LocationRepository
     private let locationManager: LocationManager
 
     private var collectionNotificationToken: NSObject?
 
-    weak var delegate: AreasViewModelDelegate?
+    weak var delegate: AddAreaViewModelDelegate?
 
     init(locationRepository: LocationRepository, locationManager: LocationManager) {
         self.locationRepository = locationRepository
@@ -29,10 +29,10 @@ class AreasViewModel {
             switch changes {
             case let .update(areas, _, insertions, deletions):
                 insertions.forEach {
-                    delegate.areasViewModel(self, didAddArea: areas[$0])
+                    delegate.addAreaViewModel(self, didAddArea: areas[$0])
                 }
                 deletions.forEach {
-                    delegate.areasViewModel(self, didRemoveArea: areas[$0])
+                    delegate.addAreaViewModel(self, didRemoveArea: areas[$0])
                 }
             default:
                 break // No-op
