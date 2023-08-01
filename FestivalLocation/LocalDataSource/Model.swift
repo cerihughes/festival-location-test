@@ -32,6 +32,8 @@ extension Area {
     static func create(name: String, latitude: Double, longitude: Double) -> Area {
         let area = Area()
         area.name = name
+        area.latitude = latitude
+        area.longitude = longitude
         return area
     }
 }

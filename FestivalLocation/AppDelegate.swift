@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         madog.resolve(resolver: DefaultResolver())
-        let context = madog.renderUI(identifier: .tabBar(), tokenData: .multi([.areas]), in: window)
+        let context = madog.renderUI(identifier: .tabBarNavigation(), tokenData: .multi([.areas]), in: window)
         return context != nil
     }
 }

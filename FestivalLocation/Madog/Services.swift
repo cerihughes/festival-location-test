@@ -1,22 +1,26 @@
 import Foundation
 import Madog
+import RealmSwift
 
 let serviceProviderName = "serviceProviderName"
 
 protocol Services {
-    var localDataSource: LocalDataSource { get }
+    var locationRepository: LocationRepository { get }
     var locationManager: LocationManager { get }
 }
 
 class DefaultServices: ServiceProvider, Services {
     let name = serviceProviderName
-    let localDataSource: LocalDataSource
+    let locationRepository: LocationRepository
     let locationManager: LocationManager
 
     // MARK: ServiceProvider
     required init(context: ServiceProviderCreationContext) {
-        let localStorage = DefaultLocalStorage(persistentDataStore: UserDefaults.standard)
-        localDataSource = DefaultLocalDataSource(localStorage: localStorage)
+        guard let realm = try? Realm() else {
+            fatalError("Cannot create Realm")
+        }
+
+        locationRepository = DefaultLocationRepository(realm: realm)
         locationManager = DefaultLocationManager()
     }
 }
@@ -26,6 +30,6 @@ protocol ServicesProvider {
 }
 
 extension ServicesProvider {
-    var localDataSource: LocalDataSource? { services?.localDataSource }
+    var locationRepository: LocationRepository? { services?.locationRepository }
     var locationManager: LocationManager? { services?.locationManager }
 }
