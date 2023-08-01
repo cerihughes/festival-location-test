@@ -15,6 +15,14 @@ class DefaultLocationManager: NSObject, LocationManager {
         locationManager.delegate = self
     }
 
+    var authorisationStatus: AuthorisationStatus {
+        locationManager.authorizationStatus.asAuthorisationStatus()
+    }
+
+    func authorise() {
+        locationManager.requestWhenInUseAuthorization()
+    }
+
     func getLocation() async -> Location? {
         guard CLLocationManager.locationServicesEnabled() else { return nil }
         return await withCheckedContinuation { continuation in
@@ -42,9 +50,16 @@ class DefaultLocationManager: NSObject, LocationManager {
 }
 
 extension DefaultLocationManager: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if authorisationStatus == .partial {
+            locationManager.requestAlwaysAuthorization()
+        }
+    }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         getLocationContinuation?.resume(returning: location.coordinate.asLocation())
+        getLocationContinuation = nil
     }
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
@@ -58,14 +73,19 @@ extension DefaultLocationManager: CLLocationManagerDelegate {
     }
 }
 
-private extension Location {
-    func asCoordinate() -> CLLocationCoordinate2D {
-        .init(latitude: lat, longitude: lon)
-    }
-}
-
-private extension CLLocationCoordinate2D {
-    func asLocation() -> Location {
-        .init(lat: latitude, lon: longitude)
+private extension CLAuthorizationStatus {
+    func asAuthorisationStatus() -> AuthorisationStatus {
+        switch self {
+        case .notDetermined:
+            return .notAsked
+        case .authorizedAlways:
+            return .accepted
+        case .authorizedWhenInUse:
+            return .partial
+        case .restricted, .denied:
+            return .refused
+        @unknown default:
+            return .refused
+        }
     }
 }

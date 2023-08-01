@@ -8,6 +8,8 @@ class DefaultResolver: Resolver {
     }
 
     func viewControllerProviderFunctions() -> [() -> AnyViewControllerProvider<Navigation>] {
-        []
+        [
+            AddAreaViewControllerProvider.init
+        ]
     }
 }
