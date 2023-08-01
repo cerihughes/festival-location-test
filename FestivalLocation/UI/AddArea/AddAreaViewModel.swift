@@ -48,7 +48,9 @@ class AddAreaViewModel {
 
     func createAreaAtCurrentLocation() async {
         guard let current = await locationManager.getLocation() else { return }
-        createArea(at: current)
+        Task { @MainActor in
+            createArea(at: current)
+        }
     }
 
     func createArea(at location: Location) {
