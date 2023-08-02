@@ -8,14 +8,23 @@ protocol AddAreaViewModelDelegate: AnyObject {
 class AddAreaViewModel {
     private let locationRepository: LocationRepository
     private let locationManager: LocationManager
+    private let notificationsManager: NotificationsManager
 
     private var collectionNotificationToken: NSObject?
+    private var counter = 1
 
     weak var delegate: AddAreaViewModelDelegate?
 
-    init(locationRepository: LocationRepository, locationManager: LocationManager) {
+    init(
+        locationRepository: LocationRepository,
+        locationManager: LocationManager,
+        notificationsManager: NotificationsManager
+    ) {
         self.locationRepository = locationRepository
         self.locationManager = locationManager
+        self.notificationsManager = notificationsManager
+
+        notificationsManager.authorise()
         observe()
     }
 
@@ -54,7 +63,8 @@ class AddAreaViewModel {
     }
 
     func createArea(at location: Location) {
-        let area = Area.create(name: "Region", location: location)
+        let area = Area.create(name: "Region \(counter)", location: location)
         locationRepository.addArea(area)
+        counter += 1
     }
 }

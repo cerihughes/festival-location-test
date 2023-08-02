@@ -2,14 +2,22 @@ import Foundation
 import UserNotifications
 
 protocol NotificationsManager {
+    func authorise()
     func sendLocalNotification(for visit: Visit)
 }
 
-class DefaultNotificationsManager: NotificationsManager {
+class DefaultNotificationsManager: NSObject, NotificationsManager {
     let notificationCenter: UNUserNotificationCenter
 
     init(notificationCenter: UNUserNotificationCenter) {
         self.notificationCenter = notificationCenter
+        super.init()
+        notificationCenter.delegate = self
+    }
+
+    func authorise() {
+        let options: UNAuthorizationOptions = [.alert, .sound]
+        notificationCenter.requestAuthorization(options: options) { _, _ in }
     }
 
     func sendLocalNotification(for visit: Visit) {
@@ -26,6 +34,15 @@ class DefaultNotificationsManager: NotificationsManager {
                 print("Error adding notification with identifier: \(identifier)")
             }
         })
+    }
+}
+
+extension DefaultNotificationsManager: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        [.list, .banner]
     }
 }
 
