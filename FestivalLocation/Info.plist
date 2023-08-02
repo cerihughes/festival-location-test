@@ -22,6 +22,8 @@
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Monitor Location</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Monitor Location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Monitor Location</string>
 	<key>UIBackgroundModes</key>

@@ -7,20 +7,20 @@ class DefaultLocationManager: NSObject, LocationManager {
     private var getLocationContinuation: CheckedContinuation<Location, Never>?
 
     weak var delegate: LocationManagerDelegate?
+    weak var authenticationDelegate: LocationManagerAuthenticationDelegate?
 
     override init() {
         super.init()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
     }
 
-    var authorisationStatus: AuthorisationStatus {
-        locationManager.authorizationStatus.asAuthorisationStatus()
+    func requestWhenInUseAuthorisation() {
+        locationManager.requestWhenInUseAuthorization()
     }
 
-    func authorise() {
-        locationManager.requestWhenInUseAuthorization()
+    func requestAlwaysAuthorisation() {
+        locationManager.requestAlwaysAuthorization()
     }
 
     func getLocation() async -> Location? {
@@ -51,9 +51,8 @@ class DefaultLocationManager: NSObject, LocationManager {
 
 extension DefaultLocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if authorisationStatus == .partial {
-            locationManager.requestAlwaysAuthorization()
-        }
+        let authorisation = manager.authorizationStatus.asLocationAuthorisation()
+        authenticationDelegate?.locationManager(self, didChangeAuthorisation: authorisation)
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -71,21 +70,33 @@ extension DefaultLocationManager: CLLocationManagerDelegate {
         guard let region = region as? CLCircularRegion, monitoredRegions[region.identifier] != nil else { return }
         delegate?.locationManager(self, didExit: region.center.asLocation(), name: region.identifier)
     }
+
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
+        guard let region = region as? CLCircularRegion, monitoredRegions[region.identifier] != nil else { return }
+        switch state {
+        case .inside:
+            delegate?.locationManager(self, didEnter: region.center.asLocation(), name: region.identifier)
+        case .outside:
+            delegate?.locationManager(self, didExit: region.center.asLocation(), name: region.identifier)
+        case .unknown:
+            break
+        }
+    }
 }
 
 private extension CLAuthorizationStatus {
-    func asAuthorisationStatus() -> AuthorisationStatus {
+    func asLocationAuthorisation() -> LocationAuthorisation {
         switch self {
         case .notDetermined:
-            return .notAsked
-        case .authorizedAlways:
-            return .accepted
-        case .authorizedWhenInUse:
-            return .partial
+            return .initial
         case .restricted, .denied:
-            return .refused
+            return .denied
+        case .authorizedAlways:
+            return .always
+        case .authorizedWhenInUse:
+            return .whenInUse
         @unknown default:
-            return .refused
+            return .denied
         }
     }
 }

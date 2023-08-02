@@ -33,7 +33,6 @@ class AddAreaViewController: UIViewController {
         addAreaView.delegate = self
 
         viewModel.delegate = self
-        viewModel.authoriseIfNeeded()
 
         addAreaView.removeAllAndRender(areas: viewModel.areas)
     }
