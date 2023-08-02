@@ -47,20 +47,15 @@ class AddAreaView: UIView {
         }
     }
 
-    func setMapPosition(_ mapPosition: MapPosition) {
-        mapView.setRegion(mapView.regionThatFits(mapPosition.asCoordinateRegion()), animated: true)
-    }
-
     func removeAllAndRender(areas: [Area]) {
         removeAllAreas()
         render(areas: areas)
     }
 
     func render(areas: [Area]) {
-        areas.forEach {
-            let circle = MKCircle(center: $0.location.asCoordinate(), radius: 50)
-            mapView.addOverlay(circle)
-        }
+        let overlays = areas.map { MKCircle(center: $0.location.asCoordinate(), radius: 50) }
+        mapView.addOverlays(overlays)
+        mapView.showAnnotations(overlays, animated: true)
     }
 
     func removeAllAreas() {
