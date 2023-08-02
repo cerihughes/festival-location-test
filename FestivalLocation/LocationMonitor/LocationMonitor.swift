@@ -21,6 +21,8 @@ class DefaultLocationMonitor: LocationMonitor {
         self.locationManager = locationManager
         self.locationRepository = locationRepository
         self.notificationsManager = notificationsManager
+
+        locationManager.delegate = self
     }
 
     func start() {
