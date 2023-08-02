@@ -2,7 +2,7 @@ import Foundation
 import UserNotifications
 
 protocol NotificationsManager {
-    func authorise()
+    func authorise() async -> Bool
     func sendLocalNotification(for visit: Visit)
 }
 
@@ -15,9 +15,13 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
         notificationCenter.delegate = self
     }
 
-    func authorise() {
+    func authorise() async -> Bool {
         let options: UNAuthorizationOptions = [.alert, .sound]
-        notificationCenter.requestAuthorization(options: options) { _, _ in }
+        do {
+            return try await notificationCenter.requestAuthorization(options: options)
+        } catch {
+            return false
+        }
     }
 
     func sendLocalNotification(for visit: Visit) {

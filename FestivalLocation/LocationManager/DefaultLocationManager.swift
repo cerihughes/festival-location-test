@@ -7,16 +7,20 @@ class DefaultLocationManager: NSObject, LocationManager {
     private var getLocationContinuation: CheckedContinuation<Location, Never>?
 
     weak var delegate: LocationManagerDelegate?
+    weak var authenticationDelegate: LocationManagerAuthenticationDelegate?
 
     override init() {
         super.init()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
     }
 
-    func authorise() {
+    func requestWhenInUseAuthorisation() {
         locationManager.requestWhenInUseAuthorization()
+    }
+
+    func requestAlwaysAuthorisation() {
+        locationManager.requestAlwaysAuthorization()
     }
 
     func getLocation() async -> Location? {
@@ -47,7 +51,8 @@ class DefaultLocationManager: NSObject, LocationManager {
 
 extension DefaultLocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        locationManager.requestAlwaysAuthorization()
+        let authorisation = manager.authorizationStatus.asLocationAuthorisation()
+        authenticationDelegate?.locationManager(self, didChangeAuthorisation: authorisation)
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -64,5 +69,22 @@ extension DefaultLocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         guard let region = region as? CLCircularRegion, monitoredRegions[region.identifier] != nil else { return }
         delegate?.locationManager(self, didExit: region.center.asLocation(), name: region.identifier)
+    }
+}
+
+private extension CLAuthorizationStatus {
+    func asLocationAuthorisation() -> LocationAuthorisation {
+        switch self {
+        case .notDetermined:
+            return .initial
+        case .restricted, .denied:
+            return .denied
+        case .authorizedAlways:
+            return .always
+        case .authorizedWhenInUse:
+            return .whenInUse
+        @unknown default:
+            return .denied
+        }
     }
 }

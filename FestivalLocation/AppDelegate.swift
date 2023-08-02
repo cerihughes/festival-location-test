@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             locationMonitor.start()
         }
 
-        let context = madog.renderUI(identifier: .tabBarNavigation(), tokenData: .multi([.addArea]), in: window)
+        let context = madog.renderUI(identifier: .basic(), tokenData: .single(.authorisation), in: window)
         return context != nil
     }
 
