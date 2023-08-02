@@ -32,6 +32,17 @@ class AddAreaViewModel {
         locationRepository.areas().map { $0 }
     }
 
+    var initialPosition: AddAreaView.MapPosition {
+        let areas = self.areas
+        guard areas.count > 0 else { return .cardiffCastle }
+        let summedLocations = areas
+            .map { $0.location }
+            .reduce(Location(lat: 0, lon: 0), +)
+        let count = Double(areas.count)
+        let midPoint = Location(lat: summedLocations.lat / count, lon: summedLocations.lon / count)
+        return .init(location: midPoint, distance: AddAreaView.MapPosition.defaultDistance)
+    }
+
     private func observe() {
         collectionNotificationToken = locationRepository.areas().observe { [weak self] changes in
             guard let self, let delegate else { return }
@@ -65,4 +76,13 @@ class AddAreaViewModel {
         locationRepository.addArea(area)
         counter += 1
     }
+}
+
+private extension AddAreaView.MapPosition {
+    static let defaultDistance = 1000
+    static let cardiffCastle = AddAreaView.MapPosition(location: .cardiffCastle, distance: defaultDistance)
+}
+
+private extension Location {
+    static let cardiffCastle = Location(lat: 51.4813466, lon: -3.1770851)
 }

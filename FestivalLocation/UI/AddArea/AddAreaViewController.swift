@@ -38,6 +38,11 @@ class AddAreaViewController: UIViewController {
         addAreaView.removeAllAndRender(areas: viewModel.areas)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        addAreaView.setMapPosition(viewModel.initialPosition)
+    }
+
     @objc private func addTapped(_ item: UIBarButtonItem) {
         let alertController = UIAlertController(title: "Add Region", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(.init(title: "Use Current Location", style: .default) { [weak self] _ in

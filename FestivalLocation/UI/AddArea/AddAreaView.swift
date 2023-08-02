@@ -7,6 +7,10 @@ protocol AddAreaViewDelegate: AnyObject {
 }
 
 class AddAreaView: UIView {
+    struct MapPosition {
+        let location: Location
+        let distance: Int
+    }
     let mapView = MKMapView()
     private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
 
@@ -41,6 +45,10 @@ class AddAreaView: UIView {
         set {
             tapGestureRecogniser.isEnabled = newValue
         }
+    }
+
+    func setMapPosition(_ mapPosition: MapPosition) {
+        mapView.setRegion(mapView.regionThatFits(mapPosition.asCoordinateRegion()), animated: true)
     }
 
     func removeAllAndRender(areas: [Area]) {
@@ -78,5 +86,12 @@ extension AddAreaView: MKMapViewDelegate {
         renderer.fillColor = .red
         renderer.alpha = 0.75
         return renderer
+    }
+}
+
+private extension AddAreaView.MapPosition {
+    func asCoordinateRegion() -> MKCoordinateRegion {
+        let distance = CLLocationDistance(exactly: distance) ?? Double(distance)
+        return .init(center: location.asCoordinate(), latitudinalMeters: distance, longitudinalMeters: distance)
     }
 }
