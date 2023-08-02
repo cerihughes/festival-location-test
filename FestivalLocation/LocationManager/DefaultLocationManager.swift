@@ -70,6 +70,18 @@ extension DefaultLocationManager: CLLocationManagerDelegate {
         guard let region = region as? CLCircularRegion, monitoredRegions[region.identifier] != nil else { return }
         delegate?.locationManager(self, didExit: region.center.asLocation(), name: region.identifier)
     }
+
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
+        guard let region = region as? CLCircularRegion, monitoredRegions[region.identifier] != nil else { return }
+        switch state {
+        case .inside:
+            delegate?.locationManager(self, didEnter: region.center.asLocation(), name: region.identifier)
+        case .outside:
+            delegate?.locationManager(self, didExit: region.center.asLocation(), name: region.identifier)
+        case .unknown:
+            break
+        }
+    }
 }
 
 private extension CLAuthorizationStatus {
