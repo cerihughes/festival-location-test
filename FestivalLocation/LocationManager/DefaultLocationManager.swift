@@ -15,10 +15,6 @@ class DefaultLocationManager: NSObject, LocationManager {
         locationManager.delegate = self
     }
 
-    var authorisationStatus: AuthorisationStatus {
-        locationManager.authorizationStatus.asAuthorisationStatus()
-    }
-
     func authorise() {
         locationManager.requestWhenInUseAuthorization()
     }
@@ -68,22 +64,5 @@ extension DefaultLocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         guard let region = region as? CLCircularRegion, monitoredRegions[region.identifier] != nil else { return }
         delegate?.locationManager(self, didExit: region.center.asLocation(), name: region.identifier)
-    }
-}
-
-private extension CLAuthorizationStatus {
-    func asAuthorisationStatus() -> AuthorisationStatus {
-        switch self {
-        case .notDetermined:
-            return .notAsked
-        case .authorizedAlways:
-            return .accepted
-        case .authorizedWhenInUse:
-            return .partial
-        case .restricted, .denied:
-            return .refused
-        @unknown default:
-            return .refused
-        }
     }
 }

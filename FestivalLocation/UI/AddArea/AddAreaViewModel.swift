@@ -50,9 +50,7 @@ class AddAreaViewModel {
     }
 
     func authoriseIfNeeded() {
-        if locationManager.authorisationStatus != .accepted {
-            locationManager.authorise()
-        }
+        locationManager.authorise()
     }
 
     func createAreaAtCurrentLocation() async {
