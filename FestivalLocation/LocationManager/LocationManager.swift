@@ -1,10 +1,5 @@
 import CoreLocation
 
-struct Location {
-    let lat: Double
-    let lon: Double
-}
-
 enum LocationAuthorisation {
     case initial, whenInUse, always, denied
 }
