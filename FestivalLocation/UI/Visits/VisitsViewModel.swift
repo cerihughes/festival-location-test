@@ -50,7 +50,7 @@ class VisitsViewModel {
         }
 
         if let visits = processor?.finish() {
-            allVisits = visits.map{ $0.asVisitViewData(dateFormatter: dateFormatter) }
+            allVisits = visits.map { $0.asVisitViewData(dateFormatter: dateFormatter) }
         }
     }
 
