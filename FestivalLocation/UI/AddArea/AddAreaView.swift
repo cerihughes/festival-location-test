@@ -12,6 +12,10 @@ class AddAreaView: UIView {
         let distance: Int
     }
     let mapView = MKMapView()
+    private let mapDelegate = MapViewDelegate()
+    private let floatingContainer = UIView()
+    let nameField = UITextField()
+    let useCurrentButton = UIButton(type: .system)
     private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
 
     weak var delegate: AddAreaViewDelegate?
@@ -27,40 +31,61 @@ class AddAreaView: UIView {
     }
 
     private func commonInit() {
-        addSubview(mapView)
+        backgroundColor = .white
+        floatingContainer.backgroundColor = .white
+
+        nameField.placeholder = "Enter Area Name"
+        useCurrentButton.setTitle("Use Current Location", for: .normal)
+
+        let containerLayoutGuide = UILayoutGuide()
+        floatingContainer.addLayoutGuide(containerLayoutGuide)
+
+        floatingContainer.addSubviews(nameField, useCurrentButton)
+        addSubviews(mapView, floatingContainer)
+
+        containerLayoutGuide.snp.makeConstraints { make in
+            make.top.bottom.leading.trailing.equalToSuperview().inset(16)
+        }
+
+        nameField.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(containerLayoutGuide)
+        }
+
+        useCurrentButton.snp.makeConstraints { make in
+            make.top.equalTo(nameField.snp.bottom).offset(32)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(containerLayoutGuide)
+        }
+
+        floatingContainer.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(safeAreaLayoutGuide).inset(32)
+            make.width.equalTo(readableContentGuide)
+        }
+
+        mapView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(safeAreaLayoutGuide)
+        }
 
         mapView.showsUserLocation = true
         mapView.addGestureRecognizer(tapGestureRecogniser)
-        mapView.delegate = self
-
-        mapView.snp.makeConstraints { make in
-            make.edges.equalTo(safeAreaLayoutGuide)
-        }
+        mapView.delegate = mapDelegate
     }
 
-    var isMapTappable: Bool {
-        get {
-            tapGestureRecogniser.isEnabled
-        }
-        set {
-            tapGestureRecogniser.isEnabled = newValue
-        }
+    func render(location: Location) {
+        removeAllLocations()
+        let overlay = MKCircle(center: location.asCoordinate(), radius: 50)
+        mapView.addOverlay(overlay)
+        mapView.showAnnotations([overlay], animated: true)
     }
 
-    func removeAllAndRender(areas: [Area]) {
-        removeAllAreas()
-        render(areas: areas)
-    }
-
-    func render(areas: [Area]) {
-        let overlays = areas.map { MKCircle(center: $0.location.asCoordinate(), radius: 50) }
-        mapView.addOverlays(overlays)
-        mapView.showAnnotations(overlays, animated: true)
-    }
-
-    func removeAllAreas() {
+    func removeAllLocations() {
         mapView.overlays.forEach {
             mapView.removeOverlay($0)
+        }
+        mapView.annotations.forEach {
+            mapView.removeAnnotation($0)
         }
     }
 
@@ -71,15 +96,5 @@ class AddAreaView: UIView {
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
 
         delegate?.areasMapView(self, didSelect: coordinate.asLocation())
-    }
-}
-
-extension AddAreaView: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let overlay = overlay as? MKCircle else { return .init() }
-        let renderer = MKCircleRenderer(circle: overlay)
-        renderer.fillColor = .red
-        renderer.alpha = 0.75
-        return renderer
     }
 }

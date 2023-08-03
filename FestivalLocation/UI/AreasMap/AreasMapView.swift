@@ -8,6 +8,7 @@ class AreasMapView: UIView {
         let distance: Int
     }
     let mapView = MKMapView()
+    private let mapDelegate = MapViewDelegate()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,13 +21,16 @@ class AreasMapView: UIView {
     }
 
     private func commonInit() {
+        backgroundColor = .white
+
         addSubview(mapView)
 
         mapView.showsUserLocation = true
-        mapView.delegate = self
+        mapView.delegate = mapDelegate
 
         mapView.snp.makeConstraints { make in
-            make.edges.equalTo(safeAreaLayoutGuide)
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(safeAreaLayoutGuide)
         }
     }
 
@@ -45,15 +49,8 @@ class AreasMapView: UIView {
         mapView.overlays.forEach {
             mapView.removeOverlay($0)
         }
-    }
-}
-
-extension AreasMapView: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let overlay = overlay as? MKCircle else { return .init() }
-        let renderer = MKCircleRenderer(circle: overlay)
-        renderer.fillColor = .red
-        renderer.alpha = 0.75
-        return renderer
+        mapView.annotations.forEach {
+            mapView.removeAnnotation($0)
+        }
     }
 }

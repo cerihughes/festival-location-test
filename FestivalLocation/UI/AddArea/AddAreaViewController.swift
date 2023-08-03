@@ -1,10 +1,15 @@
+import Madog
 import UIKit
 
 class AddAreaViewController: UIViewController {
+    private weak var context: AnyForwardBackNavigationContext<Navigation>?
     private let viewModel: AddAreaViewModel
     private let addAreaView = AddAreaView()
 
-    init(viewModel: AddAreaViewModel) {
+    private lazy var done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
+
+    init(context: AnyForwardBackNavigationContext<Navigation>, viewModel: AddAreaViewModel) {
+        self.context = context
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -20,61 +25,51 @@ class AddAreaViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let addRegion = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
-        navigationItem.rightBarButtonItem = addRegion
+        navigationItem.rightBarButtonItem = done
+        updateDoneButton()
 
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithDefaultBackground()
-        navigationController?.navigationBar.backgroundColor = .white
-
-        addAreaView.isMapTappable = false
+        addAreaView.nameField.addTarget(self, action: #selector(areaNameChanged), for: .editingChanged)
+        addAreaView.useCurrentButton.addTarget(self, action: #selector(useCurrentTapped), for: .touchUpInside)
         addAreaView.delegate = self
-
-        viewModel.delegate = self
-
-        addAreaView.removeAllAndRender(areas: viewModel.areas)
     }
 
-    @objc private func addTapped(_ item: UIBarButtonItem) {
-        let alertController = UIAlertController(title: "Add Region", message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(.init(title: "Use Current Location", style: .default) { [weak self] _ in
-            self?.createAreaAtCurrentLocation()
-        })
-        alertController.addAction(.init(title: "Select Location", style: .default) { [weak self] _ in
-            self?.selectLocation()
-        })
-        alertController.addAction(.init(title: "Cancel", style: .cancel))
-
-        alertController.popoverPresentationController?.barButtonItem = item
-        alertController.popoverPresentationController?.sourceView = addAreaView
-
-        present(alertController, animated: true, completion: nil)
+    @objc private func areaNameChanged(_ textField: UITextField) {
+        viewModel.areaName = textField.trimmedText
+        updateDoneButton()
     }
 
-    private func createAreaAtCurrentLocation() {
-        Task {
-            await viewModel.createAreaAtCurrentLocation()
+    @objc private func useCurrentTapped(_ button: UIButton) {
+        Task { @MainActor in
+            guard let location = await viewModel.useCurrentLocation() else { return }
+            updateLocation(location: location)
         }
     }
 
-    private func selectLocation() {
-        addAreaView.isMapTappable = true
-    }
-}
-
-extension AddAreaViewController: AddAreaViewModelDelegate {
-    func areasMapViewModel(_ areasMapViewModel: AddAreaViewModel, didAddArea area: Area) {
-        addAreaView.render(areas: [area])
+    @objc private func doneTapped(_ item: UIBarButtonItem) {
+        guard viewModel.create() else { return }
+        context?.navigateBack(animated: true)
     }
 
-    func areasMapViewModel(_ areasMapViewModel: AddAreaViewModel, didRemoveArea area: Area) {
+    private func updateLocation(location: Location) {
+        viewModel.location = location
+        addAreaView.render(location: location)
+        updateDoneButton()
+    }
 
+    private func updateDoneButton() {
+        done.isEnabled = viewModel.isValid
     }
 }
 
 extension AddAreaViewController: AddAreaViewDelegate {
     func areasMapView(_ areasMapView: AddAreaView, didSelect location: Location) {
-        areasMapView.isMapTappable = false
-        viewModel.createArea(at: location)
+        updateLocation(location: location)
+    }
+}
+
+private extension UITextField {
+    var trimmedText: String? {
+        guard let trimmed = text?.trimmingCharacters(in: .whitespaces) else { return nil }
+        return trimmed.isEmpty ? nil : trimmed
     }
 }

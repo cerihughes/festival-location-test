@@ -1,57 +1,45 @@
 import Foundation
 
-protocol AddAreaViewModelDelegate: AnyObject {
-    func areasMapViewModel(_ areasMapViewModel: AddAreaViewModel, didAddArea area: Area)
-    func areasMapViewModel(_ areasMapViewModel: AddAreaViewModel, didRemoveArea area: Area)
-}
-
 class AddAreaViewModel {
     private let locationRepository: LocationRepository
     private let locationManager: LocationManager
+    private let existingAreaNames: [String]
 
-    private var collectionNotificationToken: NSObject?
-    private var counter = 1
+    var location: Location? {
+        didSet {
+            isValid = checkValidity()
+        }
+    }
 
-    weak var delegate: AddAreaViewModelDelegate?
+    var areaName: String? {
+        didSet {
+            isValid = checkValidity()
+        }
+    }
+
+    var isValid = false
 
     init(locationRepository: LocationRepository, locationManager: LocationManager) {
         self.locationRepository = locationRepository
         self.locationManager = locationManager
-
-        observe()
+        existingAreaNames = locationRepository.areas().map { $0.name }
     }
 
-    var areas: [Area] {
-        locationRepository.areas().map { $0 }
+    func useCurrentLocation() async -> Location? {
+        guard let current = await locationManager.getLocation() else { return nil }
+        location = current
+        return location
     }
 
-    private func observe() {
-        collectionNotificationToken = locationRepository.areas().observe { [weak self] changes in
-            guard let self, let delegate else { return }
-            switch changes {
-            case let .update(areas, _, insertions, deletions):
-                insertions.forEach {
-                    delegate.areasMapViewModel(self, didAddArea: areas[$0])
-                }
-                deletions.forEach {
-                    delegate.areasMapViewModel(self, didRemoveArea: areas[$0])
-                }
-            default:
-                break // No-op
-            }
-        }
-    }
-
-    func createAreaAtCurrentLocation() async {
-        guard let current = await locationManager.getLocation() else { return }
-        Task { @MainActor in
-            createArea(at: current)
-        }
-    }
-
-    func createArea(at location: Location) {
-        let area = Area.create(name: "Region \(counter)", location: location)
+    func create() -> Bool {
+        guard let areaName, let location, isValid else { return false }
+        let area = Area.create(name: areaName, location: location)
         locationRepository.addArea(area)
-        counter += 1
+        return true
+    }
+
+    private func checkValidity() -> Bool {
+        guard location != nil, let areaName else { return false }
+        return !existingAreaNames.contains(areaName)
     }
 }
