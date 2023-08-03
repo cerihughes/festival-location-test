@@ -3,14 +3,16 @@ import UserNotifications
 
 protocol NotificationsManager {
     func authorise() async -> Bool
-    func sendLocalNotification(for visit: Visit)
+    func sendLocalNotification(for event: Event)
 }
 
 class DefaultNotificationsManager: NSObject, NotificationsManager {
-    let notificationCenter: UNUserNotificationCenter
+    private let notificationCenter: UNUserNotificationCenter
+    private let dateFormatter: DateFormatter
 
-    init(notificationCenter: UNUserNotificationCenter) {
+    init(notificationCenter: UNUserNotificationCenter, dateFormatter: DateFormatter) {
         self.notificationCenter = notificationCenter
+        self.dateFormatter = dateFormatter
         super.init()
         notificationCenter.delegate = self
     }
@@ -24,14 +26,14 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
         }
     }
 
-    func sendLocalNotification(for visit: Visit) {
+    func sendLocalNotification(for event: Event) {
         let content = UNMutableNotificationContent()
-        content.title = visit.title
-        content.body = visit.body
+        content.title = event.title
+        content.body = event.body(dateFormatter: dateFormatter)
         content.sound = UNNotificationSound.default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let identifier = visit._id.stringValue
+        let identifier = event.stringIdentifier
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         notificationCenter.add(request, withCompletionHandler: { (error) in
             if error != nil {
@@ -50,21 +52,21 @@ extension DefaultNotificationsManager: UNUserNotificationCenterDelegate {
     }
 }
 
-private extension Visit {
+private extension Event {
     var title: String {
         kind.notificationTitle
     }
 
-    var body: String {
-        "\(kind.notificationBody) \(name)"
+    func body(dateFormatter: DateFormatter) -> String {
+        "\(areaName): \(kind.notificationBody) at \(dateFormatter.string(from: timestamp))"
     }
 }
 
-private extension Optional where Wrapped == Visit.Kind {
+private extension Optional where Wrapped == Event.Kind {
     var notificationTitle: String {
         switch self {
         case .none:
-            return "Unknown interaction"
+            return "Unknown"
         case .entry:
             return "Arrived"
         case .exit:
@@ -75,11 +77,11 @@ private extension Optional where Wrapped == Visit.Kind {
     var notificationBody: String {
         switch self {
         case .none:
-            return "Unknown interaction at area:"
+            return "Unknown event"
         case .entry:
-            return "Arrived at area:"
+            return "Arrived"
         case .exit:
-            return "Left area:"
+            return "Left"
         }
     }
 }

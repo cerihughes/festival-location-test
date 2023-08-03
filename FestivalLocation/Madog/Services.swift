@@ -26,7 +26,7 @@ class DefaultServices: ServiceProvider, Services {
 
         locationRepository = DefaultLocationRepository(realm: realm)
         locationManager = DefaultLocationManager()
-        notificationsManager = DefaultNotificationsManager(notificationCenter: .current())
+        notificationsManager = DefaultNotificationsManager(notificationCenter: .current(), dateFormatter: .create())
         locationMonitor = DefaultLocationMonitor(
             locationManager: locationManager,
             locationRepository: locationRepository,

@@ -55,20 +55,20 @@ class DefaultLocationMonitor: LocationMonitor {
                 self?.locationManager.stopMonitoring(name: name)
             }
         }
-        areaNotificationTokens[area._id.stringValue] = token
+        areaNotificationTokens[area.stringIdentifier] = token
     }
 }
 
 extension DefaultLocationMonitor: LocationManagerDelegate {
     func locationManager(_ locationManager: LocationManager, didEnter location: Location, name: String) {
-        let visit = Visit.entry(name: name)
-        locationRepository.addVisit(visit)
-        notificationsManager.sendLocalNotification(for: visit)
+        let event = Event.entry(areaName: name)
+        locationRepository.addEvent(event)
+        notificationsManager.sendLocalNotification(for: event)
     }
 
     func locationManager(_ locationManager: LocationManager, didExit location: Location, name: String) {
-        let visit = Visit.exit(name: name)
-        locationRepository.addVisit(visit)
-        notificationsManager.sendLocalNotification(for: visit)
+        let event = Event.exit(areaName: name)
+        locationRepository.addEvent(event)
+        notificationsManager.sendLocalNotification(for: event)
     }
 }
