@@ -61,17 +61,7 @@ extension VisitsViewController: VisitsViewModelDelegate {
 }
 
 private extension VisitsViewModel {
-    func visit(at indexPath: IndexPath) -> Visit? {
+    func visit(at indexPath: IndexPath) -> VisitViewData? {
         visit(areaIndex: indexPath.section, visitIndex: indexPath.row)
-    }
-}
-
-private extension Visit {
-    var title: String {
-        if let end {
-            return "Visit from \(start) to \(end)"
-        } else {
-            return "Ongoing visit from \(start)"
-        }
     }
 }

@@ -7,10 +7,12 @@ protocol NotificationsManager {
 }
 
 class DefaultNotificationsManager: NSObject, NotificationsManager {
-    let notificationCenter: UNUserNotificationCenter
+    private let notificationCenter: UNUserNotificationCenter
+    private let dateFormatter: DateFormatter
 
-    init(notificationCenter: UNUserNotificationCenter) {
+    init(notificationCenter: UNUserNotificationCenter, dateFormatter: DateFormatter) {
         self.notificationCenter = notificationCenter
+        self.dateFormatter = dateFormatter
         super.init()
         notificationCenter.delegate = self
     }
@@ -27,7 +29,7 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
     func sendLocalNotification(for event: Event) {
         let content = UNMutableNotificationContent()
         content.title = event.title
-        content.body = event.body
+        content.body = event.body(dateFormatter: dateFormatter)
         content.sound = UNNotificationSound.default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
@@ -55,8 +57,8 @@ private extension Event {
         kind.notificationTitle
     }
 
-    var body: String {
-        "\(areaName): \(kind.notificationBody) at \(timestamp)"
+    func body(dateFormatter: DateFormatter) -> String {
+        "\(areaName): \(kind.notificationBody) at \(dateFormatter.string(from: timestamp))"
     }
 }
 

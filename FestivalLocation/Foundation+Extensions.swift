@@ -12,3 +12,12 @@ extension Sequence where Element: Hashable {
         Array(Set(self))
     }
 }
+
+extension DateFormatter {
+    static func create() -> DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        return dateFormatter
+    }
+}

@@ -5,7 +5,11 @@ protocol VisitsViewModelDelegate: AnyObject {
 }
 
 class VisitsViewModel {
+    struct VisitViewData {
+        let title: String
+    }
     private let locationRepository: LocationRepository
+    private let dateFormatter = DateFormatter.create()
 
     private var collectionNotificationToken: NSObject?
 
@@ -40,8 +44,8 @@ class VisitsViewModel {
         visits(at: index).count
     }
 
-    func visit(areaIndex: Int, visitIndex: Int) -> Visit? {
-        visits(at: areaIndex)[safe: visitIndex]
+    func visit(areaIndex: Int, visitIndex: Int) -> VisitViewData? {
+        visits(at: areaIndex)[safe: visitIndex]?.asVisitViewData(dateFormatter: dateFormatter)
     }
 
     private func visits(at index: Int) -> [Visit] {
@@ -180,5 +184,19 @@ private class VisitBuilder {
     private var location: Location? {
         guard let areaName else { return nil }
         return locationRepository.area(name: areaName)?.location
+    }
+}
+
+private extension Visit {
+    func asVisitViewData(dateFormatter: DateFormatter) -> VisitsViewModel.VisitViewData {
+        .init(title: title(dateFormatter: dateFormatter))
+    }
+
+    private func title(dateFormatter: DateFormatter) -> String {
+        if let end {
+            return "Visit from \(dateFormatter.string(from: start)) to \(dateFormatter.string(from: end))"
+        } else {
+            return "Ongoing visit from \(dateFormatter.string(from: start))"
+        }
     }
 }
