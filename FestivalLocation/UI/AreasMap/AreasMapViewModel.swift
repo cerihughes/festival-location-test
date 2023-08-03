@@ -55,12 +55,3 @@ class AreasMapViewModel {
         counter += 1
     }
 }
-
-private extension AreasMapView.MapPosition {
-    static let defaultDistance = 1000
-    static let cardiffCastle = AreasMapView.MapPosition(location: .cardiffCastle, distance: defaultDistance)
-}
-
-private extension Location {
-    static let cardiffCastle = Location(lat: 51.4813466, lon: -3.1770851)
-}
