@@ -6,5 +6,8 @@ struct Location {
 }
 
 struct Visit {
-    
+    let start: Date
+    let end: Date?
+    let areaName: String
+    let location: Location
 }

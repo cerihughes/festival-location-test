@@ -11,12 +11,17 @@ extension LocationRepository {
         getAll(Area.self)
     }
 
+    func area(name: String) -> Area? {
+        areas().filter { $0.name == name }
+            .first
+    }
+
     func addArea(_ area: Area) {
         add(area)
     }
 
     func events() -> Results<Event> {
-        getAll(Event.self)
+        getAll(Event.self).sorted(by: \.timestamp)
     }
 
     func addEvent(_ visit: Event) {

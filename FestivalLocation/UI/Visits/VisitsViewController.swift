@@ -1,5 +1,7 @@
 import UIKit
 
+private let reuseIdentifier = "VisitsViewControllerIdentifier"
+
 class VisitsViewController: UIViewController {
     private let viewModel: VisitsViewModel
     private let visitsView = VisitsView()
@@ -22,11 +24,54 @@ class VisitsViewController: UIViewController {
 
         title = "Visits"
 
+        visitsView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        visitsView.tableView.dataSource = self
+        visitsView.tableView.reloadData()
+
         viewModel.delegate = self
+    }
+}
+
+extension VisitsViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        viewModel.numberOfAreas
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        viewModel.title(at: section)
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.numberOfVisits(at: section)
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+        if let visit = viewModel.visit(at: indexPath) {
+            cell.textLabel?.text = visit.title
+        }
+        return cell
     }
 }
 
 extension VisitsViewController: VisitsViewModelDelegate {
     func visitsViewModelDidUpdate(_ visitsViewModel: VisitsViewModel) {
+        visitsView.tableView.reloadData()
+    }
+}
+
+private extension VisitsViewModel {
+    func visit(at indexPath: IndexPath) -> Visit? {
+        visit(areaIndex: indexPath.section, visitIndex: indexPath.row)
+    }
+}
+
+private extension Visit {
+    var title: String {
+        if let end {
+            return "Visit from \(start) to \(end)"
+        } else {
+            return "Ongoing visit from \(start)"
+        }
     }
 }
