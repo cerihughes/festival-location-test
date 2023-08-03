@@ -27,16 +27,16 @@ extension Area {
     }
 }
 
-extension Visit {
-    static func entry(name: String) -> Visit {
-        .create(name: name, kind: .entry)
+extension Event {
+    static func entry(areaName: String) -> Event {
+        .create(areaName: areaName, kind: .entry)
     }
 
-    static func exit(name: String) -> Visit {
-        .create(name: name, kind: .exit)
+    static func exit(areaName: String) -> Event {
+        .create(areaName: areaName, kind: .exit)
     }
 
-    private static func create(name: String, kind: Kind) -> Visit {
-        create(name: name, timestamp: Date(), kind: kind)
+    private static func create(areaName: String, kind: Kind) -> Event {
+        create(areaName: areaName, timestamp: Date(), kind: kind)
     }
 }

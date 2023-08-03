@@ -15,11 +15,11 @@ extension LocationRepository {
         add(area)
     }
 
-    func visits() -> Results<Visit> {
-        getAll(Visit.self)
+    func events() -> Results<Event> {
+        getAll(Event.self)
     }
 
-    func addVisit(_ visit: Visit) {
+    func addEvent(_ visit: Event) {
         add(visit)
     }
 }
