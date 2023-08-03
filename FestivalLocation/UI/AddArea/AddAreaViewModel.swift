@@ -55,3 +55,12 @@ class AddAreaViewModel {
         counter += 1
     }
 }
+
+private extension AddAreaView.MapPosition {
+    static let defaultDistance = 1000
+    static let cardiffCastle = AddAreaView.MapPosition(location: .cardiffCastle, distance: defaultDistance)
+}
+
+private extension Location {
+    static let cardiffCastle = Location(lat: 51.4813466, lon: -3.1770851)
+}
