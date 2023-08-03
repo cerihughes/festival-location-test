@@ -2,19 +2,13 @@ import MapKit
 import SnapKit
 import UIKit
 
-protocol AreasMapViewDelegate: AnyObject {
-    func areasMapView(_ areasMapView: AreasMapView, didSelect location: Location)
-}
-
 class AreasMapView: UIView {
     struct MapPosition {
         let location: Location
         let distance: Int
     }
     let mapView = MKMapView()
-    private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
-
-    weak var delegate: AreasMapViewDelegate?
+    private let mapDelegate = MapViewDelegate()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,23 +21,16 @@ class AreasMapView: UIView {
     }
 
     private func commonInit() {
+        backgroundColor = .white
+
         addSubview(mapView)
 
         mapView.showsUserLocation = true
-        mapView.addGestureRecognizer(tapGestureRecogniser)
-        mapView.delegate = self
+        mapView.delegate = mapDelegate
 
         mapView.snp.makeConstraints { make in
-            make.edges.equalTo(safeAreaLayoutGuide)
-        }
-    }
-
-    var isMapTappable: Bool {
-        get {
-            tapGestureRecogniser.isEnabled
-        }
-        set {
-            tapGestureRecogniser.isEnabled = newValue
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(safeAreaLayoutGuide)
         }
     }
 
@@ -62,31 +49,8 @@ class AreasMapView: UIView {
         mapView.overlays.forEach {
             mapView.removeOverlay($0)
         }
-    }
-
-    @objc private func mapTapped(_ gestureRecogniser: UITapGestureRecognizer) {
-        guard gestureRecogniser.state == .ended else { return }
-
-        let point = gestureRecogniser.location(in: mapView)
-        let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-
-        delegate?.areasMapView(self, didSelect: coordinate.asLocation())
-    }
-}
-
-extension AreasMapView: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let overlay = overlay as? MKCircle else { return .init() }
-        let renderer = MKCircleRenderer(circle: overlay)
-        renderer.fillColor = .red
-        renderer.alpha = 0.75
-        return renderer
-    }
-}
-
-private extension AreasMapView.MapPosition {
-    func asCoordinateRegion() -> MKCoordinateRegion {
-        let distance = CLLocationDistance(exactly: distance) ?? Double(distance)
-        return .init(center: location.asCoordinate(), latitudinalMeters: distance, longitudinalMeters: distance)
+        mapView.annotations.forEach {
+            mapView.removeAnnotation($0)
+        }
     }
 }

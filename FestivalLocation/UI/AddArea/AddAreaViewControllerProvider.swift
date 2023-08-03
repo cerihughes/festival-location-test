@@ -1,17 +1,18 @@
 import Madog
 import UIKit
 
-class AreasMapViewControllerProvider: DefaultViewControllerProvider {
+class AddAreaViewControllerProvider: DefaultViewControllerProvider {
 
     override func createViewController(token: Navigation, context: AnyContext<Navigation>) -> ViewController? {
         guard
-            token == .areasMap,
+            token == .addArea,
             let locationRepository,
+            let locationManager,
             let context = context as? AnyForwardBackNavigationContext<Navigation>
         else {
             return nil
         }
-        let viewModel = AreasMapViewModel(locationRepository: locationRepository)
-        return AreasMapViewController(context: context, viewModel: viewModel)
+        let viewModel = AddAreaViewModel(locationRepository: locationRepository, locationManager: locationManager)
+        return AddAreaViewController(context: context, viewModel: viewModel)
     }
 }
