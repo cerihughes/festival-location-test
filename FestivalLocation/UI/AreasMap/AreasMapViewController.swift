@@ -1,10 +1,13 @@
+import Madog
 import UIKit
 
 class AreasMapViewController: UIViewController {
+    private weak var context: AnyForwardBackNavigationContext<Navigation>?
     private let viewModel: AreasMapViewModel
     private let areasMapView = AreasMapView()
 
-    init(viewModel: AreasMapViewModel) {
+    init(context: AnyForwardBackNavigationContext<Navigation>, viewModel: AreasMapViewModel) {
+        self.context = context
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -29,54 +32,21 @@ class AreasMapViewController: UIViewController {
         appearance.configureWithDefaultBackground()
         navigationController?.navigationBar.backgroundColor = .white
 
-        areasMapView.isMapTappable = false
-        areasMapView.delegate = self
-
         viewModel.delegate = self
+        updateMap()
+    }
 
+    private func updateMap() {
         areasMapView.removeAllAndRender(areas: viewModel.areas)
     }
 
     @objc private func addTapped(_ item: UIBarButtonItem) {
-        let alertController = UIAlertController(title: "Add Region", message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(.init(title: "Use Current Location", style: .default) { [weak self] _ in
-            self?.createAreaAtCurrentLocation()
-        })
-        alertController.addAction(.init(title: "Select Location", style: .default) { [weak self] _ in
-            self?.selectLocation()
-        })
-        alertController.addAction(.init(title: "Cancel", style: .cancel))
-
-        alertController.popoverPresentationController?.barButtonItem = item
-        alertController.popoverPresentationController?.sourceView = areasMapView
-
-        present(alertController, animated: true, completion: nil)
-    }
-
-    private func createAreaAtCurrentLocation() {
-        Task {
-            await viewModel.createAreaAtCurrentLocation()
-        }
-    }
-
-    private func selectLocation() {
-        areasMapView.isMapTappable = true
+        context?.navigateForward(token: .addArea, animated: true)
     }
 }
 
 extension AreasMapViewController: AreasMapViewModelDelegate {
-    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didAddArea area: Area) {
-        areasMapView.render(areas: [area])
-    }
-
-    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didRemoveArea area: Area) {
-
-    }
-}
-
-extension AreasMapViewController: AreasMapViewDelegate {
-    func areasMapView(_ areasMapView: AreasMapView, didSelect location: Location) {
-        areasMapView.isMapTappable = false
-        viewModel.createArea(at: location)
+    func areasMapViewModelDidUpdate(_ areasMapViewModel: AreasMapViewModel) {
+        updateMap()
     }
 }

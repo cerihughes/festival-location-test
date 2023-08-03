@@ -1,23 +1,17 @@
 import Foundation
 
 protocol AreasMapViewModelDelegate: AnyObject {
-    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didAddArea area: Area)
-    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didRemoveArea area: Area)
+    func areasMapViewModelDidUpdate(_ areasMapViewModel: AreasMapViewModel)
 }
 
 class AreasMapViewModel {
     private let locationRepository: LocationRepository
-    private let locationManager: LocationManager
-
     private var collectionNotificationToken: NSObject?
-    private var counter = 1
 
     weak var delegate: AreasMapViewModelDelegate?
 
-    init(locationRepository: LocationRepository, locationManager: LocationManager) {
+    init(locationRepository: LocationRepository) {
         self.locationRepository = locationRepository
-        self.locationManager = locationManager
-
         observe()
     }
 
@@ -29,29 +23,11 @@ class AreasMapViewModel {
         collectionNotificationToken = locationRepository.areas().observe { [weak self] changes in
             guard let self, let delegate else { return }
             switch changes {
-            case let .update(areas, _, insertions, deletions):
-                insertions.forEach {
-                    delegate.areasMapViewModel(self, didAddArea: areas[$0])
-                }
-                deletions.forEach {
-                    delegate.areasMapViewModel(self, didRemoveArea: areas[$0])
-                }
+            case .update:
+                delegate.areasMapViewModelDidUpdate(self)
             default:
                 break // No-op
             }
         }
-    }
-
-    func createAreaAtCurrentLocation() async {
-        guard let current = await locationManager.getLocation() else { return }
-        Task { @MainActor in
-            createArea(at: current)
-        }
-    }
-
-    func createArea(at location: Location) {
-        let area = Area.create(name: "Region \(counter)", location: location)
-        locationRepository.addArea(area)
-        counter += 1
     }
 }

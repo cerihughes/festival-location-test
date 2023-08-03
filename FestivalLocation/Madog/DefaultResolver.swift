@@ -11,6 +11,7 @@ class DefaultResolver: Resolver {
         [
             AuthorisationViewControllerProvider.init,
             AreasMapViewControllerProvider.init,
+            AddAreaViewControllerProvider.init,
             AreasViewControllerProvider.init,
             VisitsViewControllerProvider.init
         ]

@@ -2,12 +2,19 @@ import MapKit
 import SnapKit
 import UIKit
 
-class AreasMapView: UIView {
+protocol AddAreaViewDelegate: AnyObject {
+    func areasMapView(_ areasMapView: AddAreaView, didSelect location: Location)
+}
+
+class AddAreaView: UIView {
     struct MapPosition {
         let location: Location
         let distance: Int
     }
     let mapView = MKMapView()
+    private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
+
+    weak var delegate: AddAreaViewDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,10 +30,20 @@ class AreasMapView: UIView {
         addSubview(mapView)
 
         mapView.showsUserLocation = true
+        mapView.addGestureRecognizer(tapGestureRecogniser)
         mapView.delegate = self
 
         mapView.snp.makeConstraints { make in
             make.edges.equalTo(safeAreaLayoutGuide)
+        }
+    }
+
+    var isMapTappable: Bool {
+        get {
+            tapGestureRecogniser.isEnabled
+        }
+        set {
+            tapGestureRecogniser.isEnabled = newValue
         }
     }
 
@@ -46,9 +63,18 @@ class AreasMapView: UIView {
             mapView.removeOverlay($0)
         }
     }
+
+    @objc private func mapTapped(_ gestureRecogniser: UITapGestureRecognizer) {
+        guard gestureRecogniser.state == .ended else { return }
+
+        let point = gestureRecogniser.location(in: mapView)
+        let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
+
+        delegate?.areasMapView(self, didSelect: coordinate.asLocation())
+    }
 }
 
-extension AreasMapView: MKMapViewDelegate {
+extension AddAreaView: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         guard let overlay = overlay as? MKCircle else { return .init() }
         let renderer = MKCircleRenderer(circle: overlay)
