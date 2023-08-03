@@ -32,6 +32,6 @@ extension AuthorisationViewController: AuthorisationViewModelDelegate {
         didCompleteWithLocationAuthorisation: LocationAuthorisation,
         notificationAuthorisation: Bool
     ) {
-        context?.change(to: .tabBarNavigation(), tokenData: .multi([.addArea, .areas]))
+        context?.change(to: .tabBarNavigation(), tokenData: .multi([.areasMap, .areas]))
     }
 }

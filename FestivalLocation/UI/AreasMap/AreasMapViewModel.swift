@@ -1,18 +1,18 @@
 import Foundation
 
-protocol AddAreaViewModelDelegate: AnyObject {
-    func addAreaViewModel(_ addAreaViewModel: AddAreaViewModel, didAddArea area: Area)
-    func addAreaViewModel(_ addAreaViewModel: AddAreaViewModel, didRemoveArea area: Area)
+protocol AreasMapViewModelDelegate: AnyObject {
+    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didAddArea area: Area)
+    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didRemoveArea area: Area)
 }
 
-class AddAreaViewModel {
+class AreasMapViewModel {
     private let locationRepository: LocationRepository
     private let locationManager: LocationManager
 
     private var collectionNotificationToken: NSObject?
     private var counter = 1
 
-    weak var delegate: AddAreaViewModelDelegate?
+    weak var delegate: AreasMapViewModelDelegate?
 
     init(locationRepository: LocationRepository, locationManager: LocationManager) {
         self.locationRepository = locationRepository
@@ -31,10 +31,10 @@ class AddAreaViewModel {
             switch changes {
             case let .update(areas, _, insertions, deletions):
                 insertions.forEach {
-                    delegate.addAreaViewModel(self, didAddArea: areas[$0])
+                    delegate.areasMapViewModel(self, didAddArea: areas[$0])
                 }
                 deletions.forEach {
-                    delegate.addAreaViewModel(self, didRemoveArea: areas[$0])
+                    delegate.areasMapViewModel(self, didRemoveArea: areas[$0])
                 }
             default:
                 break // No-op
@@ -56,9 +56,9 @@ class AddAreaViewModel {
     }
 }
 
-private extension AddAreaView.MapPosition {
+private extension AreasMapView.MapPosition {
     static let defaultDistance = 1000
-    static let cardiffCastle = AddAreaView.MapPosition(location: .cardiffCastle, distance: defaultDistance)
+    static let cardiffCastle = AreasMapView.MapPosition(location: .cardiffCastle, distance: defaultDistance)
 }
 
 private extension Location {

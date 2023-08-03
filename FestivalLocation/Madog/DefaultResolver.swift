@@ -10,7 +10,7 @@ class DefaultResolver: Resolver {
     func viewControllerProviderFunctions() -> [() -> AnyViewControllerProvider<Navigation>] {
         [
             AuthorisationViewControllerProvider.init,
-            AddAreaViewControllerProvider.init,
+            AreasMapViewControllerProvider.init,
             AreasViewControllerProvider.init,
             VisitsViewControllerProvider.init
         ]

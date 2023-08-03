@@ -2,11 +2,11 @@ import MapKit
 import SnapKit
 import UIKit
 
-protocol AddAreaViewDelegate: AnyObject {
-    func addAreaView(_ addAreaView: AddAreaView, didSelect location: Location)
+protocol AreasMapViewDelegate: AnyObject {
+    func areasMapView(_ areasMapView: AreasMapView, didSelect location: Location)
 }
 
-class AddAreaView: UIView {
+class AreasMapView: UIView {
     struct MapPosition {
         let location: Location
         let distance: Int
@@ -14,7 +14,7 @@ class AddAreaView: UIView {
     let mapView = MKMapView()
     private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
 
-    weak var delegate: AddAreaViewDelegate?
+    weak var delegate: AreasMapViewDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,11 +70,11 @@ class AddAreaView: UIView {
         let point = gestureRecogniser.location(in: mapView)
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
 
-        delegate?.addAreaView(self, didSelect: coordinate.asLocation())
+        delegate?.areasMapView(self, didSelect: coordinate.asLocation())
     }
 }
 
-extension AddAreaView: MKMapViewDelegate {
+extension AreasMapView: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         guard let overlay = overlay as? MKCircle else { return .init() }
         let renderer = MKCircleRenderer(circle: overlay)
@@ -84,7 +84,7 @@ extension AddAreaView: MKMapViewDelegate {
     }
 }
 
-private extension AddAreaView.MapPosition {
+private extension AreasMapView.MapPosition {
     func asCoordinateRegion() -> MKCoordinateRegion {
         let distance = CLLocationDistance(exactly: distance) ?? Double(distance)
         return .init(center: location.asCoordinate(), latitudinalMeters: distance, longitudinalMeters: distance)

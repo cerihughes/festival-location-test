@@ -1,10 +1,10 @@
 import UIKit
 
-class AddAreaViewController: UIViewController {
-    private let viewModel: AddAreaViewModel
-    private let addAreaView = AddAreaView()
+class AreasMapViewController: UIViewController {
+    private let viewModel: AreasMapViewModel
+    private let areasMapView = AreasMapView()
 
-    init(viewModel: AddAreaViewModel) {
+    init(viewModel: AreasMapViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -14,7 +14,7 @@ class AddAreaViewController: UIViewController {
     }
 
     override func loadView() {
-        view = addAreaView
+        view = areasMapView
     }
 
     override func viewDidLoad() {
@@ -29,12 +29,12 @@ class AddAreaViewController: UIViewController {
         appearance.configureWithDefaultBackground()
         navigationController?.navigationBar.backgroundColor = .white
 
-        addAreaView.isMapTappable = false
-        addAreaView.delegate = self
+        areasMapView.isMapTappable = false
+        areasMapView.delegate = self
 
         viewModel.delegate = self
 
-        addAreaView.removeAllAndRender(areas: viewModel.areas)
+        areasMapView.removeAllAndRender(areas: viewModel.areas)
     }
 
     @objc private func addTapped(_ item: UIBarButtonItem) {
@@ -48,7 +48,7 @@ class AddAreaViewController: UIViewController {
         alertController.addAction(.init(title: "Cancel", style: .cancel))
 
         alertController.popoverPresentationController?.barButtonItem = item
-        alertController.popoverPresentationController?.sourceView = addAreaView
+        alertController.popoverPresentationController?.sourceView = areasMapView
 
         present(alertController, animated: true, completion: nil)
     }
@@ -60,23 +60,23 @@ class AddAreaViewController: UIViewController {
     }
 
     private func selectLocation() {
-        addAreaView.isMapTappable = true
+        areasMapView.isMapTappable = true
     }
 }
 
-extension AddAreaViewController: AddAreaViewModelDelegate {
-    func addAreaViewModel(_ addAreaViewModel: AddAreaViewModel, didAddArea area: Area) {
-        addAreaView.render(areas: [area])
+extension AreasMapViewController: AreasMapViewModelDelegate {
+    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didAddArea area: Area) {
+        areasMapView.render(areas: [area])
     }
 
-    func addAreaViewModel(_ addAreaViewModel: AddAreaViewModel, didRemoveArea area: Area) {
+    func areasMapViewModel(_ areasMapViewModel: AreasMapViewModel, didRemoveArea area: Area) {
 
     }
 }
 
-extension AddAreaViewController: AddAreaViewDelegate {
-    func addAreaView(_ addAreaView: AddAreaView, didSelect location: Location) {
-        addAreaView.isMapTappable = false
+extension AreasMapViewController: AreasMapViewDelegate {
+    func areasMapView(_ areasMapView: AreasMapView, didSelect location: Location) {
+        areasMapView.isMapTappable = false
         viewModel.createArea(at: location)
     }
 }
