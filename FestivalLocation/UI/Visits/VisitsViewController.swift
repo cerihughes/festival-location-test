@@ -33,21 +33,13 @@ class VisitsViewController: UIViewController {
 }
 
 extension VisitsViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        viewModel.numberOfAreas
-    }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        viewModel.title(at: section)
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.numberOfVisits(at: section)
+        viewModel.numberOfVisits
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        if let visit = viewModel.visit(at: indexPath) {
+        if let visit = viewModel.visit(at: indexPath.row) {
             cell.textLabel?.text = visit.title
         }
         return cell
@@ -57,11 +49,5 @@ extension VisitsViewController: UITableViewDataSource {
 extension VisitsViewController: VisitsViewModelDelegate {
     func visitsViewModelDidUpdate(_ visitsViewModel: VisitsViewModel) {
         visitsView.tableView.reloadData()
-    }
-}
-
-private extension VisitsViewModel {
-    func visit(at indexPath: IndexPath) -> VisitViewData? {
-        visit(areaIndex: indexPath.section, visitIndex: indexPath.row)
     }
 }

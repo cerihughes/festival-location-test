@@ -5,52 +5,37 @@ protocol VisitsViewModelDelegate: AnyObject {
 }
 
 class VisitsViewModel {
-    struct VisitViewData {
+    struct VisitViewData: Equatable {
         let title: String
     }
+    private let areaName: String
     private let locationRepository: LocationRepository
     private let dateFormatter = DateFormatter.create()
 
     private var collectionNotificationToken: NSObject?
 
-    private var areaNames = [String]()
-    private var allVisits = [Visit]() {
+    private var allVisits = [VisitViewData]() {
         didSet {
-            areaNames = allVisits.map { $0.areaName }
-                .uniqued()
-                .sorted()
-
+            guard allVisits != oldValue else { return }
             delegate?.visitsViewModelDidUpdate(self)
         }
     }
 
     weak var delegate: VisitsViewModelDelegate?
 
-    init(locationRepository: LocationRepository, locationManager: LocationManager) {
+    init(areaName: String, locationRepository: LocationRepository, locationManager: LocationManager) {
+        self.areaName = areaName
         self.locationRepository = locationRepository
 
         observe()
     }
 
-    var numberOfAreas: Int {
-        areaNames.count
+    var numberOfVisits: Int {
+        allVisits.count
     }
 
-    func title(at index: Int) -> String {
-        areaNames[safe: index] ?? "Unknown Area"
-    }
-
-    func numberOfVisits(at index: Int) -> Int {
-        visits(at: index).count
-    }
-
-    func visit(areaIndex: Int, visitIndex: Int) -> VisitViewData? {
-        visits(at: areaIndex)[safe: visitIndex]?.asVisitViewData(dateFormatter: dateFormatter)
-    }
-
-    private func visits(at index: Int) -> [Visit] {
-        guard let areaName = areaNames[safe: index] else { return [] }
-        return allVisits.filter { $0.areaName == areaName }
+    func visit(at index: Int) -> VisitViewData? {
+        allVisits[safe: index]
     }
 
     private func createVisits() {
@@ -65,7 +50,7 @@ class VisitsViewModel {
         }
 
         if let visits = processor?.finish() {
-            allVisits = visits
+            allVisits = visits.map{ $0.asVisitViewData(dateFormatter: dateFormatter) }
         }
     }
 
