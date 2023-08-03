@@ -12,7 +12,8 @@ extension LocationRepository {
     }
 
     func area(name: String) -> Area? {
-        areas().filter { $0.name == name }
+        areas()
+            .where { $0.name == name }
             .first
     }
 
@@ -20,8 +21,10 @@ extension LocationRepository {
         add(area)
     }
 
-    func events() -> Results<Event> {
-        getAll(Event.self).sorted(by: \.timestamp)
+    func events(areaName: String) -> Results<Event> {
+        getAll(Event.self)
+            .where { $0.areaName == areaName }
+            .sorted(by: \.timestamp)
     }
 
     func addEvent(_ visit: Event) {

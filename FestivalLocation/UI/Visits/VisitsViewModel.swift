@@ -1,4 +1,5 @@
 import Foundation
+import RealmSwift
 
 protocol VisitsViewModelDelegate: AnyObject {
     func visitsViewModelDidUpdate(_ visitsViewModel: VisitsViewModel)
@@ -38,10 +39,10 @@ class VisitsViewModel {
         allVisits[safe: index]
     }
 
-    private func createVisits() {
+    private func createVisits(events: Results<Event>) {
         let builder = VisitBuilder(locationRepository: locationRepository)
         var processor: EventProcessor?
-        for event in locationRepository.events() {
+        for event in events {
             guard let processor else {
                 processor = .init(builder: builder, lastEvent: event)
                 continue
@@ -55,10 +56,10 @@ class VisitsViewModel {
     }
 
     private func observe() {
-        collectionNotificationToken = locationRepository.events().observe { [weak self] changes in
+        collectionNotificationToken = locationRepository.events(areaName: areaName).observe { [weak self] changes in
             switch changes {
-            case .initial, .update:
-                self?.createVisits()
+            case .initial(let events), .update(let events, _, _, _):
+                self?.createVisits(events: events)
             default:
                 break // No-op
             }
