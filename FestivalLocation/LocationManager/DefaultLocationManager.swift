@@ -33,7 +33,7 @@ class DefaultLocationManager: NSObject, LocationManager {
 
     func startMonitoring(location: Location, radius: Double, name: String) -> Bool {
         guard monitoredRegions[name] == nil else { return false }
-        let region = CLCircularRegion(center: location.asCoordinate(), radius: radius, identifier: name)
+        let region = CLCircularRegion(center: location.asMapCoordinate(), radius: radius, identifier: name)
         region.notifyOnEntry = true
         region.notifyOnExit = true
 

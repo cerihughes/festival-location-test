@@ -49,7 +49,7 @@ class DefaultLocationMonitor: LocationMonitor {
 
     private func monitorArea(_ area: Area) {
         let name = area.name
-        locationManager.startMonitoring(location: area.location, radius: 50, name: name)
+        locationManager.startMonitoring(location: area.location, radius: area.radius, name: name)
         let token = area.observe { [weak self] change in
             if case .deleted = change {
                 self?.locationManager.stopMonitoring(name: name)

@@ -1,18 +1,24 @@
-import CoreLocation
 import Foundation
+import MapKit
 
 extension CLLocationCoordinate2D {
     func asLocation() -> Location {
-        .init(lat: latitude, lon: longitude)
+        .init(latitude: latitude, longitude: longitude)
     }
 }
 
 extension Location {
-    func asCoordinate() -> CLLocationCoordinate2D {
-        .init(latitude: lat, longitude: lon)
+    func asMapCoordinate() -> CLLocationCoordinate2D {
+        .init(latitude: latitude, longitude: longitude)
     }
 
     static func + (left: Location, right: Location) -> Location {
-        .init(lat: left.lat + right.lat, lon: left.lon + right.lon)
+        .init(latitude: left.latitude + right.latitude, longitude: left.longitude + right.longitude)
+    }
+}
+
+extension CircularArea {
+    func asMapCircle() -> MKCircle {
+        .init(center: location.asMapCoordinate(), radius: radius)
     }
 }

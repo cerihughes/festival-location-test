@@ -1,8 +1,13 @@
 import Foundation
 
 struct Location {
-    let lat: Double
-    let lon: Double
+    let latitude: Double
+    let longitude: Double
+}
+
+struct CircularArea {
+    let location: Location
+    let radius: Double
 }
 
 struct Visit {

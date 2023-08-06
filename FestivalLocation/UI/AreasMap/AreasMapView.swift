@@ -40,7 +40,8 @@ class AreasMapView: UIView {
     }
 
     func render(areas: [Area]) {
-        let overlays = areas.map { MKCircle(center: $0.location.asCoordinate(), radius: 50) }
+        let overlays = areas.map { $0.asCircularArea() }
+            .map { $0.asMapCircle() }
         mapView.addOverlays(overlays)
         mapView.showAnnotations(overlays, animated: true)
     }
