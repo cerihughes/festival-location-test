@@ -76,7 +76,7 @@ class AddAreaViewModel {
             return location.map { CircularArea(location: $0, radius: .init(radius)) }
         case .multiple:
             guard let mapRect = multipleLocations.asMapRect() else { return nil }
-            let circle = MKCircle(mapRect: mapRect)
+            let circle = MKCircle.create(containing: mapRect)
             return circle.asCircularArea()
         }
     }
@@ -85,7 +85,7 @@ class AddAreaViewModel {
 private extension Collection where Element == Location {
     func asMapRect() -> MKMapRect? {
         guard count > 1 else { return nil }
-        let rects = self.lazy.map { MKMapRect(origin: MKMapPoint($0.asMapCoordinate()), size: MKMapSize()) }
+        let rects = map { MKMapRect(origin: MKMapPoint($0.asMapCoordinate()), size: MKMapSize()) }
         return rects.reduce(MKMapRect.null) { $0.union($1) }
     }
 }
@@ -99,5 +99,16 @@ class LocationAnnotation: NSObject, MKAnnotation {
 
     var coordinate: CLLocationCoordinate2D {
         location.asMapCoordinate()
+    }
+}
+
+private extension MKCircle {
+    static func create(containing rect: MKMapRect) -> MKCircle {
+        let containedCircle = MKCircle(mapRect: rect)
+        let radius = containedCircle.radius
+        return .init(
+            center: containedCircle.coordinate,
+            radius: ((radius * radius) + (radius * radius)).squareRoot()
+        )
     }
 }
