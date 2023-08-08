@@ -7,29 +7,12 @@ class AddAreaViewModel {
     private let existingAreaNames: [String]
     private let radiusFormatter = NumberFormatter.createMeters()
 
-    var location: Location? {
-        didSet {
-            isValid = checkValidity()
-        }
-    }
+    private var location: Location?
+    private var multipleLocations = [Location]()
 
+    var mode = AddAreaView.Mode.single
+    var areaName: String?
     var radius: Float = 50.0
-
-    var areaName: String? {
-        didSet {
-            isValid = checkValidity()
-        }
-    }
-
-    var overlay: MKCircle? {
-        createCircularArea()?.asMapCircle()
-    }
-
-    var radiusDisplayString: String {
-        radiusFormatter.string(from: .init(value: radius)) ?? "000m"
-    }
-
-    var isValid = false
 
     init(locationRepository: LocationRepository, locationManager: LocationManager) {
         self.locationRepository = locationRepository
@@ -37,12 +20,47 @@ class AddAreaViewModel {
         existingAreaNames = locationRepository.areas().map { $0.name }
     }
 
+    var overlay: MKCircle? {
+        createCircularArea()?.asMapCircle()
+    }
+
+    var annotations: [MKAnnotation] {
+        switch mode {
+        case .single:
+            return [overlay].compactMap { $0 }
+        case .multiple:
+            return multipleLocations.map { LocationAnnotation(location: $0) }
+        }
+    }
+
+    var radiusDisplayString: String {
+        radiusFormatter.string(from: .init(value: determineRadius())) ?? "000m"
+    }
+
+    var isValid: Bool {
+        guard let areaName, createCircularArea() != nil else { return false }
+        return !existingAreaNames.contains(areaName)
+    }
+
+    private func determineRadius() -> Double {
+        switch mode {
+        case .single:
+            return .init(radius)
+        case .multiple:
+            return createCircularArea()?.radius ?? 0
+        }
+    }
+
     func getCurrentLocation() async -> Location? {
         await locationManager.getLocation()
     }
 
-    func addLocation(_ location: Location) {
+    func useSingleLocation(_ location: Location) {
+        self.location = location
+    }
 
+    func addLocation(_ point: Location) {
+        multipleLocations.append(point)
     }
 
     func create() -> Bool {
@@ -53,17 +71,33 @@ class AddAreaViewModel {
     }
 
     private func createCircularArea() -> CircularArea? {
-        location.map { CircularArea(location: $0, radius: .init(radius)) }
-    }
-
-    private func checkValidity() -> Bool {
-        guard location != nil, let areaName else { return false }
-        return !existingAreaNames.contains(areaName)
+        switch mode {
+        case .single:
+            return location.map { CircularArea(location: $0, radius: .init(radius)) }
+        case .multiple:
+            guard let mapRect = multipleLocations.asMapRect() else { return nil }
+            let circle = MKCircle(mapRect: mapRect)
+            return circle.asCircularArea()
+        }
     }
 }
 
-private extension CircularArea {
-    func with(radius: Float) -> Self {
-        .init(location: location, radius: .init(radius))
+private extension Collection where Element == Location {
+    func asMapRect() -> MKMapRect? {
+        guard count > 1 else { return nil }
+        let rects = self.lazy.map { MKMapRect(origin: MKMapPoint($0.asMapCoordinate()), size: MKMapSize()) }
+        return rects.reduce(MKMapRect.null) { $0.union($1) }
+    }
+}
+
+class LocationAnnotation: NSObject, MKAnnotation {
+    private let location: Location
+
+    init(location: Location) {
+        self.location = location
+    }
+
+    var coordinate: CLLocationCoordinate2D {
+        location.asMapCoordinate()
     }
 }

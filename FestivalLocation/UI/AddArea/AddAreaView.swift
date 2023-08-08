@@ -7,20 +7,17 @@ protocol AddAreaViewDelegate: AnyObject {
 }
 
 class AddAreaView: UIView {
-    struct MapPosition {
-        let location: Location
-        let distance: Int
+    enum Mode {
+        case single, multiple
     }
 
     let mapView = MKMapView()
     private let mapDelegate = MapViewDelegate()
     private let floatingContainer = UIView()
     let nameField = UITextField()
-    let segmentedControl = UISegmentedControl(items: ["Use GPS", "Use Map", "Use Multiple Points"])
-    private let segmentContainer = UIView()
-    let currentLocationView = CurrentLocationView()
-    let locationAndRadiusView = LocationAndRadiusView()
-    let multipleLocationsView = MultipleLocationsView()
+    let segmentedControl = UISegmentedControl(items: ["Use Single Location", "Use Multiple Locations"])
+    let radiusSliderView = RadiusSliderView()
+    let useGPSButton = UIButton(type: .system)
 
     private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
 
@@ -39,18 +36,17 @@ class AddAreaView: UIView {
     private func commonInit() {
         backgroundColor = .white
         floatingContainer.backgroundColor = .white
+        floatingContainer.alpha = 0.9
 
         nameField.placeholder = "Enter Area Name"
+        useGPSButton.setTitle("Use GPS Location", for: .normal)
 
         segmentedControl.selectedSegmentIndex = 0
-        showSegment(index: 0)
-        segmentedControl.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
 
         let containerLayoutGuide = UILayoutGuide()
         floatingContainer.addLayoutGuide(containerLayoutGuide)
 
-        floatingContainer.addSubviews(nameField, segmentedControl, segmentContainer)
-        segmentContainer.addSubviews(currentLocationView, locationAndRadiusView, multipleLocationsView)
+        floatingContainer.addSubviews(nameField, segmentedControl, radiusSliderView, useGPSButton)
         addSubviews(mapView, floatingContainer)
 
         containerLayoutGuide.snp.makeConstraints { make in
@@ -66,25 +62,15 @@ class AddAreaView: UIView {
             make.leading.trailing.equalTo(containerLayoutGuide)
         }
 
-        segmentContainer.snp.makeConstraints { make in
+        radiusSliderView.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom).offset(16)
             make.leading.trailing.equalTo(containerLayoutGuide)
+        }
+
+        useGPSButton.snp.makeConstraints { make in
+            make.top.equalTo(radiusSliderView.snp.bottom).offset(16)
+            make.centerX.equalToSuperview()
             make.bottom.equalTo(containerLayoutGuide).inset(16)
-        }
-
-        currentLocationView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.lessThanOrEqualToSuperview()
-        }
-
-        locationAndRadiusView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.lessThanOrEqualToSuperview()
-        }
-
-        multipleLocationsView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.lessThanOrEqualToSuperview()
         }
 
         floatingContainer.snp.makeConstraints { make in
@@ -103,23 +89,17 @@ class AddAreaView: UIView {
         mapView.delegate = mapDelegate
     }
 
-    @objc private func segmentedControlChanged(_ segmentedControl: UISegmentedControl) {
-        showSegment(index: segmentedControl.selectedSegmentIndex)
-    }
-
-    private func showSegment(index: Int) {
-        let views = [currentLocationView, locationAndRadiusView, multipleLocationsView]
-        for (viewIndex, view) in views.enumerated() {
-            view.isHidden = viewIndex != index
-        }
+    var mode: Mode {
+        segmentedControl.selectedSegmentIndex == 0 ? .single : .multiple
     }
 
     var overlay: MKCircle? {
         didSet {
-            removeAllLocations()
+            if let oldValue {
+                mapView.removeOverlay(oldValue)
+            }
             if let overlay {
                 mapView.addOverlay(overlay)
-                mapView.addAnnotation(overlay)
                 mapView.setVisibleMapRect(overlay.mapRect(
                     delta: 50,
                     yOffset: -1000
@@ -128,12 +108,10 @@ class AddAreaView: UIView {
         }
     }
 
-    private func removeAllLocations() {
-        mapView.overlays.forEach {
-            mapView.removeOverlay($0)
-        }
-        mapView.annotations.forEach {
-            mapView.removeAnnotation($0)
+    var annotations = [MKAnnotation]() {
+        didSet {
+            mapView.removeAnnotations(oldValue)
+            mapView.addAnnotations(annotations)
         }
     }
 

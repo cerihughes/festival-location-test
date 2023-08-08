@@ -1,7 +1,7 @@
 import SnapKit
 import UIKit
 
-class LocationAndRadiusView: UIView {
+class RadiusSliderView: UIView {
     let radiusSlider = UISlider()
     let radiusLabel = UILabel()
 
@@ -21,7 +21,6 @@ class LocationAndRadiusView: UIView {
         radiusLabel.textAlignment = .center
         radiusSlider.minimumValue = 50.0
         radiusSlider.maximumValue = 500.0
-//        radiusSlider.value = 50.0
 
         addSubviews(radiusSlider, radiusLabel)
 

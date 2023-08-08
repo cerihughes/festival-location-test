@@ -7,6 +7,12 @@ extension CLLocationCoordinate2D {
     }
 }
 
+extension MKCircle {
+    func asCircularArea() -> CircularArea {
+        .init(location: coordinate.asLocation(), radius: radius)
+    }
+}
+
 extension Location {
     func asMapCoordinate() -> CLLocationCoordinate2D {
         .init(latitude: latitude, longitude: longitude)
