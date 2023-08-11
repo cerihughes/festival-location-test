@@ -1,12 +1,11 @@
-import Foundation
 import RealmSwift
 
-protocol LocationRepository {
+protocol DataRepository {
     func getAll<T>(_ type: T.Type) -> Results<T> where T: Object
     func add<T>(_ object: T) where T: Object
 }
 
-extension LocationRepository {
+extension DataRepository {
     func areas() -> Results<Area> {
         getAll(Area.self)
     }
@@ -29,5 +28,23 @@ extension LocationRepository {
 
     func addEvent(_ visit: Event) {
         add(visit)
+    }
+}
+
+class RealmDataRepository: DataRepository {
+    private let realm: Realm
+
+    init(realm: Realm) {
+        self.realm = realm
+    }
+
+    func getAll<T>(_ type: T.Type) -> Results<T> where T: Object {
+        realm.objects(type)
+    }
+
+    func add<T>(_ object: T) where T: Object {
+        try? realm.write {
+            realm.add(object)
+        }
     }
 }

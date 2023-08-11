@@ -2,7 +2,7 @@ import Foundation
 import MapKit
 
 class AddAreaViewModel {
-    private let locationRepository: LocationRepository
+    private let dataRepository: DataRepository
     private let locationManager: LocationManager
     private let existingAreaNames: [String]
     private let radiusFormatter = NumberFormatter.createMeters()
@@ -14,10 +14,10 @@ class AddAreaViewModel {
     var areaName: String?
     var radius: Float = 50.0
 
-    init(locationRepository: LocationRepository, locationManager: LocationManager) {
-        self.locationRepository = locationRepository
+    init(dataRepository: DataRepository, locationManager: LocationManager) {
+        self.dataRepository = dataRepository
         self.locationManager = locationManager
-        existingAreaNames = locationRepository.areas().map { $0.name }
+        existingAreaNames = dataRepository.areas().map { $0.name }
     }
 
     var overlay: MKCircle? {
@@ -66,7 +66,7 @@ class AddAreaViewModel {
     func create() -> Bool {
         guard let areaName, let circularArea = createCircularArea(), isValid else { return false }
         let area = Area.create(name: areaName, circularArea: circularArea)
-        locationRepository.addArea(area)
+        dataRepository.addArea(area)
         return true
     }
 

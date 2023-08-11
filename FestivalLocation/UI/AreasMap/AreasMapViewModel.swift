@@ -5,22 +5,22 @@ protocol AreasMapViewModelDelegate: AnyObject {
 }
 
 class AreasMapViewModel {
-    private let locationRepository: LocationRepository
+    private let dataRepository: DataRepository
     private var collectionNotificationToken: NSObject?
 
     weak var delegate: AreasMapViewModelDelegate?
 
-    init(locationRepository: LocationRepository) {
-        self.locationRepository = locationRepository
+    init(dataRepository: DataRepository) {
+        self.dataRepository = dataRepository
         observe()
     }
 
     var areas: [Area] {
-        locationRepository.areas().map { $0 }
+        dataRepository.areas().map { $0 }
     }
 
     private func observe() {
-        collectionNotificationToken = locationRepository.areas().observe { [weak self] changes in
+        collectionNotificationToken = dataRepository.areas().observe { [weak self] changes in
             guard let self, let delegate else { return }
             switch changes {
             case .update:
