@@ -25,6 +25,7 @@ class AreasMapView: UIView {
 
         addSubview(mapView)
 
+        mapView.isUserInteractionEnabled = false
         mapView.showsUserLocation = true
         mapView.delegate = mapDelegate
 
