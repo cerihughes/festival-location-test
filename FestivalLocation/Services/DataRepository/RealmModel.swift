@@ -15,22 +15,13 @@ class Area: UniqueObject {
 }
 
 class Event: UniqueObject {
-    enum Kind: String {
+    enum Kind: String, PersistableEnum {
         case entry, exit
     }
 
     @Persisted var areaName: String
     @Persisted var timestamp: Date
-    @Persisted private var kindString: String
-
-    var kind: Kind? {
-        get {
-            .init(rawValue: kindString)
-        }
-        set {
-            kindString = newValue?.rawValue ?? ""
-        }
-    }
+    @Persisted var kind: Kind = .entry
 }
 
 extension UniqueObject {
@@ -52,10 +43,10 @@ extension Area {
 
 extension Event {
     static func create(areaName: String, timestamp: Date, kind: Kind) -> Event {
-        let visit = Event()
-        visit.areaName = areaName
-        visit.timestamp = timestamp
-        visit.kind = kind
-        return visit
+        let event = Event()
+        event.areaName = areaName
+        event.timestamp = timestamp
+        event.kind = kind
+        return event
     }
 }

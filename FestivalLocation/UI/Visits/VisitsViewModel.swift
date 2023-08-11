@@ -83,8 +83,7 @@ private class EventProcessor {
     }
 
     func processEvent(_ nextEvent: Event) {
-        guard let lastKind = lastEvent.kind, let nextKind = nextEvent.kind else { return }
-        switch (lastKind, nextKind) {
+        switch (lastEvent.kind, nextEvent.kind) {
         case (.entry, .exit):
             process(entry: lastEvent, exit: nextEvent)
         case (.exit, .entry):
