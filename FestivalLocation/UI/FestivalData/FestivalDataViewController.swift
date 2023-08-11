@@ -1,6 +1,8 @@
 import Madog
 import UIKit
 
+private let reuseIdentifier = "FestivalDataViewControllerIdentifier"
+
 class FestivalDataViewController: UIViewController {
     private weak var context: AnyContext<Navigation>?
     private let viewModel: FestivalDataViewModel
@@ -24,5 +26,30 @@ class FestivalDataViewController: UIViewController {
         super.viewDidLoad()
 
         title = "Line-up"
+
+        festivalDataView.tableView.register(FestivalSlotTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        festivalDataView.tableView.dataSource = self
+        festivalDataView.tableView.reloadData()
+    }
+}
+
+extension FestivalDataViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.numberOfSlots
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+        guard
+            let cell = cell as? FestivalSlotTableViewCell,
+            let viewData = viewModel.viewData(at: indexPath.row)
+        else {
+            return cell
+        }
+
+        cell.textLabel?.text = viewData.name
+        cell.detailTextLabel?.text = viewData.time
+        cell.textLabel?.textColor = viewData.timeStatus.colour
+        return cell
     }
 }
