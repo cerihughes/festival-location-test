@@ -45,6 +45,17 @@ class AddAreaViewController: UIViewController {
         addAreaView.delegate = self
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Task { @MainActor in
+            guard let location = await viewModel.getCurrentLocation() else { return }
+            addAreaView.mapView.setRegion(
+                .init(center: location.asMapCoordinate(), latitudinalMeters: 400, longitudinalMeters: 400),
+                animated: true
+            )
+        }
+    }
+
     @objc private func areaNameChanged(_ textField: UITextField) {
         viewModel.areaName = textField.trimmedText
         updateDoneButton()
