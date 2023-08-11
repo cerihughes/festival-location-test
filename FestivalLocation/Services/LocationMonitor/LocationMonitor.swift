@@ -62,13 +62,13 @@ class DefaultLocationMonitor: LocationMonitor {
 extension DefaultLocationMonitor: LocationManagerDelegate {
     func locationManager(_ locationManager: LocationManager, didEnter location: Location, name: String) {
         let event = Event.entry(areaName: name)
-        dataRepository.addEvent(event)
+        dataRepository.add(event)
         notificationsManager.sendLocalNotification(for: event)
     }
 
     func locationManager(_ locationManager: LocationManager, didExit location: Location, name: String) {
         let event = Event.exit(areaName: name)
-        dataRepository.addEvent(event)
+        dataRepository.add(event)
         notificationsManager.sendLocalNotification(for: event)
     }
 }

@@ -16,18 +16,12 @@ extension DataRepository {
             .first
     }
 
-    func addArea(_ area: Area) {
-        add(area)
-    }
-
     func events(areaName: String) -> Results<Event> {
         getAll(Event.self)
             .where { $0.areaName == areaName }
             .sorted(by: \.timestamp)
     }
 
-    func addEvent(_ visit: Event) {
-        add(visit)
     }
 }
 
