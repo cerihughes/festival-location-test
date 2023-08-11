@@ -13,6 +13,12 @@ extension Sequence where Element: Hashable {
     }
 }
 
+extension String {
+    var trimmed: String {
+        self.trimmingCharacters(in: .whitespaces)
+    }
+}
+
 extension NumberFormatter {
     static func createMeters() -> NumberFormatter {
         let formatter = NumberFormatter()
