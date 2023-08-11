@@ -24,6 +24,23 @@ class Event: UniqueObject {
     @Persisted var kind: Kind = .entry
 }
 
+class Festival: UniqueObject {
+    @Persisted var name: String
+    @Persisted var stages: List<Stage>
+}
+
+class Stage: UniqueObject {
+    @Persisted var name: String
+    @Persisted var slots: List<Slot>
+    @Persisted(originProperty: "stages") var festival: LinkingObjects<Festival>
+}
+
+class Slot: EmbeddedObject {
+    @Persisted var name: String
+    @Persisted var start: Date
+    @Persisted var end: Date
+}
+
 extension UniqueObject {
     var stringIdentifier: String {
         _id.stringValue
@@ -48,5 +65,31 @@ extension Event {
         event.timestamp = timestamp
         event.kind = kind
         return event
+    }
+}
+
+extension Festival {
+    static func create(name: String) -> Festival {
+        let festival = Festival()
+        festival.name = name
+        return festival
+    }
+}
+
+extension Stage {
+    static func create(name: String) -> Stage {
+        let stage = Stage()
+        stage.name = name
+        return stage
+    }
+}
+
+extension Slot {
+    static func create(name: String, start: Date, end: Date) -> Slot {
+        let slot = Slot()
+        slot.name = name
+        slot.start = start
+        slot.end = end
+        return slot
     }
 }

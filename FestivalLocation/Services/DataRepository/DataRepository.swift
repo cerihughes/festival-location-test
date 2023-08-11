@@ -1,8 +1,10 @@
+import Foundation
 import RealmSwift
 
 protocol DataRepository {
     func getAll<T>(_ type: T.Type) -> Results<T> where T: Object
     func add<T>(_ object: T) where T: Object
+    func commit(_ block: (() -> Void))
 }
 
 extension DataRepository {
@@ -22,6 +24,41 @@ extension DataRepository {
             .sorted(by: \.timestamp)
     }
 
+    func festivals() -> Results<Festival> {
+        getAll(Festival.self)
+    }
+
+    func festival(name: String) -> Festival? {
+        festivals()
+            .where { $0.name == name }
+            .first
+    }
+
+    func getOrCreateFestival(name: String) -> Festival {
+        if let existing = festival(name: name) {
+            return existing
+        }
+        let festival = Festival.create(name: name)
+        add(festival)
+        return festival
+    }
+
+    func getOrCreateStage(in festival: Festival, name: String) -> Stage {
+        if let existing = festival.stages.filter({ $0.name == name }).first {
+            return existing
+        }
+        let stage = Stage.create(name: name)
+        commit {
+            festival.stages.append(stage)
+        }
+        return stage
+    }
+
+    func createSlot(name: String, start: Date, end: Date, on stage: Stage) {
+        let slot = Slot.create(name: name, start: start, end: end)
+        commit {
+            stage.slots.append(slot)
+        }
     }
 }
 
@@ -37,8 +74,13 @@ class RealmDataRepository: DataRepository {
     }
 
     func add<T>(_ object: T) where T: Object {
-        try? realm.write {
+        commit {
             realm.add(object)
         }
     }
+
+    func commit(_ block: (() -> Void)) {
+        try? realm.write(block)
+    }
+
 }
