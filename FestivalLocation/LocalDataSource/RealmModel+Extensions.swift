@@ -1,12 +1,20 @@
 import Foundation
 
 extension Area {
-    static func create(name: String, location: Location) -> Area {
-        create(name: name, latitude: location.lat, longitude: location.lon)
+    static func create(name: String, circularArea: CircularArea) -> Area {
+        create(name: name, location: circularArea.location, radius: circularArea.radius)
+    }
+
+    static func create(name: String, location: Location, radius: Double) -> Area {
+        create(name: name, latitude: location.latitude, longitude: location.longitude, radius: radius)
     }
 
     var location: Location {
-        .init(lat: latitude, lon: longitude)
+        .init(latitude: latitude, longitude: longitude)
+    }
+
+    func asCircularArea() -> CircularArea {
+        .init(location: location, radius: radius)
     }
 }
 

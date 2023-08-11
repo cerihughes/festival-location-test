@@ -7,15 +7,18 @@ protocol AddAreaViewDelegate: AnyObject {
 }
 
 class AddAreaView: UIView {
-    struct MapPosition {
-        let location: Location
-        let distance: Int
+    enum Mode {
+        case single, multiple
     }
+
     let mapView = MKMapView()
     private let mapDelegate = MapViewDelegate()
     private let floatingContainer = UIView()
     let nameField = UITextField()
-    let useCurrentButton = UIButton(type: .system)
+    let segmentedControl = UISegmentedControl(items: ["Use Single Location", "Use Multiple Locations"])
+    let radiusSliderView = RadiusSliderView()
+    let useGPSButton = UIButton(type: .system)
+
     private lazy var tapGestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(mapTapped))
 
     weak var delegate: AddAreaViewDelegate?
@@ -33,14 +36,17 @@ class AddAreaView: UIView {
     private func commonInit() {
         backgroundColor = .white
         floatingContainer.backgroundColor = .white
+        floatingContainer.alpha = 0.9
 
         nameField.placeholder = "Enter Area Name"
-        useCurrentButton.setTitle("Use Current Location", for: .normal)
+        useGPSButton.setTitle("Use GPS Location", for: .normal)
+
+        segmentedControl.selectedSegmentIndex = 0
 
         let containerLayoutGuide = UILayoutGuide()
         floatingContainer.addLayoutGuide(containerLayoutGuide)
 
-        floatingContainer.addSubviews(nameField, useCurrentButton)
+        floatingContainer.addSubviews(nameField, segmentedControl, radiusSliderView, useGPSButton)
         addSubviews(mapView, floatingContainer)
 
         containerLayoutGuide.snp.makeConstraints { make in
@@ -51,10 +57,20 @@ class AddAreaView: UIView {
             make.top.leading.trailing.equalTo(containerLayoutGuide)
         }
 
-        useCurrentButton.snp.makeConstraints { make in
-            make.top.equalTo(nameField.snp.bottom).offset(32)
+        segmentedControl.snp.makeConstraints { make in
+            make.top.equalTo(nameField.snp.bottom).offset(16)
+            make.leading.trailing.equalTo(containerLayoutGuide)
+        }
+
+        radiusSliderView.snp.makeConstraints { make in
+            make.top.equalTo(segmentedControl.snp.bottom).offset(16)
+            make.leading.trailing.equalTo(containerLayoutGuide)
+        }
+
+        useGPSButton.snp.makeConstraints { make in
+            make.top.equalTo(radiusSliderView.snp.bottom).offset(16)
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(containerLayoutGuide)
+            make.bottom.equalTo(containerLayoutGuide).inset(16)
         }
 
         floatingContainer.snp.makeConstraints { make in
@@ -73,19 +89,29 @@ class AddAreaView: UIView {
         mapView.delegate = mapDelegate
     }
 
-    func render(location: Location) {
-        removeAllLocations()
-        let overlay = MKCircle(center: location.asCoordinate(), radius: 50)
-        mapView.addOverlay(overlay)
-        mapView.showAnnotations([overlay], animated: true)
+    var mode: Mode {
+        segmentedControl.selectedSegmentIndex == 0 ? .single : .multiple
     }
 
-    func removeAllLocations() {
-        mapView.overlays.forEach {
-            mapView.removeOverlay($0)
+    var overlay: MKCircle? {
+        didSet {
+            if let oldValue {
+                mapView.removeOverlay(oldValue)
+            }
+            if let overlay {
+                mapView.addOverlay(overlay)
+                mapView.setVisibleMapRect(overlay.mapRect(
+                    delta: 50,
+                    yOffset: -1000
+                ), animated: true)
+            }
         }
-        mapView.annotations.forEach {
-            mapView.removeAnnotation($0)
+    }
+
+    var annotations = [MKAnnotation]() {
+        didSet {
+            mapView.removeAnnotations(oldValue)
+            mapView.addAnnotations(annotations)
         }
     }
 
@@ -96,5 +122,21 @@ class AddAreaView: UIView {
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
 
         delegate?.areasMapView(self, didSelect: coordinate.asLocation())
+    }
+}
+
+private extension MKCircle {
+    private func adjustedRadius(by delta: Double) -> MKCircle {
+        .init(center: coordinate, radius: radius + delta)
+    }
+
+    func mapRect(delta: Double, yOffset: Double) -> MKMapRect {
+        adjustedRadius(by: delta)
+            .boundingMapRect
+            .offsetBy(dx: 0, dy: radius * -6) // -6 is the "best so far" - see below
+
+        // TODO: Calculate this by probably converting the Map Rect into a rect of the same
+        // aspect ratio of the map view, and making sure the original map rect is centered
+        // in the space between the map view bottom and the container overlay bottom.
     }
 }

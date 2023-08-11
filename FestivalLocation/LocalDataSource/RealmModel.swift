@@ -11,6 +11,7 @@ class Area: UniqueObject {
     @Persisted var name: String
     @Persisted var latitude: Double
     @Persisted var longitude: Double
+    @Persisted var radius: Double
 }
 
 class Event: UniqueObject {
@@ -39,11 +40,12 @@ extension UniqueObject {
 }
 
 extension Area {
-    static func create(name: String, latitude: Double, longitude: Double) -> Area {
+    static func create(name: String, latitude: Double, longitude: Double, radius: Double) -> Area {
         let area = Area()
         area.name = name
         area.latitude = latitude
         area.longitude = longitude
+        area.radius = radius
         return area
     }
 }

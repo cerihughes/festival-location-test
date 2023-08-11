@@ -13,6 +13,18 @@ extension Sequence where Element: Hashable {
     }
 }
 
+extension NumberFormatter {
+    static func createMeters() -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumIntegerDigits = 2
+        formatter.minimumFractionDigits = 1
+        formatter.maximumFractionDigits = 1
+        formatter.positiveSuffix = "m"
+        return formatter
+    }
+}
+
 extension DateFormatter {
     static func create() -> DateFormatter {
         let dateFormatter = DateFormatter()
