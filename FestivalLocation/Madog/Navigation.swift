@@ -6,4 +6,5 @@ enum Navigation: Equatable {
     case addArea
     case areas
     case visits(String)
+    case festivalData
 }

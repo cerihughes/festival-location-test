@@ -25,7 +25,7 @@ class AreasViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Areas"
+        title = "Visits"
 
         areasView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         areasView.tableView.dataSource = self
