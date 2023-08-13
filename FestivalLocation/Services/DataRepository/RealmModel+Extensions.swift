@@ -14,7 +14,7 @@ extension Area {
     }
 
     func asCircularArea() -> CircularArea {
-        .init(location: location, radius: radius)
+        .init(name: name, location: location, radius: radius)
     }
 }
 

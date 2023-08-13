@@ -1,11 +1,12 @@
 import Foundation
 
-struct Location {
+struct Location: Encodable {
     let latitude: Double
     let longitude: Double
 }
 
-struct CircularArea {
+struct CircularArea: Encodable {
+    let name: String
     let location: Location
     let radius: Double
 }

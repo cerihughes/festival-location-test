@@ -27,7 +27,7 @@ class DefaultServices: ServiceProvider, Services {
         }
 
         dataRepository = RealmDataRepository(realm: realm)
-        dataLoader = FileDataLoader(fileName: "GreenMan2023.txt", dataRepository: dataRepository)
+        dataLoader = FileDataLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
         locationManager = DefaultLocationManager()
         notificationsManager = DefaultNotificationsManager(notificationCenter: .current(), dateFormatter: .create())
         locationMonitor = DefaultLocationMonitor(

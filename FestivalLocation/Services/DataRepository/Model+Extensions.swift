@@ -8,8 +8,8 @@ extension CLLocationCoordinate2D {
 }
 
 extension MKCircle {
-    func asCircularArea() -> CircularArea {
-        .init(location: coordinate.asLocation(), radius: radius)
+    func asCircularArea(name: String) -> CircularArea {
+        .init(name: name, location: coordinate.asLocation(), radius: radius)
     }
 }
 

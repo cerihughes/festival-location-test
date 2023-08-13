@@ -1,0 +1,50 @@
+[
+  {
+    "name" : "Mountain Stage",
+    "location" : {
+      "longitude" : -3.1856516156402823,
+      "latitude" : 51.500654318602372
+    },
+    "radius" : 50
+  },
+  {
+    "name" : "Far Out",
+    "location" : {
+      "longitude" : -3.1881614317238984,
+      "latitude" : 51.501282674020381
+    },
+    "radius" : 50
+  },
+  {
+    "name" : "Walled Garden",
+    "location" : {
+      "longitude" : -3.1819683781464279,
+      "latitude" : 51.491399436200261
+    },
+    "radius" : 50
+  },
+  {
+    "name" : "Rising",
+    "location" : {
+      "longitude" : -3.1661435236727793,
+      "latitude" : 51.494535431754365
+    },
+    "radius" : 50
+  },
+  {
+    "name" : "Chai Wallahs",
+    "location" : {
+      "longitude" : -3.1785032992645634,
+      "latitude" : 51.481464910709917
+    },
+    "radius" : 50
+  },
+  {
+    "name" : "Round The Twist",
+    "location" : {
+      "longitude" : -3.1790851750949058,
+      "latitude" : 51.488818370194288
+    },
+    "radius" : 50
+  }
+]

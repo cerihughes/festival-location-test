@@ -19,7 +19,7 @@ final class FestivalDataViewModelTests: XCTestCase {
         let config = Realm.Configuration(inMemoryIdentifier: "FestivalDataViewModelTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
-        dataLoader = FileDataLoader(fileName: "GreenMan2023.txt", dataRepository: dataRepository)
+        dataLoader = FileDataLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
     }
 
     override func tearDownWithError() throws {

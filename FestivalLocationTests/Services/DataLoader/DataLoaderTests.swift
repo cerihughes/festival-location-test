@@ -14,7 +14,7 @@ final class DataLoaderTests: XCTestCase {
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
 
-        dataLoader = FileDataLoader(fileName: "GreenMan2023.txt", dataRepository: dataRepository)
+        dataLoader = FileDataLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
     }
 
     override func tearDownWithError() throws {

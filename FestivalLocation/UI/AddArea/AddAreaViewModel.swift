@@ -71,13 +71,14 @@ class AddAreaViewModel {
     }
 
     private func createCircularArea() -> CircularArea? {
+        guard let areaName else { return nil }
         switch mode {
         case .single:
-            return location.map { CircularArea(location: $0, radius: .init(radius)) }
+            return location.map { CircularArea(name: areaName, location: $0, radius: .init(radius)) }
         case .multiple:
             guard let mapRect = multipleLocations.asMapRect() else { return nil }
             let circle = MKCircle.create(containing: mapRect)
-            return circle.asCircularArea()
+            return circle.asCircularArea(name: areaName)
         }
     }
 }

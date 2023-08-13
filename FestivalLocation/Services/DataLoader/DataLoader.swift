@@ -7,6 +7,7 @@ protocol DataLoader {
 
 extension String {
     static let greenMan2023FestivalName = "Green Man Festival 2023"
+    static let greenMan2023FestivalLineup = "GreenMan2023-Lineup.txt"
 }
 
 extension DataLoader {
