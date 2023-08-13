@@ -2,15 +2,15 @@ import Foundation
 
 class FestivalDataViewModel {
     private let dataRepository: DataRepository
-    private let dataLoader: DataLoader
+    private let lineupLoader: LineupLoader
 
     private let timeFormatter = DateFormatter.create(dateStyle: .none)
 
     private var slots = [FestivalSlotTableViewCell.ViewData]()
 
-    init(dataRepository: DataRepository, dataLoader: DataLoader) {
+    init(dataRepository: DataRepository, lineupLoader: LineupLoader) {
         self.dataRepository = dataRepository
-        self.dataLoader = dataLoader
+        self.lineupLoader = lineupLoader
         loadData()
         updateSlots()
     }
@@ -50,7 +50,7 @@ class FestivalDataViewModel {
 
     @discardableResult
     func loadData() -> Bool {
-        dataLoader.loadData()
+        lineupLoader.loadData()
     }
 
     func viewData(at index: Int) -> FestivalSlotTableViewCell.ViewData? {

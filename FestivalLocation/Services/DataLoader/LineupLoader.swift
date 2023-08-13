@@ -1,6 +1,6 @@
 import Foundation
 
-protocol DataLoader {
+protocol LineupLoader {
     var builder: DataBuilder { get }
     func fetchTextLines() -> [String]?
 }
@@ -10,7 +10,7 @@ extension String {
     static let greenMan2023FestivalLineup = "GreenMan2023-Lineup.txt"
 }
 
-extension DataLoader {
+extension LineupLoader {
     func loadData() -> Bool {
         guard let text = fetchTextLines() else { return false }
         builder.createFestival(name: .greenMan2023FestivalName)
@@ -39,7 +39,7 @@ extension DataLoader {
     }
 }
 
-class FileDataLoader: DataLoader {
+class FileLineupLoader: LineupLoader {
     private let fileName: String
     let builder: DataBuilder
 

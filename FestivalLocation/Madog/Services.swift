@@ -6,7 +6,7 @@ let serviceProviderName = "serviceProviderName"
 
 protocol Services {
     var dataRepository: DataRepository { get }
-    var dataLoader: DataLoader { get }
+    var lineupLoader: LineupLoader { get }
     var locationManager: LocationManager { get }
     var notificationsManager: NotificationsManager { get }
     var locationMonitor: LocationMonitor { get }
@@ -15,7 +15,7 @@ protocol Services {
 class DefaultServices: ServiceProvider, Services {
     let name = serviceProviderName
     let dataRepository: DataRepository
-    let dataLoader: DataLoader
+    let lineupLoader: LineupLoader
     let locationManager: LocationManager
     let notificationsManager: NotificationsManager
     let locationMonitor: LocationMonitor
@@ -27,7 +27,7 @@ class DefaultServices: ServiceProvider, Services {
         }
 
         dataRepository = RealmDataRepository(realm: realm)
-        dataLoader = FileDataLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
+        lineupLoader = FileLineupLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
         locationManager = DefaultLocationManager()
         notificationsManager = DefaultNotificationsManager(notificationCenter: .current(), dateFormatter: .create())
         locationMonitor = DefaultLocationMonitor(
@@ -44,7 +44,7 @@ protocol ServicesProvider {
 
 extension ServicesProvider {
     var dataRepository: DataRepository? { services?.dataRepository }
-    var dataLoader: DataLoader? { services?.dataLoader }
+    var lineupLoader: LineupLoader? { services?.lineupLoader }
     var locationManager: LocationManager? { services?.locationManager }
     var notificationsManager: NotificationsManager? { services?.notificationsManager }
 }
