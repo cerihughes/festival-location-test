@@ -28,6 +28,7 @@ class FestivalDataViewController: TypedViewController<FestivalDataView> {
         typedView.tableView.register(FestivalSlotTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         typedView.tableView.dataSource = self
 
+        typedView.daySelection.selectedSegmentIndex = viewModel.indexOfSelectedDay
         updateStages()
         reloadData()
     }
@@ -52,6 +53,11 @@ class FestivalDataViewController: TypedViewController<FestivalDataView> {
 
     private func reloadData() {
         typedView.tableView.reloadData()
+        if let index = viewModel.indexToScrollTo {
+            DispatchQueue.main.async { [weak self] in
+                self?.typedView.tableView.scrollToRow(at: .init(row: index, section: 0), at: .middle, animated: true)
+            }
+        }
     }
 }
 

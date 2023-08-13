@@ -80,8 +80,8 @@ private struct StartEndTimes {
 
 class DataBuilder {
     private let dataRepository: DataRepository
-    private let dateFormatter = DateFormatter.dateParsing()
-    private let timeFormatter = DateFormatter.dateTimeParsing()
+    private let dateFormatter = DateFormatter.dd_MM_yyyy()
+    private let timeFormatter = DateFormatter.dd_MM_yyyy_HH_mm()
 
     private var currentDateString: String?
     private var currentStartEndTimes: StartEndTimes?
@@ -166,20 +166,6 @@ class DataBuilder {
 
     func resetSlot() {
         currentStartEndTimes = nil
-    }
-}
-
-private extension DateFormatter {
-    static func dateParsing() -> DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        return dateFormatter
-    }
-
-    static func dateTimeParsing() -> DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy HH:mm"
-        return dateFormatter
     }
 }
 
