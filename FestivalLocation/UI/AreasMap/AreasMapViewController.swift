@@ -18,10 +18,13 @@ class AreasMapViewController: TypedViewController<AreasMapView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Monitored Regions"
+        title = "Monitored Areas"
 
-        let addRegion = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
-        navigationItem.rightBarButtonItem = addRegion
+        let addArea = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        navigationItem.rightBarButtonItem = addArea
+
+        let share = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+        navigationItem.leftBarButtonItem = share
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
@@ -37,6 +40,10 @@ class AreasMapViewController: TypedViewController<AreasMapView> {
 
     @objc private func addTapped(_ item: UIBarButtonItem) {
         context?.navigateForward(token: .addArea, animated: true)
+    }
+
+    @objc private func shareTapped(_ item: UIBarButtonItem) {
+        context?.navigateForward(token: .areasExport, animated: true)
     }
 }
 

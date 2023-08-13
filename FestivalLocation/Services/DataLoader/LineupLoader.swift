@@ -1,16 +1,17 @@
 import Foundation
 
-protocol DataLoader {
-    var builder: DataBuilder { get }
+protocol LineupLoader {
+    var builder: LineupBuilder { get }
     func fetchTextLines() -> [String]?
 }
 
 extension String {
     static let greenMan2023FestivalName = "Green Man Festival 2023"
+    static let greenMan2023FestivalLineup = "GreenMan2023-Lineup.txt"
 }
 
-extension DataLoader {
-    func loadData() -> Bool {
+extension LineupLoader {
+    func importLineup() -> Bool {
         guard let text = fetchTextLines() else { return false }
         builder.createFestival(name: .greenMan2023FestivalName)
 
@@ -38,13 +39,13 @@ extension DataLoader {
     }
 }
 
-class FileDataLoader: DataLoader {
+class FileLineupLoader: LineupLoader {
     private let fileName: String
-    let builder: DataBuilder
+    let builder: LineupBuilder
 
     init(fileName: String, dataRepository: DataRepository) {
         self.fileName = fileName
-        builder = DataBuilder(dataRepository: dataRepository)
+        builder = LineupBuilder(dataRepository: dataRepository)
     }
 
     func fetchTextLines() -> [String]? {
@@ -55,13 +56,6 @@ class FileDataLoader: DataLoader {
 
         return contents.split(separator: "\n")
             .map(String.init)
-    }
-}
-
-private extension Bundle {
-    func path(for fileName: String) -> String? {
-        let nsString = fileName as NSString
-        return path(forResource: nsString.deletingPathExtension, ofType: nsString.pathExtension)
     }
 }
 
@@ -78,7 +72,7 @@ private struct StartEndTimes {
     let endTime: String
 }
 
-class DataBuilder {
+class LineupBuilder {
     private let dataRepository: DataRepository
     private let dateFormatter = DateFormatter.dd_MM_yyyy()
     private let timeFormatter = DateFormatter.dd_MM_yyyy_HH_mm()

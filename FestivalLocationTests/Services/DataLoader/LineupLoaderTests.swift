@@ -3,28 +3,28 @@ import XCTest
 
 @testable import FestivalLocation
 
-final class DataLoaderTests: XCTestCase {
+final class LineupLoaderTests: XCTestCase {
     private var dataRepository: DataRepository!
-    private var dataLoader: FileDataLoader!
+    private var lineupLoader: FileLineupLoader!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        let config = Realm.Configuration(inMemoryIdentifier: "DataLoaderTests")
+        let config = Realm.Configuration(inMemoryIdentifier: "LineupLoaderTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
 
-        dataLoader = FileDataLoader(fileName: "GreenMan2023.txt", dataRepository: dataRepository)
+        lineupLoader = FileLineupLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
     }
 
     override func tearDownWithError() throws {
         dataRepository = nil
-        dataLoader = nil
+        lineupLoader = nil
         try super.tearDownWithError()
     }
 
-    func testLoad() throws {
-        XCTAssertTrue(dataLoader.loadData())
+    func testImport() throws {
+        XCTAssertTrue(lineupLoader.importLineup())
 
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stageNames = festival.stages.map { $0.name }
@@ -38,7 +38,7 @@ final class DataLoaderTests: XCTestCase {
     }
 
     func testOrdering() throws {
-        XCTAssertTrue(dataLoader.loadData())
+        XCTAssertTrue(lineupLoader.importLineup())
 
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stage = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Round The Twist"))
@@ -72,7 +72,7 @@ final class DataLoaderTests: XCTestCase {
     }
 
     func testMidnightOverlaps() throws {
-        XCTAssertTrue(dataLoader.loadData())
+        XCTAssertTrue(lineupLoader.importLineup())
 
         let dateFormatter = DateFormatter.dd_MM_yyyy_HH_mm()
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
