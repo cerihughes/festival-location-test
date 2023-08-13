@@ -74,7 +74,7 @@ final class DataLoaderTests: XCTestCase {
     func testMidnightOverlaps() throws {
         XCTAssertTrue(dataLoader.loadData())
 
-        let dateFormatter = DateFormatter.createTest()
+        let dateFormatter = DateFormatter.dd_MM_yyyy_HH_mm()
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stage1 = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Chai Wallahs"))
         let stage2 = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Round The Twist"))

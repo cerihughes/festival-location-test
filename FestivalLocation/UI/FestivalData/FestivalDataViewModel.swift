@@ -27,8 +27,17 @@ class FestivalDataViewModel {
         }
     }
 
+    var indexOfSelectedDay: Int {
+        FestivalDataView.Day.allCases.firstIndex(of: selectedDay) ?? 0
+    }
+
     var indexOfSelectedStage: Int {
         FestivalDataView.Stage.allCases.firstIndex(of: selectedStage) ?? 0
+    }
+
+    var indexToScrollTo: Int? {
+        guard selectedDay == .current else { return nil }
+        return slots.firstIndex { $0.timeStatus == .pending || $0.timeStatus == .current } ?? slots.indices.last
     }
 
     var numberOfSlots: Int {
@@ -69,12 +78,16 @@ private extension FestivalDataView.Day {
         start.addingOneDay()
     }
 
-    static var currentOrThursday: Self {
+    static var current: Self? {
         let now = dateFactory.currentDate()
         for day in allCases where day.start...day.end ~= now {
             return day
         }
-        return .thursday
+        return nil
+    }
+
+    static var currentOrThursday: Self {
+        current ?? .thursday
     }
 }
 

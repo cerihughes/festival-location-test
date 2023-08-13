@@ -98,6 +98,42 @@ final class FestivalDataViewModelTests: XCTestCase {
         try assertSlot(at: 1, hasName: "Ash Kenazi", timeStatus: .future)
     }
 
+    func testIndexToScrollTo_pending() {
+        mockDateFactory.setCurrentDay(.sunday, time: "19:55")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .chaiWallahs
+
+        XCTAssertEqual(viewModel.indexToScrollTo, 6)
+    }
+
+    func testIndexToScrollTo_current() {
+        mockDateFactory.setCurrentDay(.sunday, time: "20:05")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .chaiWallahs
+
+        XCTAssertEqual(viewModel.indexToScrollTo, 6)
+    }
+
+    func testIndexToScrollTo_allFinished() {
+        mockDateFactory.setCurrentDay(.sunday, time: "23:05")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .rising
+
+        XCTAssertEqual(viewModel.indexToScrollTo, 6)
+    }
+
+    func testIndexToScrollTo_wrongDay() throws {
+        mockDateFactory.setCurrentDay(.sunday, time: "20:05")
+        createViewModel()
+        viewModel.selectedDay = .saturday
+        viewModel.selectedStage = .chaiWallahs
+
+        XCTAssertNil(viewModel.indexToScrollTo)
+    }
+
     private func createViewModel() {
         viewModel = .init(dataRepository: dataRepository, dataLoader: dataLoader)
     }
