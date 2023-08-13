@@ -23,8 +23,8 @@ final class LineupLoaderTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func testLoad() throws {
-        XCTAssertTrue(lineupLoader.loadData())
+    func testImport() throws {
+        XCTAssertTrue(lineupLoader.importLineup())
 
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stageNames = festival.stages.map { $0.name }
@@ -38,7 +38,7 @@ final class LineupLoaderTests: XCTestCase {
     }
 
     func testOrdering() throws {
-        XCTAssertTrue(lineupLoader.loadData())
+        XCTAssertTrue(lineupLoader.importLineup())
 
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stage = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Round The Twist"))
@@ -72,7 +72,7 @@ final class LineupLoaderTests: XCTestCase {
     }
 
     func testMidnightOverlaps() throws {
-        XCTAssertTrue(lineupLoader.loadData())
+        XCTAssertTrue(lineupLoader.importLineup())
 
         let dateFormatter = DateFormatter.dd_MM_yyyy_HH_mm()
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))

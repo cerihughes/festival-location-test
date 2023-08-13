@@ -11,7 +11,7 @@ extension String {
 }
 
 extension LineupLoader {
-    func loadData() -> Bool {
+    func importLineup() -> Bool {
         guard let text = fetchTextLines() else { return false }
         builder.createFestival(name: .greenMan2023FestivalName)
 
@@ -56,13 +56,6 @@ class FileLineupLoader: LineupLoader {
 
         return contents.split(separator: "\n")
             .map(String.init)
-    }
-}
-
-private extension Bundle {
-    func path(for fileName: String) -> String? {
-        let nsString = fileName as NSString
-        return path(forResource: nsString.deletingPathExtension, ofType: nsString.pathExtension)
     }
 }
 

@@ -48,6 +48,12 @@ class DefaultLocationMonitor: LocationMonitor {
     }
 
     private func monitorArea(_ area: Area) {
+        DispatchQueue.main.async { [weak self] in
+            self?.doMonitorArea(area)
+        }
+    }
+
+    private func doMonitorArea(_ area: Area) {
         let name = area.name
         locationManager.startMonitoring(location: area.location, radius: area.radius, name: name)
         let token = area.observe { [weak self] change in

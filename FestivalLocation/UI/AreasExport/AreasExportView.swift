@@ -21,7 +21,6 @@ class AreasExportView: UIView {
 
         importButton.setTitle("Import Areas", for: .normal)
         exportButton.setTitle("Export Areas", for: .normal)
-        textView.isUserInteractionEnabled = false
 
         addSubviews(importButton, exportButton, textView)
 

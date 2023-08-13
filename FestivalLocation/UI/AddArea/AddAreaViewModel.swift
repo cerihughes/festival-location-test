@@ -64,8 +64,8 @@ class AddAreaViewModel {
     }
 
     func create() -> Bool {
-        guard let areaName, let circularArea = createCircularArea(), isValid else { return false }
-        let area = Area.create(name: areaName, circularArea: circularArea)
+        guard let circularArea = createCircularArea(), isValid else { return false }
+        let area = Area.create(circularArea: circularArea)
         dataRepository.add(area)
         return true
     }

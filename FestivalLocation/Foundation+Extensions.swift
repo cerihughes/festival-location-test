@@ -70,3 +70,10 @@ extension DateFormatter {
         return dateFormatter
     }
 }
+
+extension Bundle {
+    func path(for fileName: String) -> String? {
+        let nsString = fileName as NSString
+        return path(forResource: nsString.deletingPathExtension, ofType: nsString.pathExtension)
+    }
+}

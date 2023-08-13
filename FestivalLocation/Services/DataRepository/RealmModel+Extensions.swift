@@ -1,8 +1,8 @@
 import Foundation
 
 extension Area {
-    static func create(name: String, circularArea: CircularArea) -> Area {
-        create(name: name, location: circularArea.location, radius: circularArea.radius)
+    static func create(circularArea: CircularArea) -> Area {
+        create(name: circularArea.name, location: circularArea.location, radius: circularArea.radius)
     }
 
     static func create(name: String, location: Location, radius: Double) -> Area {

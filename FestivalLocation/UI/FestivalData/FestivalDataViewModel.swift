@@ -11,7 +11,7 @@ class FestivalDataViewModel {
     init(dataRepository: DataRepository, lineupLoader: LineupLoader) {
         self.dataRepository = dataRepository
         self.lineupLoader = lineupLoader
-        loadData()
+        importLineup()
         updateSlots()
     }
 
@@ -49,8 +49,8 @@ class FestivalDataViewModel {
     }
 
     @discardableResult
-    func loadData() -> Bool {
-        lineupLoader.loadData()
+    func importLineup() -> Bool {
+        lineupLoader.importLineup()
     }
 
     func viewData(at index: Int) -> FestivalSlotTableViewCell.ViewData? {
