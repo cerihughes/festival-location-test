@@ -2,9 +2,8 @@ import UIKit
 
 private let reuseIdentifier = "VisitsViewControllerIdentifier"
 
-class VisitsViewController: UIViewController {
+class VisitsViewController: TypedViewController<VisitsView> {
     private let viewModel: VisitsViewModel
-    private let visitsView = VisitsView()
 
     init(viewModel: VisitsViewModel) {
         self.viewModel = viewModel
@@ -15,18 +14,14 @@ class VisitsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
-        view = visitsView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "Visits"
 
-        visitsView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        visitsView.tableView.dataSource = self
-        visitsView.tableView.reloadData()
+        typedView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        typedView.tableView.dataSource = self
+        typedView.tableView.reloadData()
 
         viewModel.delegate = self
     }
@@ -48,6 +43,6 @@ extension VisitsViewController: UITableViewDataSource {
 
 extension VisitsViewController: VisitsViewModelDelegate {
     func visitsViewModelDidUpdate(_ visitsViewModel: VisitsViewModel) {
-        visitsView.tableView.reloadData()
+        typedView.tableView.reloadData()
     }
 }

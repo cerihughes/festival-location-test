@@ -1,10 +1,9 @@
 import Madog
 import UIKit
 
-class AreasMapViewController: UIViewController {
+class AreasMapViewController: TypedViewController<AreasMapView> {
     private weak var context: AnyForwardBackNavigationContext<Navigation>?
     private let viewModel: AreasMapViewModel
-    private let areasMapView = AreasMapView()
 
     init(context: AnyForwardBackNavigationContext<Navigation>, viewModel: AreasMapViewModel) {
         self.context = context
@@ -14,10 +13,6 @@ class AreasMapViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = areasMapView
     }
 
     override func viewDidLoad() {
@@ -37,7 +32,7 @@ class AreasMapViewController: UIViewController {
     }
 
     private func updateMap() {
-        areasMapView.removeAllAndRender(areas: viewModel.areas)
+        typedView.removeAllAndRender(areas: viewModel.areas)
     }
 
     @objc private func addTapped(_ item: UIBarButtonItem) {
