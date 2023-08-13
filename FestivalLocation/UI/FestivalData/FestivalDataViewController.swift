@@ -45,7 +45,7 @@ class FestivalDataViewController: UIViewController {
     }
 
     @objc private func stageChanged(_ segmentedControl: UISegmentedControl) {
-        guard let stage = viewModel.stagesForSelectedDay[safe: segmentedControl.selectedSegmentIndex] else { return }
+        guard let stage = FestivalDataView.Stage.allCases[safe: segmentedControl.selectedSegmentIndex] else { return }
         viewModel.selectedStage = stage
         reloadData()
     }
