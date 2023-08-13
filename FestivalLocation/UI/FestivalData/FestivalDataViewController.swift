@@ -3,10 +3,9 @@ import UIKit
 
 private let reuseIdentifier = "FestivalDataViewControllerIdentifier"
 
-class FestivalDataViewController: UIViewController {
+class FestivalDataViewController: TypedViewController<FestivalDataView> {
     private weak var context: AnyContext<Navigation>?
     private let viewModel: FestivalDataViewModel
-    private let festivalDataView = FestivalDataView()
 
     init(context: AnyContext<Navigation>, viewModel: FestivalDataViewModel) {
         self.context = context
@@ -18,20 +17,16 @@ class FestivalDataViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
-        view = festivalDataView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "Line-up"
 
-        festivalDataView.daySelection.addTarget(self, action: #selector(dayChanged), for: .valueChanged)
-        festivalDataView.stageSelection.addTarget(self, action: #selector(stageChanged), for: .valueChanged)
+        typedView.daySelection.addTarget(self, action: #selector(dayChanged), for: .valueChanged)
+        typedView.stageSelection.addTarget(self, action: #selector(stageChanged), for: .valueChanged)
 
-        festivalDataView.tableView.register(FestivalSlotTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        festivalDataView.tableView.dataSource = self
+        typedView.tableView.register(FestivalSlotTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        typedView.tableView.dataSource = self
 
         updateStages()
         reloadData()
@@ -51,12 +46,12 @@ class FestivalDataViewController: UIViewController {
     }
 
     private func updateStages() {
-        festivalDataView.enableStages(viewModel.stagesForSelectedDay)
-        festivalDataView.stageSelection.selectedSegmentIndex = viewModel.indexOfSelectedStage
+        typedView.enableStages(viewModel.stagesForSelectedDay)
+        typedView.stageSelection.selectedSegmentIndex = viewModel.indexOfSelectedStage
     }
 
     private func reloadData() {
-        festivalDataView.tableView.reloadData()
+        typedView.tableView.reloadData()
     }
 }
 

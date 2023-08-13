@@ -1,10 +1,9 @@
 import Madog
 import UIKit
 
-class AddAreaViewController: UIViewController {
+class AddAreaViewController: TypedViewController<AddAreaView> {
     private weak var context: AnyForwardBackNavigationContext<Navigation>?
     private let viewModel: AddAreaViewModel
-    private let addAreaView = AddAreaView()
 
     private lazy var done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
 
@@ -18,38 +17,34 @@ class AddAreaViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
-        view = addAreaView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItem = done
         updateDoneButton()
 
-        updateRadius(addAreaView.radiusSliderView.radiusSlider.value)
+        updateRadius(typedView.radiusSliderView.radiusSlider.value)
 
-        addAreaView.nameField.addTarget(self, action: #selector(areaNameChanged), for: .editingChanged)
-        addAreaView.segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
-        addAreaView.useGPSButton.addTarget(
+        typedView.nameField.addTarget(self, action: #selector(areaNameChanged), for: .editingChanged)
+        typedView.segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
+        typedView.useGPSButton.addTarget(
             self,
             action: #selector(useGPSTapped),
             for: .touchUpInside
         )
-        addAreaView.radiusSliderView.radiusSlider.addTarget(
+        typedView.radiusSliderView.radiusSlider.addTarget(
             self,
             action: #selector(sliderChanged),
             for: .valueChanged
         )
-        addAreaView.delegate = self
+        typedView.delegate = self
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Task { @MainActor in
             guard let location = await viewModel.getCurrentLocation() else { return }
-            addAreaView.mapView.setRegion(
+            typedView.mapView.setRegion(
                 .init(center: location.asMapCoordinate(), latitudinalMeters: 400, longitudinalMeters: 400),
                 animated: true
             )
@@ -62,9 +57,9 @@ class AddAreaViewController: UIViewController {
     }
 
     @objc private func segmentChanged(_ segmentedControl: UISegmentedControl) {
-        viewModel.mode = addAreaView.mode
-        addAreaView.overlay = viewModel.overlay
-        addAreaView.annotations = viewModel.annotations
+        viewModel.mode = typedView.mode
+        typedView.overlay = viewModel.overlay
+        typedView.annotations = viewModel.annotations
         updateRadiusSlider()
         updateDoneButton()
     }
@@ -93,27 +88,27 @@ class AddAreaViewController: UIViewController {
     }
 
     private func useLocation(_ location: Location) {
-        switch addAreaView.mode {
+        switch typedView.mode {
         case .single:
             viewModel.useSingleLocation(location)
         case .multiple:
             viewModel.addLocation(location)
             updateRadiusSlider()
         }
-        addAreaView.overlay = viewModel.overlay
-        addAreaView.annotations = viewModel.annotations
+        typedView.overlay = viewModel.overlay
+        typedView.annotations = viewModel.annotations
         updateDoneButton()
     }
 
     private func updateRadiusSlider() {
         switch viewModel.mode {
         case .single:
-            addAreaView.radiusSliderView.radiusSlider.isEnabled = true
-            addAreaView.radiusSliderView.radiusSlider.value = viewModel.radius
+            typedView.radiusSliderView.radiusSlider.isEnabled = true
+            typedView.radiusSliderView.radiusSlider.value = viewModel.radius
         case .multiple:
-            addAreaView.radiusSliderView.radiusSlider.isEnabled = false
+            typedView.radiusSliderView.radiusSlider.isEnabled = false
         }
-        addAreaView.radiusSliderView.radiusLabel.text = viewModel.radiusDisplayString
+        typedView.radiusSliderView.radiusLabel.text = viewModel.radiusDisplayString
     }
 
     private func updateRadius(_ radius: Float) {
@@ -123,7 +118,7 @@ class AddAreaViewController: UIViewController {
 
     private func updateRadiusOverlay(_ radius: Float) {
         updateRadius(radius)
-        addAreaView.overlay = viewModel.overlay
+        typedView.overlay = viewModel.overlay
     }
 
     private func updateDoneButton() {

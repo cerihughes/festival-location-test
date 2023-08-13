@@ -3,10 +3,9 @@ import UIKit
 
 private let reuseIdentifier = "AreasViewControllerIdentifier"
 
-class AreasViewController: UIViewController {
+class AreasViewController: TypedViewController<AreasView> {
     private weak var context: AnyForwardBackNavigationContext<Navigation>?
     private let viewModel: AreasViewModel
-    private let areasView = AreasView()
 
     init(context: AnyForwardBackNavigationContext<Navigation>, viewModel: AreasViewModel) {
         self.context = context
@@ -18,19 +17,15 @@ class AreasViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
-        view = areasView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "Visits"
 
-        areasView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        areasView.tableView.dataSource = self
-        areasView.tableView.delegate = self
-        areasView.tableView.reloadData()
+        typedView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        typedView.tableView.dataSource = self
+        typedView.tableView.delegate = self
+        typedView.tableView.reloadData()
 
         viewModel.delegate = self
     }
@@ -59,6 +54,6 @@ extension AreasViewController: UITableViewDelegate {
 
 extension AreasViewController: AreasViewModelDelegate {
     func areasViewModelDidUpdate(_ areasViewModel: AreasViewModel) {
-        areasView.tableView.reloadData()
+        typedView.tableView.reloadData()
     }
 }
