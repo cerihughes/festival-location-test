@@ -13,9 +13,25 @@ extension Sequence where Element: Hashable {
     }
 }
 
+extension Sequence {
+    @inlinable func mapWithPrevious<T>(_ transform: (Element, Element?) -> T) -> [T] {
+        var lastElement: Element?
+        return reduce(into: []) { partialResult, element in
+            partialResult.append(transform(element, lastElement))
+            lastElement = element
+        }
+    }
+}
+
 extension String {
     var trimmed: String {
         self.trimmingCharacters(in: .whitespaces)
+    }
+}
+
+extension Date {
+    func addingOneDay() -> Date {
+        Calendar.current.date(byAdding: .day, value: 1, to: self) ?? self
     }
 }
 
@@ -32,10 +48,13 @@ extension NumberFormatter {
 }
 
 extension DateFormatter {
-    static func create() -> DateFormatter {
+    static func create(
+        dateStyle: DateFormatter.Style = .short,
+        timeStyle: DateFormatter.Style = .short
+    ) -> DateFormatter {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
+        dateFormatter.dateStyle = dateStyle
+        dateFormatter.timeStyle = timeStyle
         return dateFormatter
     }
 }

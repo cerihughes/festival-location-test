@@ -9,10 +9,11 @@ class FestivalSlotTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    enum TimeStatus {
+        case past, pending, current, future
+    }
+
     struct ViewData {
-        enum TimeStatus {
-            case past, pending, current, future
-        }
         let name: String
         let time: String
         let timeStatus: TimeStatus
@@ -20,7 +21,7 @@ class FestivalSlotTableViewCell: UITableViewCell {
     }
 }
 
-extension FestivalSlotTableViewCell.ViewData.TimeStatus {
+extension FestivalSlotTableViewCell.TimeStatus {
     var colour: UIColor {
         switch self {
         case .past:

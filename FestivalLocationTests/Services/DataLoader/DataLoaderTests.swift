@@ -14,7 +14,7 @@ final class DataLoaderTests: XCTestCase {
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
 
-        dataLoader = FileDataLoader(fileName: "GreenMan.txt", dataRepository: dataRepository)
+        dataLoader = FileDataLoader(fileName: "GreenMan2023.txt", dataRepository: dataRepository)
     }
 
     override func tearDownWithError() throws {
@@ -26,7 +26,7 @@ final class DataLoaderTests: XCTestCase {
     func testLoad() throws {
         XCTAssertTrue(dataLoader.loadData())
 
-        let festival = try XCTUnwrap(dataRepository.festival(name: "Green Man Festival 2023"))
+        let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stageNames = festival.stages.map { $0.name }
         XCTAssertEqual(stageNames.count, 6)
         XCTAssertTrue(stageNames.contains("Mountain Stage"))
@@ -40,7 +40,7 @@ final class DataLoaderTests: XCTestCase {
     func testOrdering() throws {
         XCTAssertTrue(dataLoader.loadData())
 
-        let festival = try XCTUnwrap(dataRepository.festival(name: "Green Man Festival 2023"))
+        let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stage = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Round The Twist"))
 
         let slotNames = stage.slots
@@ -77,7 +77,7 @@ final class DataLoaderTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy HH:mm"
 
-        let festival = try XCTUnwrap(dataRepository.festival(name: "Green Man Festival 2023"))
+        let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stage1 = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Chai Wallahs"))
         let stage2 = try XCTUnwrap(dataRepository.getOrCreateStage(in: festival, name: "Round The Twist"))
 

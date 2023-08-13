@@ -1,10 +1,10 @@
 import UIKit
 
 class FestivalDataView: UIView {
-    enum Day: CaseIterable {
+    enum Day: Int, CaseIterable {
         case thursday, friday, saturday, sunday
     }
-    enum Stage: CaseIterable {
+    enum Stage: Int, CaseIterable {
         case mountain, farOut, walledGarden, rising, chaiWallahs, roundTheTwist
     }
 
@@ -25,8 +25,8 @@ class FestivalDataView: UIView {
     private func commonInit() {
         backgroundColor = .white
 
-        daySelection.selectedSegmentIndex = 0
-        stageSelection.selectedSegmentIndex = 0
+        daySelection.selectedSegmentIndex = FestivalDataView.Day.thursday.rawValue
+        stageSelection.selectedSegmentIndex = FestivalDataView.Stage.mountain.rawValue
 
         addSubviews(daySelection, stageSelection, tableView)
 

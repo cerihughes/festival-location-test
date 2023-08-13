@@ -27,8 +27,27 @@ class FestivalDataViewController: UIViewController {
 
         title = "Line-up"
 
+        festivalDataView.daySelection.addTarget(self, action: #selector(dayChanged), for: .valueChanged)
+        festivalDataView.stageSelection.addTarget(self, action: #selector(stageChanged), for: .valueChanged)
+
         festivalDataView.tableView.register(FestivalSlotTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         festivalDataView.tableView.dataSource = self
+        reloadData()
+    }
+
+    @objc private func dayChanged(_ segmentedControl: UISegmentedControl) {
+        guard let day = FestivalDataView.Day(rawValue: segmentedControl.selectedSegmentIndex) else { return }
+        viewModel.selectedDay = day
+        reloadData()
+    }
+
+    @objc private func stageChanged(_ segmentedControl: UISegmentedControl) {
+        guard let stage = FestivalDataView.Stage(rawValue: segmentedControl.selectedSegmentIndex) else { return }
+        viewModel.selectedStage = stage
+        reloadData()
+    }
+
+    private func reloadData() {
         festivalDataView.tableView.reloadData()
     }
 }

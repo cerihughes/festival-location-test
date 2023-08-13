@@ -4,6 +4,7 @@ import RealmSwift
 protocol DataRepository {
     func getAll<T>(_ type: T.Type) -> Results<T> where T: Object
     func add<T>(_ object: T) where T: Object
+    func delete(_ object: Object)
     func commit(_ block: (() -> Void))
 }
 
@@ -34,13 +35,26 @@ extension DataRepository {
             .first
     }
 
-    func getOrCreateFestival(name: String) -> Festival {
+    func delete(festival: Festival) {
+        for stage in festival.stages {
+            delete(stage)
+        }
+        delete(festival)
+    }
+
+    func recreateFestival(name: String) -> Festival {
         if let existing = festival(name: name) {
-            return existing
+            delete(festival: existing)
         }
         let festival = Festival.create(name: name)
         add(festival)
         return festival
+    }
+
+    func stage(name: String) -> Stage? {
+        getAll(Stage.self)
+            .where { $0.name == name }
+            .first
     }
 
     func getOrCreateStage(in festival: Festival, name: String) -> Stage {
@@ -76,6 +90,12 @@ class RealmDataRepository: DataRepository {
     func add<T>(_ object: T) where T: Object {
         commit {
             realm.add(object)
+        }
+    }
+
+    func delete(_ object: Object) {
+        commit {
+            realm.delete(object)
         }
     }
 

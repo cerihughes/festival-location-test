@@ -2,11 +2,16 @@ import Foundation
 
 class FestivalDataViewModel {
     private let dataRepository: DataRepository
+    private let dataLoader: DataLoader
+
+    private let timeFormatter = DateFormatter.create(dateStyle: .none)
 
     private var slots = [FestivalSlotTableViewCell.ViewData]()
 
-    init(dataRepository: DataRepository) {
+    init(dataRepository: DataRepository, dataLoader: DataLoader) {
         self.dataRepository = dataRepository
+        self.dataLoader = dataLoader
+        loadData()
         updateSlots()
     }
 
@@ -26,16 +31,24 @@ class FestivalDataViewModel {
         slots.count
     }
 
+    @discardableResult
+    func loadData() -> Bool {
+        dataLoader.loadData()
+    }
+
     func viewData(at index: Int) -> FestivalSlotTableViewCell.ViewData? {
         slots[safe: index]
     }
 
     private func updateSlots() {
-        slots = [
-            .init(name: "Hello", time: "12:00 - 13:00", timeStatus: .past, visited: false),
-            .init(name: "There", time: "13:30 - 14:45", timeStatus: .pending, visited: false),
-            .init(name: "BCNR", time: "15:15 - 16:40", timeStatus: .future, visited: false)
-        ]
+        guard let stage = dataRepository.stage(name: selectedStage.identifier) else { return }
+        let dayStart = selectedDay.start
+        let dayEnd = selectedDay.end
+        slots = stage.slots
+            .filter { dayStart...dayEnd ~= $0.start }
+            .mapWithPrevious {
+                $0.asViewData(timeFormatter: timeFormatter, isPreviousSlotFinished: $1?.isFinished ?? true)
+            }
     }
 }
 
@@ -55,5 +68,56 @@ private extension FestivalDataView.Stage {
         case .roundTheTwist:
             return "Round The Twist"
         }
+    }
+}
+
+private extension Slot {
+    var isFinished: Bool {
+        end <= Date()
+    }
+
+    func asViewData(timeFormatter: DateFormatter, isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.ViewData {
+        let time = "\(timeFormatter.string(from: start)) - \(timeFormatter.string(from: end))"
+        let timeStatus = timeStatus(isPreviousSlotFinished: isPreviousSlotFinished)
+        return .init(name: name, time: time, timeStatus: timeStatus, visited: false)
+    }
+
+    private func timeStatus(isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.TimeStatus {
+        let now = Date()
+        let started = start <= now
+        let finished = end <= now
+        switch (isPreviousSlotFinished, started, finished) {
+        case (_, _, true):
+            return .past
+        case (_, true, false):
+            return .current
+        case (true, false, false):
+            return .pending
+        case (false, false, false):
+            return .future
+        }
+    }
+}
+
+private extension FestivalDataView.Day {
+    var start: Date {
+        Calendar.current.date(self)
+    }
+
+    var end: Date {
+        start.addingOneDay()
+    }
+}
+
+private extension Calendar {
+    func date(_ day: FestivalDataView.Day) -> Date {
+        // Assume a festival day runs from 6am to 6am
+        var dateComponents = DateComponents()
+        dateComponents.year = 2023
+        dateComponents.month = 8
+        dateComponents.day = 17 + day.rawValue
+        dateComponents.timeZone = TimeZone(abbreviation: "BST")
+        dateComponents.hour = 6
+        return date(from: dateComponents)!
     }
 }

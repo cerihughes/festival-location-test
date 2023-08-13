@@ -5,10 +5,14 @@ protocol DataLoader {
     func fetchTextLines() -> [String]?
 }
 
+extension String {
+    static let greenMan2023FestivalName = "Green Man Festival 2023"
+}
+
 extension DataLoader {
     func loadData() -> Bool {
         guard let text = fetchTextLines() else { return false }
-        builder.createFestival(name: "Green Man Festival 2023")
+        builder.createFestival(name: .greenMan2023FestivalName)
 
         for line in text {
             let result = parseLine(line)
@@ -91,7 +95,7 @@ class DataBuilder {
     }
 
     func createFestival(name: String) {
-        currentFestival = dataRepository.getOrCreateFestival(name: name)
+        currentFestival = dataRepository.recreateFestival(name: name)
     }
 
     func setCurrentDate(_ currentDateString: String) -> Bool {
@@ -185,11 +189,5 @@ private extension String {
             .map { String($0).trimmed }
         guard splits.count == 2, let startTime = splits.first, let endTime = splits.last else { return nil }
         return .init(startTime: startTime, endTime: endTime)
-    }
-}
-
-private extension Date {
-    func addingOneDay() -> Date {
-        Calendar.current.date(byAdding: .day, value: 1, to: self) ?? self
     }
 }
