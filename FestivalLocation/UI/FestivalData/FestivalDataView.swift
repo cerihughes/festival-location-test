@@ -22,6 +22,14 @@ class FestivalDataView: UIView {
         commonInit()
     }
 
+    func enableStages(_ stages: [Stage]) {
+        let stageTitles = stages.map { $0.displayName }
+        for index in 0 ..< stageSelection.numberOfSegments {
+            guard let title = stageSelection.titleForSegment(at: index) else { continue }
+            stageSelection.setEnabled(stageTitles.contains(title), forSegmentAt: index)
+        }
+    }
+
     private func commonInit() {
         backgroundColor = .white
 

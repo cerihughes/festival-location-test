@@ -32,19 +32,27 @@ class FestivalDataViewController: UIViewController {
 
         festivalDataView.tableView.register(FestivalSlotTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         festivalDataView.tableView.dataSource = self
+
+        updateStages()
         reloadData()
     }
 
     @objc private func dayChanged(_ segmentedControl: UISegmentedControl) {
         guard let day = FestivalDataView.Day(rawValue: segmentedControl.selectedSegmentIndex) else { return }
         viewModel.selectedDay = day
+        updateStages()
         reloadData()
     }
 
     @objc private func stageChanged(_ segmentedControl: UISegmentedControl) {
-        guard let stage = FestivalDataView.Stage(rawValue: segmentedControl.selectedSegmentIndex) else { return }
+        guard let stage = viewModel.stagesForSelectedDay[safe: segmentedControl.selectedSegmentIndex] else { return }
         viewModel.selectedStage = stage
         reloadData()
+    }
+
+    private func updateStages() {
+        festivalDataView.enableStages(viewModel.stagesForSelectedDay)
+        festivalDataView.stageSelection.selectedSegmentIndex = viewModel.indexOfSelectedStage
     }
 
     private func reloadData() {

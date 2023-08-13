@@ -15,20 +15,28 @@ class FestivalDataViewModel {
         updateSlots()
     }
 
-    var selectedDay: FestivalDataView.Day = .thursday {
+    var selectedDay: FestivalDataView.Day = .currentOrThursday {
         didSet {
             updateSlots()
         }
     }
 
-    var selectedStage: FestivalDataView.Stage = .mountain {
+    var selectedStage: FestivalDataView.Stage = .initialStage(for: .currentOrThursday) {
         didSet {
             updateSlots()
         }
+    }
+
+    var indexOfSelectedStage: Int {
+        FestivalDataView.Stage.allCases.firstIndex(of: selectedStage) ?? 0
     }
 
     var numberOfSlots: Int {
         slots.count
+    }
+
+    var stagesForSelectedDay: [FestivalDataView.Stage] {
+        FestivalDataView.Stage.stages(for: selectedDay)
     }
 
     @discardableResult
@@ -52,7 +60,41 @@ class FestivalDataViewModel {
     }
 }
 
+private extension FestivalDataView.Day {
+    var start: Date {
+        Calendar.current.date(self)
+    }
+
+    var end: Date {
+        start.addingOneDay()
+    }
+
+    static var currentOrThursday: Self {
+        let now = Date()
+        for day in allCases where day.start...day.end ~= now {
+            return day
+        }
+        return .thursday
+    }
+}
+
 private extension FestivalDataView.Stage {
+    static func stages(for day: FestivalDataView.Day) -> [FestivalDataView.Stage] {
+        day == .thursday ? [.farOut, .walledGarden, .chaiWallahs, .roundTheTwist] : FestivalDataView.Stage.allCases
+    }
+
+    static func initialStage(for day: FestivalDataView.Day) -> FestivalDataView.Stage {
+        stages(for: day).first ?? .mountain
+    }
+
+    var next: Self? {
+        .init(rawValue: rawValue + 1)
+    }
+
+    var previous: Self? {
+        .init(rawValue: rawValue - 1)
+    }
+
     var identifier: String {
         switch self {
         case .mountain:
@@ -96,16 +138,6 @@ private extension Slot {
         case (false, false, false):
             return .future
         }
-    }
-}
-
-private extension FestivalDataView.Day {
-    var start: Date {
-        Calendar.current.date(self)
-    }
-
-    var end: Date {
-        start.addingOneDay()
     }
 }
 

@@ -26,7 +26,7 @@ final class FestivalDataViewModelTests: XCTestCase {
     }
 
     func testInitialData() {
-        XCTAssertEqual(viewModel.numberOfSlots, 0)
+        XCTAssertEqual(viewModel.numberOfSlots, 5)
     }
 
     func testSundayTwist() {
