@@ -1,7 +1,7 @@
 import Foundation
 
 protocol LineupLoader {
-    var builder: DataBuilder { get }
+    var builder: LineupBuilder { get }
     func fetchTextLines() -> [String]?
 }
 
@@ -41,11 +41,11 @@ extension LineupLoader {
 
 class FileLineupLoader: LineupLoader {
     private let fileName: String
-    let builder: DataBuilder
+    let builder: LineupBuilder
 
     init(fileName: String, dataRepository: DataRepository) {
         self.fileName = fileName
-        builder = DataBuilder(dataRepository: dataRepository)
+        builder = LineupBuilder(dataRepository: dataRepository)
     }
 
     func fetchTextLines() -> [String]? {
@@ -79,7 +79,7 @@ private struct StartEndTimes {
     let endTime: String
 }
 
-class DataBuilder {
+class LineupBuilder {
     private let dataRepository: DataRepository
     private let dateFormatter = DateFormatter.dd_MM_yyyy()
     private let timeFormatter = DateFormatter.dd_MM_yyyy_HH_mm()
