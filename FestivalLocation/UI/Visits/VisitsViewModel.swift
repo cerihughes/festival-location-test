@@ -10,7 +10,7 @@ class VisitsViewModel {
         let title: String
     }
     private let areaName: String
-    private let locationRepository: LocationRepository
+    private let dataRepository: DataRepository
     private let dateFormatter = DateFormatter.create()
 
     private var collectionNotificationToken: NSObject?
@@ -24,9 +24,9 @@ class VisitsViewModel {
 
     weak var delegate: VisitsViewModelDelegate?
 
-    init(areaName: String, locationRepository: LocationRepository, locationManager: LocationManager) {
+    init(areaName: String, dataRepository: DataRepository, locationManager: LocationManager) {
         self.areaName = areaName
-        self.locationRepository = locationRepository
+        self.dataRepository = dataRepository
 
         observe()
     }
@@ -40,7 +40,7 @@ class VisitsViewModel {
     }
 
     private func createVisits(events: Results<Event>) {
-        let builder = VisitBuilder(locationRepository: locationRepository)
+        let builder = VisitBuilder(dataRepository: dataRepository)
         var processor: EventProcessor?
         for event in events {
             guard let processor else {
@@ -56,7 +56,7 @@ class VisitsViewModel {
     }
 
     private func observe() {
-        collectionNotificationToken = locationRepository.events(areaName: areaName).observe { [weak self] changes in
+        collectionNotificationToken = dataRepository.events(areaName: areaName).observe { [weak self] changes in
             switch changes {
             case .initial(let events), .update(let events, _, _, _):
                 self?.createVisits(events: events)
@@ -83,8 +83,7 @@ private class EventProcessor {
     }
 
     func processEvent(_ nextEvent: Event) {
-        guard let lastKind = lastEvent.kind, let nextKind = nextEvent.kind else { return }
-        switch (lastKind, nextKind) {
+        switch (lastEvent.kind, nextEvent.kind) {
         case (.entry, .exit):
             process(entry: lastEvent, exit: nextEvent)
         case (.exit, .entry):
@@ -144,14 +143,14 @@ private class EventProcessor {
 }
 
 private class VisitBuilder {
-    private let locationRepository: LocationRepository
+    private let dataRepository: DataRepository
 
     var start: Date?
     var end: Date?
     var areaName: String?
 
-    init(locationRepository: LocationRepository) {
-        self.locationRepository = locationRepository
+    init(dataRepository: DataRepository) {
+        self.dataRepository = dataRepository
     }
 
     func build() -> Visit? {
@@ -169,7 +168,7 @@ private class VisitBuilder {
 
     private var location: Location? {
         guard let areaName else { return nil }
-        return locationRepository.area(name: areaName)?.location
+        return dataRepository.area(name: areaName)?.location
     }
 }
 

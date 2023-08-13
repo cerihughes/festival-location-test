@@ -13,7 +13,8 @@ class DefaultResolver: Resolver {
             AreasMapViewControllerProvider.init,
             AddAreaViewControllerProvider.init,
             AreasViewControllerProvider.init,
-            VisitsViewControllerProvider.init
+            VisitsViewControllerProvider.init,
+            FestivalDataViewControllerProvider.init
         ]
     }
 }

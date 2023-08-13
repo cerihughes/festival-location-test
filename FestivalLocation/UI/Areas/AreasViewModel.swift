@@ -5,7 +5,7 @@ protocol AreasViewModelDelegate: AnyObject {
 }
 
 class AreasViewModel {
-    private let locationRepository: LocationRepository
+    private let dataRepository: DataRepository
 
     private var collectionNotificationToken: NSObject?
 
@@ -18,8 +18,8 @@ class AreasViewModel {
 
     weak var delegate: AreasViewModelDelegate?
 
-    init(locationRepository: LocationRepository, locationManager: LocationManager) {
-        self.locationRepository = locationRepository
+    init(dataRepository: DataRepository, locationManager: LocationManager) {
+        self.dataRepository = dataRepository
 
         observe()
     }
@@ -33,7 +33,7 @@ class AreasViewModel {
     }
 
     private func observe() {
-        collectionNotificationToken = locationRepository.areas().observe { [weak self] changes in
+        collectionNotificationToken = dataRepository.areas().observe { [weak self] changes in
             switch changes {
             case .initial(let areas), .update(let areas, _, _, _):
                 self?.areaNames = areas.map { $0.name }

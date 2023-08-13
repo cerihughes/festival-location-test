@@ -139,7 +139,7 @@ extension AddAreaViewController: AddAreaViewDelegate {
 
 private extension UITextField {
     var trimmedText: String? {
-        guard let trimmed = text?.trimmingCharacters(in: .whitespaces) else { return nil }
+        guard let trimmed = text?.trimmed else { return nil }
         return trimmed.isEmpty ? nil : trimmed
     }
 }

@@ -5,7 +5,8 @@ import RealmSwift
 let serviceProviderName = "serviceProviderName"
 
 protocol Services {
-    var locationRepository: LocationRepository { get }
+    var dataRepository: DataRepository { get }
+    var dataLoader: DataLoader { get }
     var locationManager: LocationManager { get }
     var notificationsManager: NotificationsManager { get }
     var locationMonitor: LocationMonitor { get }
@@ -13,7 +14,8 @@ protocol Services {
 
 class DefaultServices: ServiceProvider, Services {
     let name = serviceProviderName
-    let locationRepository: LocationRepository
+    let dataRepository: DataRepository
+    let dataLoader: DataLoader
     let locationManager: LocationManager
     let notificationsManager: NotificationsManager
     let locationMonitor: LocationMonitor
@@ -24,12 +26,13 @@ class DefaultServices: ServiceProvider, Services {
             fatalError("Cannot create Realm")
         }
 
-        locationRepository = DefaultLocationRepository(realm: realm)
+        dataRepository = RealmDataRepository(realm: realm)
+        dataLoader = FileDataLoader(fileName: "GreenMan2023.txt", dataRepository: dataRepository)
         locationManager = DefaultLocationManager()
         notificationsManager = DefaultNotificationsManager(notificationCenter: .current(), dateFormatter: .create())
         locationMonitor = DefaultLocationMonitor(
             locationManager: locationManager,
-            locationRepository: locationRepository,
+            dataRepository: dataRepository,
             notificationsManager: notificationsManager
         )
     }
@@ -40,7 +43,8 @@ protocol ServicesProvider {
 }
 
 extension ServicesProvider {
-    var locationRepository: LocationRepository? { services?.locationRepository }
+    var dataRepository: DataRepository? { services?.dataRepository }
+    var dataLoader: DataLoader? { services?.dataLoader }
     var locationManager: LocationManager? { services?.locationManager }
     var notificationsManager: NotificationsManager? { services?.notificationsManager }
 }

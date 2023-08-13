@@ -7,7 +7,7 @@ protocol LocationMonitor {
 
 class DefaultLocationMonitor: LocationMonitor {
     private let locationManager: LocationManager
-    private let locationRepository: LocationRepository
+    private let dataRepository: DataRepository
     private let notificationsManager: NotificationsManager
 
     private var collectionNotificationToken: NSObject?
@@ -15,18 +15,18 @@ class DefaultLocationMonitor: LocationMonitor {
 
     init(
         locationManager: LocationManager,
-        locationRepository: LocationRepository,
+        dataRepository: DataRepository,
         notificationsManager: NotificationsManager
     ) {
         self.locationManager = locationManager
-        self.locationRepository = locationRepository
+        self.dataRepository = dataRepository
         self.notificationsManager = notificationsManager
 
         locationManager.delegate = self
     }
 
     func start() {
-        collectionNotificationToken = locationRepository.areas().observe { [weak self] changes in
+        collectionNotificationToken = dataRepository.areas().observe { [weak self] changes in
             guard let self else { return }
             switch changes {
             case let .initial(areas):
@@ -42,7 +42,7 @@ class DefaultLocationMonitor: LocationMonitor {
 
     func stop() {
         collectionNotificationToken = nil
-        locationRepository.areas()
+        dataRepository.areas()
             .map { $0.name }
             .forEach { locationManager.stopMonitoring(name: $0) }
     }
@@ -62,13 +62,13 @@ class DefaultLocationMonitor: LocationMonitor {
 extension DefaultLocationMonitor: LocationManagerDelegate {
     func locationManager(_ locationManager: LocationManager, didEnter location: Location, name: String) {
         let event = Event.entry(areaName: name)
-        locationRepository.addEvent(event)
+        dataRepository.add(event)
         notificationsManager.sendLocalNotification(for: event)
     }
 
     func locationManager(_ locationManager: LocationManager, didExit location: Location, name: String) {
         let event = Event.exit(areaName: name)
-        locationRepository.addEvent(event)
+        dataRepository.add(event)
         notificationsManager.sendLocalNotification(for: event)
     }
 }

@@ -62,11 +62,9 @@ private extension Event {
     }
 }
 
-private extension Optional where Wrapped == Event.Kind {
+private extension Event.Kind {
     var notificationTitle: String {
         switch self {
-        case .none:
-            return "Unknown"
         case .entry:
             return "Arrived"
         case .exit:
@@ -76,8 +74,6 @@ private extension Optional where Wrapped == Event.Kind {
 
     var notificationBody: String {
         switch self {
-        case .none:
-            return "Unknown event"
         case .entry:
             return "Arrived"
         case .exit:

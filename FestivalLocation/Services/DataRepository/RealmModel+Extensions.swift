@@ -28,6 +28,6 @@ extension Event {
     }
 
     private static func create(areaName: String, kind: Kind) -> Event {
-        create(areaName: areaName, timestamp: Date(), kind: kind)
+        create(areaName: areaName, timestamp: dateFactory.currentDate(), kind: kind)
     }
 }
