@@ -70,7 +70,7 @@ private extension FestivalDataView.Day {
     }
 
     static var currentOrThursday: Self {
-        let now = Date()
+        let now = dateFactory.currentDate()
         for day in allCases where day.start...day.end ~= now {
             return day
         }
@@ -115,7 +115,7 @@ private extension FestivalDataView.Stage {
 
 private extension Slot {
     var isFinished: Bool {
-        end <= Date()
+        end <= dateFactory.currentDate()
     }
 
     func asViewData(timeFormatter: DateFormatter, isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.ViewData {
@@ -125,7 +125,7 @@ private extension Slot {
     }
 
     private func timeStatus(isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.TimeStatus {
-        let now = Date()
+        let now = dateFactory.currentDate()
         let started = start <= now
         let finished = end <= now
         switch (isPreviousSlotFinished, started, finished) {
