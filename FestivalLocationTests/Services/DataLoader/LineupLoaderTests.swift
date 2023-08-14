@@ -5,7 +5,7 @@ import XCTest
 
 final class LineupLoaderTests: XCTestCase {
     private var dataRepository: DataRepository!
-    private var lineupLoader: FileLineupLoader!
+    private var lineupLoader: LineupLoader!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -14,7 +14,7 @@ final class LineupLoaderTests: XCTestCase {
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
 
-        lineupLoader = FileLineupLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
+        lineupLoader = DefaultLineupLoader(source: .local(.greenMan2023FestivalLineup), dataRepository: dataRepository)
     }
 
     override func tearDownWithError() throws {

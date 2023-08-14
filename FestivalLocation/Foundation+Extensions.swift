@@ -72,8 +72,8 @@ extension DateFormatter {
 }
 
 extension Bundle {
-    func path(for fileName: String) -> String? {
+    func url(for fileName: String) -> URL? {
         let nsString = fileName as NSString
-        return path(forResource: nsString.deletingPathExtension, ofType: nsString.pathExtension)
+        return url(forResource: nsString.deletingPathExtension, withExtension: nsString.pathExtension)
     }
 }

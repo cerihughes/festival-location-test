@@ -6,7 +6,7 @@ import XCTest
 final class FestivalDataViewModelTests: XCTestCase {
     private var mockDateFactory: MockDateFactory!
     private var dataRepository: DataRepository!
-    private var lineupLoader: FileLineupLoader!
+    private var lineupLoader: LineupLoader!
     private var viewModel: FestivalDataViewModel!
 
     override func setUpWithError() throws {
@@ -19,7 +19,7 @@ final class FestivalDataViewModelTests: XCTestCase {
         let config = Realm.Configuration(inMemoryIdentifier: "FestivalDataViewModelTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
-        lineupLoader = FileLineupLoader(fileName: .greenMan2023FestivalLineup, dataRepository: dataRepository)
+        lineupLoader = DefaultLineupLoader(source: .local(.greenMan2023FestivalLineup), dataRepository: dataRepository)
     }
 
     override func tearDownWithError() throws {

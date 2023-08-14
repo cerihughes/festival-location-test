@@ -1,43 +1,27 @@
 import Foundation
 
 protocol AreasLoader {
-    var builder: AreasBuilder { get }
-    func fetchData() -> Data?
+    func importAreas() -> Bool
 }
 
-extension String {
-    static let greenMan2023FestivalAreas = "GreenMan2023-Areas.json"
-}
+class DefaultAreasLoader: AreasLoader {
+    private let source: DataLoaderSource
+    let builder: AreasBuilder
 
-extension AreasLoader {
+    init(source: DataLoaderSource, dataRepository: DataRepository) {
+        self.source = source
+        builder = AreasBuilder(dataRepository: dataRepository)
+    }
+
     func importAreas() -> Bool {
         let decoder = JSONDecoder()
         guard
-            let data = fetchData(),
+            let data = source.loadData(),
             let circularAreas: [CircularArea] = try? decoder.decode([CircularArea].self, from: data)
         else { return false }
 
         builder.persist(circularAreas: circularAreas)
         return true
-    }
-}
-
-class FileAreasLoader: AreasLoader {
-    private let fileName: String
-    let builder: AreasBuilder
-
-    init(fileName: String, dataRepository: DataRepository) {
-        self.fileName = fileName
-        builder = AreasBuilder(dataRepository: dataRepository)
-    }
-
-    func fetchData() -> Data? {
-        guard
-            let path = Bundle.main.path(for: fileName),
-            let contents = try? String(contentsOfFile: path)
-        else { return nil }
-
-        return contents.data(using: .utf8)
     }
 }
 
