@@ -83,8 +83,13 @@ class FestivalDataViewModel {
         else { return }
 
         let isToday = selectedDay == .current
-        slots = daySlots.mapWithPrevious {
-            $0.asViewData(timeFormatter: timeFormatter, isPreviousFinished: $1?.isFinished ?? true, isToday: isToday)
+        slots = daySlots.enumerated().mapWithPrevious {
+            $0.element.asViewData(
+                index: $0.offset,
+                timeFormatter: timeFormatter,
+                isPreviousFinished: $1?.element.isFinished ?? true,
+                isToday: isToday
+            )
         }
     }
 }
@@ -119,12 +124,19 @@ private extension Slot {
     }
 
     func asViewData(
+        index: Int,
         timeFormatter: DateFormatter,
         isPreviousFinished: Bool,
         isToday: Bool
     ) -> FestivalSlotTableViewCell.ViewData {
         let timeStatus = timeStatus(isPreviousFinished: isPreviousFinished, isToday: isToday)
-        return .init(name: name, time: timeString(timeFormatter: timeFormatter), timeStatus: timeStatus, visited: false)
+        return .init(
+            isEven: index.isEven,
+            name: name,
+            time: timeString(timeFormatter: timeFormatter),
+            timeStatus: timeStatus,
+            visited: false
+        )
     }
 
     private func timeStatus(isPreviousFinished: Bool, isToday: Bool) -> FestivalSlotTableViewCell.TimeStatus {
@@ -141,5 +153,11 @@ private extension Slot {
         case (false, false, false):
             return .future
         }
+    }
+}
+
+private extension Int {
+    var isEven: Bool {
+        self % 2 == 0
     }
 }

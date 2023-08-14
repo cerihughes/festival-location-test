@@ -81,9 +81,7 @@ extension FestivalDataViewController: UITableViewDataSource {
             return cell
         }
 
-        cell.textLabel?.text = viewData.name
-        cell.detailTextLabel?.text = viewData.time
-        cell.textLabel?.textColor = viewData.timeStatus.colour
+        cell.configure(with: viewData)
         return cell
     }
 }
