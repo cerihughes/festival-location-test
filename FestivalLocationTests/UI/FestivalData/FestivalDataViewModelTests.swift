@@ -13,7 +13,6 @@ final class FestivalDataViewModelTests: XCTestCase {
         try super.setUpWithError()
 
         mockDateFactory = MockDateFactory()
-        mockDateFactory.setCurrentDate("13.08.2023 12:00")
         dateFactory = mockDateFactory
 
         let config = Realm.Configuration(inMemoryIdentifier: "FestivalDataViewModelTests")
@@ -152,13 +151,13 @@ final class FestivalDataViewModelTests: XCTestCase {
 }
 
 private extension MockDateFactory {
-    func setCurrentDay(_ day: FestivalDataView.Day, time: String) {
+    func setCurrentDay(_ day: GMDay, time: String) {
         let currentDate = "\(day.dateString) \(time)"
         setCurrentDate(currentDate)
     }
 }
 
-private extension FestivalDataView.Day {
+private extension GMDay {
     var dateString: String {
         switch self {
         case .thursday:

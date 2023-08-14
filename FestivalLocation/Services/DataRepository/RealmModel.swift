@@ -35,7 +35,7 @@ class Stage: UniqueObject {
     @Persisted(originProperty: "stages") var festival: LinkingObjects<Festival>
 }
 
-class Slot: EmbeddedObject {
+class Slot: UniqueObject {
     @Persisted var name: String
     @Persisted var start: Date
     @Persisted var end: Date

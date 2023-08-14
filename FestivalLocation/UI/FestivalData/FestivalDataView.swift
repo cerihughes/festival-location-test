@@ -1,15 +1,8 @@
 import UIKit
 
 class FestivalDataView: UIView {
-    enum Day: Int, CaseIterable {
-        case thursday, friday, saturday, sunday
-    }
-    enum Stage: Int, CaseIterable {
-        case mountain, farOut, walledGarden, rising, chaiWallahs, roundTheTwist
-    }
-
-    let daySelection = UISegmentedControl(items: Day.allDisplayNames)
-    let stageSelection = UISegmentedControl(items: Stage.allDisplayNames)
+    let daySelection = UISegmentedControl(items: GMDay.allDisplayNames)
+    let stageSelection = UISegmentedControl(items: GMStage.allDisplayNames)
     let tableView = UITableView()
 
     override init(frame: CGRect) {
@@ -22,7 +15,7 @@ class FestivalDataView: UIView {
         commonInit()
     }
 
-    func enableStages(_ stages: [Stage]) {
+    func enableStages(_ stages: [GMStage]) {
         let stageTitles = stages.map { $0.displayName }
         for index in 0 ..< stageSelection.numberOfSegments {
             guard let title = stageSelection.titleForSegment(at: index) else { continue }
@@ -33,8 +26,8 @@ class FestivalDataView: UIView {
     private func commonInit() {
         backgroundColor = .white
 
-        daySelection.selectedSegmentIndex = FestivalDataView.Day.thursday.rawValue
-        stageSelection.selectedSegmentIndex = FestivalDataView.Stage.mountain.rawValue
+        daySelection.selectedSegmentIndex = GMDay.thursday.rawValue
+        stageSelection.selectedSegmentIndex = GMStage.mountain.rawValue
 
         addSubviews(daySelection, stageSelection, tableView)
 
@@ -55,7 +48,7 @@ class FestivalDataView: UIView {
     }
 }
 
-extension FestivalDataView.Stage {
+extension GMStage {
     static var allDisplayNames: [String] {
         allCases.map { $0.displayName }
     }
@@ -78,7 +71,7 @@ extension FestivalDataView.Stage {
     }
 }
 
-extension FestivalDataView.Day {
+extension GMDay {
     static var allDisplayNames: [String] {
         allCases.map { $0.displayName }
     }

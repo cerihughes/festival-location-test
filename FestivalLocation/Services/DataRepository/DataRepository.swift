@@ -37,6 +37,9 @@ extension DataRepository {
 
     func delete(festival: Festival) {
         for stage in festival.stages {
+            for slot in stage.slots {
+                delete(slot)
+            }
             delete(stage)
         }
         delete(festival)

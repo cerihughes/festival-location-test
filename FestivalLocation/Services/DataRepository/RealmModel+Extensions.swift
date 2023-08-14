@@ -35,3 +35,14 @@ extension Event {
         create(areaName: areaName, timestamp: dateFactory.currentDate(), kind: kind)
     }
 }
+
+extension Stage {
+    func slots(for day: GMDay) -> [Slot]? {
+        slots.filter { day.start...day.end ~= $0.start }
+    }
+
+    var todaySlots: [Slot]? {
+        guard let current = GMDay.current else { return nil }
+        return slots(for: current)
+    }
+}

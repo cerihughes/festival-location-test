@@ -7,6 +7,18 @@ extension Collection {
     }
 }
 
+extension Collection where Element: Equatable {
+    func element(after firstElement: Element) -> Element? {
+        var iterator = makeIterator()
+        while let next = iterator.next() {
+            if next == firstElement {
+                return iterator.next()
+            }
+        }
+        return nil
+    }
+}
+
 extension Sequence where Element: Hashable {
     func uniqued() -> [Element] {
         Array(Set(self))
@@ -55,6 +67,12 @@ extension DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = dateStyle
         dateFormatter.timeStyle = timeStyle
+        return dateFormatter
+    }
+
+    static func HH_mm() -> DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
         return dateFormatter
     }
 

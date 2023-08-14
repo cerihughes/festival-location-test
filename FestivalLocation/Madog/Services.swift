@@ -32,7 +32,11 @@ class DefaultServices: ServiceProvider, Services {
         lineupLoader = DefaultLineupLoader(source: .remote(.greenMan2023FestivalLineup), dataRepository: dataRepository)
         areasLoader = DefaultAreasLoader(source: .remote(.greenMan2023FestivalAreas), dataRepository: dataRepository)
         locationManager = DefaultLocationManager()
-        notificationsManager = DefaultNotificationsManager(notificationCenter: .current(), dateFormatter: .create())
+        notificationsManager = DefaultNotificationsManager(
+            dataRepository: dataRepository,
+            notificationCenter: .current(),
+            timeFormatter: .HH_mm()
+        )
         locationMonitor = DefaultLocationMonitor(
             locationManager: locationManager,
             dataRepository: dataRepository,
