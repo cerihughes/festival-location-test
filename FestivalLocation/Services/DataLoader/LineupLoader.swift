@@ -1,20 +1,31 @@
 import Foundation
 
 protocol LineupLoader {
-    func importLineup() -> Bool
+    func importLineup(data: Data) -> Bool
+}
+
+extension LineupLoader {
+    func importLineup(loader: LocalDataLoader) -> Bool {
+        guard let data = loader.loadData() else { return false }
+        return importLineup(data: data)
+    }
+
+    @MainActor
+    func importLineup(loader: RemoteDataLoader) async -> Bool {
+        guard let data = await loader.loadData() else { return false }
+        return importLineup(data: data)
+    }
 }
 
 class DefaultLineupLoader: LineupLoader {
-    private let source: DataLoaderSource
     let builder: LineupBuilder
 
-    init(source: DataLoaderSource, dataRepository: DataRepository) {
-        self.source = source
+    init(dataRepository: DataRepository) {
         builder = LineupBuilder(dataRepository: dataRepository)
     }
 
-    func importLineup() -> Bool {
-        guard let data = source.loadData(), let string = String(data: data, encoding: .utf8) else { return false }
+    func importLineup(data: Data) -> Bool {
+        guard let string = String(data: data, encoding: .utf8) else { return false }
         builder.createFestival(name: .greenMan2023FestivalName)
 
         let lines = string.split(separator: "\n")

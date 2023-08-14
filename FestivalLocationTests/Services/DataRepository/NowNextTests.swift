@@ -19,11 +19,8 @@ class NowNextTests: XCTestCase {
         dataRepository = RealmDataRepository(realm: realm)
         timeFormatter = .HH_mm()
 
-        let lineupLoader = DefaultLineupLoader(
-            source: .local(.greenMan2023FestivalLineup),
-            dataRepository: dataRepository
-        )
-        XCTAssertTrue(lineupLoader.importLineup())
+        let lineupLoader = DefaultLineupLoader(dataRepository: dataRepository)
+        XCTAssertTrue(lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup)))
     }
 
     override func tearDownWithError() throws {

@@ -4,6 +4,12 @@ extension String {
     static let greenMan2023FestivalName = "Green Man Festival 2023"
 }
 
+extension DataRepository {
+    func hasGreenMan2023FestivalData() -> Bool {
+        festival(name: .greenMan2023FestivalName) != nil
+    }
+}
+
 extension Area {
     static func create(circularArea: CircularArea) -> Area {
         create(name: circularArea.name, location: circularArea.location, radius: circularArea.radius)

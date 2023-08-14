@@ -3,17 +3,14 @@ import Foundation
 class FestivalDataViewModel {
     private let dataRepository: DataRepository
     private let locationMonitor: LocationMonitor
-    private let lineupLoader: LineupLoader
 
     private let timeFormatter = DateFormatter.create(dateStyle: .none)
 
     private var slots = [FestivalSlotTableViewCell.ViewData]()
 
-    init(dataRepository: DataRepository, locationMonitor: LocationMonitor, lineupLoader: LineupLoader) {
+    init(dataRepository: DataRepository, locationMonitor: LocationMonitor) {
         self.dataRepository = dataRepository
         self.locationMonitor = locationMonitor
-        self.lineupLoader = lineupLoader
-        importLineup()
         updateSlots()
     }
 
@@ -65,11 +62,6 @@ class FestivalDataViewModel {
 
         selectedStage = stage
         return true
-    }
-
-    @discardableResult
-    func importLineup() -> Bool {
-        lineupLoader.importLineup()
     }
 
     func viewData(at index: Int) -> FestivalSlotTableViewCell.ViewData? {

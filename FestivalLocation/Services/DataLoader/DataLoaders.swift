@@ -11,27 +11,35 @@ extension URL {
     static let greenMan2023FestivalLineup = URL(string: github + String.greenMan2023FestivalLineup)!
 }
 
-enum DataLoaderSource {
-    case local(String)
-    case remote(URL)
-}
+class LocalDataLoader {
+    private let fileName: String
 
-extension DataLoaderSource {
-    func loadData() -> Data? {
-        switch self {
-        case let .local(fileName):
-            return loadLocalData(fileName: fileName)
-        case let .remote(url):
-            return loadRemoteData(url: url)
-        }
+    private init(fileName: String) {
+        self.fileName = fileName
     }
 
-    private func loadLocalData(fileName: String) -> Data? {
+    func loadData() -> Data? {
         guard let url = Bundle.main.url(for: fileName) else { return nil }
         return try? .init(contentsOf: url)
     }
 
-    private func loadRemoteData(url: URL) -> Data? {
-        try? .init(Data(contentsOf: url))
+    static func fileName(_ fileName: String) -> LocalDataLoader {
+        .init(fileName: fileName)
+    }
+}
+
+class RemoteDataLoader {
+    private let url: URL
+
+    private init(url: URL) {
+        self.url = url
+    }
+
+    func loadData() async -> Data? {
+        try? await URLSession.shared.data(from: url).0
+    }
+
+    static func url(_ url: URL) -> RemoteDataLoader {
+        .init(url: url)
     }
 }

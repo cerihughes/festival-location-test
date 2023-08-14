@@ -21,8 +21,8 @@ class AreasExportViewModel {
     }
 
     @discardableResult
-    func importAreas() -> Bool {
-        areasLoader.importAreas()
+    func importAreas() async -> Bool {
+        await areasLoader.importAreas(loader: .url(.greenMan2023FestivalAreas))
     }
 
     private func circularAreas() -> [CircularArea] {

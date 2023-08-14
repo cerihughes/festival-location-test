@@ -24,7 +24,9 @@ class AreasExportViewController: TypedViewController<AreasExportView> {
     }
 
     @objc private func importTapped(_ button: UIButton) {
-        viewModel.importAreas()
+        Task { @MainActor in
+            await viewModel.importAreas()
+        }
     }
 
     @objc private func exportTapped(_ button: UIButton) {

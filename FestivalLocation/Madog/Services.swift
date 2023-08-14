@@ -29,8 +29,8 @@ class DefaultServices: ServiceProvider, Services {
         }
 
         dataRepository = RealmDataRepository(realm: realm)
-        lineupLoader = DefaultLineupLoader(source: .remote(.greenMan2023FestivalLineup), dataRepository: dataRepository)
-        areasLoader = DefaultAreasLoader(source: .remote(.greenMan2023FestivalAreas), dataRepository: dataRepository)
+        lineupLoader = DefaultLineupLoader(dataRepository: dataRepository)
+        areasLoader = DefaultAreasLoader(dataRepository: dataRepository)
         locationManager = DefaultLocationManager()
         notificationsManager = DefaultNotificationsManager(
             dataRepository: dataRepository,
@@ -42,6 +42,10 @@ class DefaultServices: ServiceProvider, Services {
             dataRepository: dataRepository,
             notificationsManager: notificationsManager
         )
+        if !dataRepository.hasGreenMan2023FestivalData() {
+            _ = lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup))
+            _ = areasLoader.importAreas(loader: .fileName(.greenMan2023FestivalAreas))
+        }
     }
 }
 
