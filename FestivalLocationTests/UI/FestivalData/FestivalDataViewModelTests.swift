@@ -20,7 +20,8 @@ final class FestivalDataViewModelTests: XCTestCase {
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
         locationMonitor = MockLocationMonitor()
-        lineupLoader = DefaultLineupLoader(source: .local(.greenMan2023FestivalLineup), dataRepository: dataRepository)
+        lineupLoader = DefaultLineupLoader(dataRepository: dataRepository)
+        XCTAssertTrue(lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup)))
     }
 
     override func tearDownWithError() throws {
@@ -202,7 +203,7 @@ final class FestivalDataViewModelTests: XCTestCase {
     }
 
     private func createViewModel() {
-        viewModel = .init(dataRepository: dataRepository, locationMonitor: locationMonitor, lineupLoader: lineupLoader)
+        viewModel = .init(dataRepository: dataRepository, locationMonitor: locationMonitor)
     }
 
     private func assertSlot(

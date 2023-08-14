@@ -1,24 +1,34 @@
 import Foundation
 
 protocol AreasLoader {
-    func importAreas() -> Bool
+    func importAreas(data: Data) -> Bool
+}
+
+extension AreasLoader {
+    func importAreas(loader: LocalDataLoader) -> Bool {
+        guard let data = loader.loadData() else { return false }
+        return importAreas(data: data)
+    }
+
+    @MainActor
+    func importAreas(loader: RemoteDataLoader) async -> Bool {
+        guard let data = await loader.loadData() else { return false }
+        return importAreas(data: data)
+    }
 }
 
 class DefaultAreasLoader: AreasLoader {
-    private let source: DataLoaderSource
     let builder: AreasBuilder
 
-    init(source: DataLoaderSource, dataRepository: DataRepository) {
-        self.source = source
+    init(dataRepository: DataRepository) {
         builder = AreasBuilder(dataRepository: dataRepository)
     }
 
-    func importAreas() -> Bool {
+    func importAreas(data: Data) -> Bool {
         let decoder = JSONDecoder()
-        guard
-            let data = source.loadData(),
-            let circularAreas: [CircularArea] = try? decoder.decode([CircularArea].self, from: data)
-        else { return false }
+        guard let circularAreas: [CircularArea] = try? decoder.decode([CircularArea].self, from: data) else {
+            return false
+        }
 
         builder.persist(circularAreas: circularAreas)
         return true
