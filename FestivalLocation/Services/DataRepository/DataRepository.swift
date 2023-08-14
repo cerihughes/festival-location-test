@@ -102,5 +102,4 @@ class RealmDataRepository: DataRepository {
     func commit(_ block: (() -> Void)) {
         try? realm.write(block)
     }
-
 }

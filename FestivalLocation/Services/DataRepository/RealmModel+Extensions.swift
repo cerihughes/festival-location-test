@@ -1,5 +1,9 @@
 import Foundation
 
+extension String {
+    static let greenMan2023FestivalName = "Green Man Festival 2023"
+}
+
 extension Area {
     static func create(circularArea: CircularArea) -> Area {
         create(name: circularArea.name, location: circularArea.location, radius: circularArea.radius)

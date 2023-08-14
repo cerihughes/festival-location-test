@@ -1,22 +1,25 @@
 import Foundation
 
 protocol LineupLoader {
-    var builder: LineupBuilder { get }
-    func fetchTextLines() -> [String]?
+    func importLineup() -> Bool
 }
 
-extension String {
-    static let greenMan2023FestivalName = "Green Man Festival 2023"
-    static let greenMan2023FestivalLineup = "GreenMan2023-Lineup.txt"
-}
+class DefaultLineupLoader: LineupLoader {
+    private let source: DataLoaderSource
+    let builder: LineupBuilder
 
-extension LineupLoader {
+    init(source: DataLoaderSource, dataRepository: DataRepository) {
+        self.source = source
+        builder = LineupBuilder(dataRepository: dataRepository)
+    }
+
     func importLineup() -> Bool {
-        guard let text = fetchTextLines() else { return false }
+        guard let data = source.loadData(), let string = String(data: data, encoding: .utf8) else { return false }
         builder.createFestival(name: .greenMan2023FestivalName)
 
-        for line in text {
-            let result = parseLine(line)
+        let lines = string.split(separator: "\n")
+        for line in lines {
+            let result = parseLine(String(line))
             if result == false {
                 return false
             }
@@ -36,26 +39,6 @@ extension LineupLoader {
         }
 
         return builder.setStartEndTimes(line) || builder.setSlotName(line)
-    }
-}
-
-class FileLineupLoader: LineupLoader {
-    private let fileName: String
-    let builder: LineupBuilder
-
-    init(fileName: String, dataRepository: DataRepository) {
-        self.fileName = fileName
-        builder = LineupBuilder(dataRepository: dataRepository)
-    }
-
-    func fetchTextLines() -> [String]? {
-        guard
-            let path = Bundle.main.path(for: fileName),
-            let contents = try? String(contentsOfFile: path)
-        else { return nil }
-
-        return contents.split(separator: "\n")
-            .map(String.init)
     }
 }
 
