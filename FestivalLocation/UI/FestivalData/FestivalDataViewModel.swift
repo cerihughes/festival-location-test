@@ -2,14 +2,16 @@ import Foundation
 
 class FestivalDataViewModel {
     private let dataRepository: DataRepository
+    private let locationMonitor: LocationMonitor
     private let lineupLoader: LineupLoader
 
     private let timeFormatter = DateFormatter.create(dateStyle: .none)
 
     private var slots = [FestivalSlotTableViewCell.ViewData]()
 
-    init(dataRepository: DataRepository, lineupLoader: LineupLoader) {
+    init(dataRepository: DataRepository, locationMonitor: LocationMonitor, lineupLoader: LineupLoader) {
         self.dataRepository = dataRepository
+        self.locationMonitor = locationMonitor
         self.lineupLoader = lineupLoader
         importLineup()
         updateSlots()
@@ -46,6 +48,19 @@ class FestivalDataViewModel {
 
     var stagesForSelectedDay: [GMStage] {
         GMStage.stages(for: selectedDay)
+    }
+
+    func updateForLocalStage() -> Bool {
+        guard let location = locationMonitor.currentLocation, let stage = GMStage.create(identifier: location) else {
+            return false
+        }
+
+        if selectedStage == stage {
+            return false
+        }
+
+        selectedStage = stage
+        return true
     }
 
     @discardableResult

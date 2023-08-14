@@ -27,6 +27,13 @@ extension GMDay {
 }
 
 extension GMStage {
+    private static let identifiers = GMStage.allCases.map { $0.identifier }
+
+    static func create(identifier: String) -> GMStage? {
+        guard let index = identifiers.firstIndex(of: identifier) else { return nil }
+        return GMStage(rawValue: index)
+    }
+
     var identifier: String {
         switch self {
         case .mountain:
