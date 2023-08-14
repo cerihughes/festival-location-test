@@ -88,5 +88,5 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
-FestivalLocation.xcodeproj/
+GM2023.xcodeproj/
 .DS_Store

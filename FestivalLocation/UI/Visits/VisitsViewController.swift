@@ -17,9 +17,7 @@ class VisitsViewController: TypedViewController<VisitsView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Visits"
-
-        typedView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        typedView.tableView.register(AreasTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         typedView.tableView.dataSource = self
         typedView.tableView.reloadData()
 
@@ -34,9 +32,11 @@ extension VisitsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        if let visit = viewModel.visit(at: indexPath.row) {
-            cell.textLabel?.text = visit.title
+        guard let cell = cell as? AreasTableViewCell, let viewData = viewModel.viewData(at: indexPath.row) else {
+            return cell
         }
+
+        cell.configure(with: viewData)
         return cell
     }
 }

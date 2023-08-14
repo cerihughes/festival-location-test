@@ -1,6 +1,6 @@
 import Foundation
 
-@testable import FestivalLocation
+@testable import GM2023
 
 class MockDateFactory: DateFactory {
     private let dateFormatter = DateFormatter.dd_MM_yyyy_HH_mm()

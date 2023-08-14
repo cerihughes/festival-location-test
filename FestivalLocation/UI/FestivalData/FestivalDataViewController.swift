@@ -20,8 +20,6 @@ class FestivalDataViewController: TypedViewController<FestivalDataView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Line-up"
-
         typedView.daySelection.addTarget(self, action: #selector(dayChanged), for: .valueChanged)
         typedView.stageSelection.addTarget(self, action: #selector(stageChanged), for: .valueChanged)
 
@@ -83,9 +81,7 @@ extension FestivalDataViewController: UITableViewDataSource {
             return cell
         }
 
-        cell.textLabel?.text = viewData.name
-        cell.detailTextLabel?.text = viewData.time
-        cell.textLabel?.textColor = viewData.timeStatus.colour
+        cell.configure(with: viewData)
         return cell
     }
 }

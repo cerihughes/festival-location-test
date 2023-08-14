@@ -13,6 +13,9 @@ class AreasViewControllerProvider: DefaultViewControllerProvider {
             return nil
         }
         let viewModel = AreasViewModel(dataRepository: dataRepository, locationManager: locationManager)
-        return AreasViewController(context: context, viewModel: viewModel)
+        let viewController = AreasViewController(context: context, viewModel: viewModel)
+        viewController.title = "History"
+        viewController.tabBarItem = .init(title: "History", image: .init(named: "text-list-7"), tag: 2)
+        return viewController
     }
 }

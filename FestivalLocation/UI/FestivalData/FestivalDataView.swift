@@ -26,8 +26,16 @@ class FestivalDataView: UIView {
     private func commonInit() {
         backgroundColor = .white
 
+        let font = UIFont.systemFont(ofSize: 16)
+        daySelection.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
+        stageSelection.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
+        daySelection.apportionsSegmentWidthsByContent = true
+        stageSelection.apportionsSegmentWidthsByContent = true
+
         daySelection.selectedSegmentIndex = GMDay.thursday.rawValue
         stageSelection.selectedSegmentIndex = GMStage.mountain.rawValue
+        tableView.separatorStyle = .none
+        tableView.bounces = false
 
         addSubviews(daySelection, stageSelection, tableView)
 

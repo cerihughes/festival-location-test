@@ -12,6 +12,9 @@ class AreasMapViewControllerProvider: DefaultViewControllerProvider {
             return nil
         }
         let viewModel = AreasMapViewModel(dataRepository: dataRepository)
-        return AreasMapViewController(context: context, viewModel: viewModel)
+        let viewController = AreasMapViewController(context: context, viewModel: viewModel)
+        viewController.title = "Stages"
+        viewController.tabBarItem = .init(title: "Stages", image: .init(named: "pin-map-7"), tag: 1)
+        return viewController
     }
 }

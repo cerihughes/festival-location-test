@@ -18,8 +18,6 @@ class AreasMapViewController: TypedViewController<AreasMapView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Monitored Areas"
-
         let addArea = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         navigationItem.rightBarButtonItem = addArea
 

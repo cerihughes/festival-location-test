@@ -35,6 +35,7 @@ class AddAreaView: UIView {
 
     private func commonInit() {
         backgroundColor = .white
+        floatingContainer.layer.cornerRadius = 10
         floatingContainer.backgroundColor = .white
         floatingContainer.alpha = 0.9
 
