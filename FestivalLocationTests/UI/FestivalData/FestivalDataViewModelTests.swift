@@ -1,7 +1,7 @@
 import RealmSwift
 import XCTest
 
-@testable import FestivalLocation
+@testable import GM2023
 
 final class FestivalDataViewModelTests: XCTestCase {
     private var mockDateFactory: MockDateFactory!

@@ -1,7 +1,7 @@
 import RealmSwift
 import XCTest
 
-@testable import FestivalLocation
+@testable import GM2023
 
 class NowNextTests: XCTestCase {
     private var mockDateFactory: MockDateFactory!
@@ -138,4 +138,3 @@ private extension DataRepository {
         nowNext(for: stage.identifier)
     }
 }
-

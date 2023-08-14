@@ -1,6 +1,6 @@
 import Foundation
 
-@testable import FestivalLocation
+@testable import GM2023
 
 class MockLocationMonitor: LocationMonitor {
     var currentLocation: String?
