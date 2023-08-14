@@ -29,9 +29,9 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
     }
 
     func sendLocalNotification(for event: Event) {
-        guard event.kind == .entry else { return }
+        guard event.kind == .entry, let nowNext = dataRepository.nowNext(for: event.areaName) else { return }
+
         let content = UNMutableNotificationContent()
-        let nowNext = dataRepository.nowNext(for: event.areaName)
         content.title = event.title
         content.body = nowNext.body(timeFormatter: timeFormatter)
         content.sound = UNNotificationSound.default
@@ -67,17 +67,6 @@ private extension Event {
     }
 }
 
-private extension Optional where Wrapped == NowNext {
-    func body(timeFormatter: DateFormatter) -> String {
-        switch self {
-        case .none:
-            return "No more acts on this stage today."
-        case let .some(nowNext):
-            return nowNext.body(timeFormatter: timeFormatter)
-        }
-    }
-}
-
 private extension NowNext {
     func body(timeFormatter: DateFormatter) -> String {
         var body = nowBody(timeFormatter: timeFormatter)
@@ -89,18 +78,21 @@ private extension NowNext {
     }
 
     private func nowBody(timeFormatter: DateFormatter) -> String {
-        let prefix = isNowStarted ? "Now" : "Soon"
-        return now.body(prefix: prefix, timeFormatter: timeFormatter)
+        if isNowStarted {
+            return "Now: \(now.name))"
+        } else {
+            return now.body(timeFormatter: timeFormatter)
+        }
     }
 
     private func nextBody(timeFormatter: DateFormatter) -> String? {
         guard let next else { return nil }
-        return next.body(prefix: "Next", timeFormatter: timeFormatter)
+        return next.body(timeFormatter: timeFormatter)
     }
 }
 
 private extension Slot {
-    func body(prefix: String, timeFormatter: DateFormatter) -> String {
-        return "\(prefix) : \(timeString(timeFormatter: timeFormatter)) : \(name)"
+    func body(timeFormatter: DateFormatter) -> String {
+        return "\(timeFormatter.string(from: start)): \(name)"
     }
 }
