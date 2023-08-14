@@ -1,16 +1,16 @@
-name: FestivalLocation
+name: GM2023
 schemes:
-  FestivalLocation:
+  GM2023:
     build:
       targets:
-        FestivalLocation: all
-        FestivalLocationTests: [test]
+        GM2023: all
+        GM2023Tests: [test]
     test:
       gatherCoverageData: true
       coverageTargets:
-        - FestivalLocation
+        - GM2023
       targets: 
-        - FestivalLocationTests
+        - GM2023Tests
       commandLineArguments:
         "-isRunningUnitTests YES": true
 options:
@@ -28,7 +28,7 @@ packages:
     url: https://github.com/SnapKit/SnapKit
     majorVersion: 5.0.0
 targets:
-  FestivalLocation:
+  GM2023:
     type: application
     platform: iOS
     settings:
@@ -45,9 +45,9 @@ targets:
       - script: export PATH="/opt/homebrew/bin:$PATH";swiftlint
         name: Swift Lint
         basedOnDependencyAnalysis: false
-  FestivalLocationTests:
+  GM2023Tests:
     type: bundle.unit-test
     platform: iOS
     sources: FestivalLocationTests
     dependencies:
-      - target: FestivalLocation
+      - target: GM2023
