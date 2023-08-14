@@ -6,6 +6,7 @@ import XCTest
 class NowNextTests: XCTestCase {
     private var mockDateFactory: MockDateFactory!
     private var dataRepository: DataRepository!
+    private var timeFormatter: DateFormatter!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -16,6 +17,7 @@ class NowNextTests: XCTestCase {
         let config = Realm.Configuration(inMemoryIdentifier: "LineupLoaderTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
+        timeFormatter = .HH_mm()
 
         let lineupLoader = DefaultLineupLoader(
             source: .local(.greenMan2023FestivalLineup),
@@ -85,6 +87,50 @@ class NowNextTests: XCTestCase {
         XCTAssertEqual(nowNext.now.name, "Dur-Dur Band Int.")
         XCTAssertEqual(next.name, "Beth Orton")
     }
+
+    func testPendingNowNoNext() throws {
+        mockDateFactory.setCurrentDate("17.08.2023 22:15")
+
+        let nowNext = try XCTUnwrap(dataRepository.nowNext(for: .farOut))
+        let body = generateBody(nowNext: nowNext)
+        XCTAssertEqual(body.count, 1)
+        XCTAssertEqual(body[0], "22:30: Spiritualized")
+    }
+
+    func testNowNoNext() throws {
+        mockDateFactory.setCurrentDate("17.08.2023 22:45")
+
+        let nowNext = try XCTUnwrap(dataRepository.nowNext(for: .farOut))
+        let body = generateBody(nowNext: nowNext)
+        XCTAssertEqual(body.count, 1)
+        XCTAssertEqual(body[0], "Now: Spiritualized")
+    }
+
+    func testPendingNowAndNext() throws {
+        mockDateFactory.setCurrentDate("17.08.2023 10:00")
+
+        let nowNext = try XCTUnwrap(dataRepository.nowNext(for: .walledGarden))
+        let body = generateBody(nowNext: nowNext)
+        XCTAssertEqual(body.count, 2)
+        XCTAssertEqual(body[0], "17:00: Aisha Vaughan")
+        XCTAssertEqual(body[1], "18:15: The Gentle Good")
+    }
+
+    func testNowAndNext() throws {
+        mockDateFactory.setCurrentDate("17.08.2023 18:00")
+
+        let nowNext = try XCTUnwrap(dataRepository.nowNext(for: .chaiWallahs))
+        let body = generateBody(nowNext: nowNext)
+        XCTAssertEqual(body.count, 2)
+        XCTAssertEqual(body[0], "Now: The Beatles Dub Club")
+        XCTAssertEqual(body[1], "19:00: Little Thief")
+    }
+
+    private func generateBody(nowNext: NowNext) -> [String] {
+        nowNext.body(timeFormatter: timeFormatter)
+            .split(separator: "\n")
+            .map(String.init)
+    }
 }
 
 private extension DataRepository {
@@ -92,3 +138,4 @@ private extension DataRepository {
         nowNext(for: stage.identifier)
     }
 }
+
