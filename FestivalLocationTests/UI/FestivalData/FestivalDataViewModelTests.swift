@@ -37,7 +37,7 @@ final class FestivalDataViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedDay, .thursday)
         XCTAssertEqual(viewModel.selectedStage, .farOut)
         XCTAssertEqual(viewModel.numberOfSlots, 5)
-        try assertSlot(at: 0, hasName: "Plastic Mermaids", timeStatus: .pending)
+        try assertSlot(at: 0, hasName: "Plastic Mermaids", timeStatus: .future)
         try assertSlot(at: 1, hasName: "Alice Boman", timeStatus: .future)
     }
 
@@ -70,6 +70,28 @@ final class FestivalDataViewModelTests: XCTestCase {
         try assertSlot(at: 1, hasName: "Melin Melyn", timeStatus: .pending)
     }
 
+    func testInitialData_friday_seenOnThursday() throws {
+        mockDateFactory.setCurrentDay(.thursday, time: "12:00")
+
+        createViewModel()
+        viewModel.selectedDay = .friday
+        viewModel.selectedStage = .mountain
+        XCTAssertEqual(viewModel.numberOfSlots, 8)
+        try assertSlot(at: 0, hasName: "Eve Appleton Band", timeStatus: .future)
+        try assertSlot(at: 1, hasName: "Melin Melyn", timeStatus: .future)
+    }
+
+    func testInitialData_friday_seenOnFridayMorning() throws {
+        mockDateFactory.setCurrentDay(.friday, time: "10:00")
+
+        createViewModel()
+        viewModel.selectedDay = .friday
+        viewModel.selectedStage = .mountain
+        XCTAssertEqual(viewModel.numberOfSlots, 8)
+        try assertSlot(at: 0, hasName: "Eve Appleton Band", timeStatus: .pending)
+        try assertSlot(at: 1, hasName: "Melin Melyn", timeStatus: .future)
+    }
+
     func testInitialData_saturday() throws {
         mockDateFactory.setCurrentDay(.saturday, time: "13:00")
         createViewModel()
@@ -95,7 +117,7 @@ final class FestivalDataViewModelTests: XCTestCase {
         viewModel.selectedStage = .roundTheTwist
 
         XCTAssertEqual(viewModel.numberOfSlots, 6)
-        try assertSlot(at: 0, hasName: "Kuntessa", timeStatus: .pending)
+        try assertSlot(at: 0, hasName: "Kuntessa", timeStatus: .future)
         try assertSlot(at: 1, hasName: "Ash Kenazi", timeStatus: .future)
     }
 

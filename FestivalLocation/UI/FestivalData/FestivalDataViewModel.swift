@@ -82,8 +82,9 @@ class FestivalDataViewModel {
             let daySlots = stage.slots(for: selectedDay)
         else { return }
 
+        let isToday = selectedDay == .current
         slots = daySlots.mapWithPrevious {
-            $0.asViewData(timeFormatter: timeFormatter, isPreviousSlotFinished: $1?.isFinished ?? true)
+            $0.asViewData(timeFormatter: timeFormatter, isPreviousFinished: $1?.isFinished ?? true, isToday: isToday)
         }
     }
 }
@@ -117,22 +118,26 @@ private extension Slot {
         end <= dateFactory.currentDate()
     }
 
-    func asViewData(timeFormatter: DateFormatter, isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.ViewData {
-        let timeStatus = timeStatus(isPreviousSlotFinished: isPreviousSlotFinished)
+    func asViewData(
+        timeFormatter: DateFormatter,
+        isPreviousFinished: Bool,
+        isToday: Bool
+    ) -> FestivalSlotTableViewCell.ViewData {
+        let timeStatus = timeStatus(isPreviousFinished: isPreviousFinished, isToday: isToday)
         return .init(name: name, time: timeString(timeFormatter: timeFormatter), timeStatus: timeStatus, visited: false)
     }
 
-    private func timeStatus(isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.TimeStatus {
+    private func timeStatus(isPreviousFinished: Bool, isToday: Bool) -> FestivalSlotTableViewCell.TimeStatus {
         let now = dateFactory.currentDate()
         let started = start <= now
         let finished = end <= now
-        switch (isPreviousSlotFinished, started, finished) {
+        switch (isPreviousFinished, started, finished) {
         case (_, _, true):
             return .past
         case (_, true, false):
             return .current
         case (true, false, false):
-            return .pending
+            return isToday ? .pending : .future
         case (false, false, false):
             return .future
         }
