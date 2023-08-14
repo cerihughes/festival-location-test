@@ -20,8 +20,6 @@ class FestivalDataViewController: TypedViewController<FestivalDataView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Line-up"
-
         typedView.daySelection.addTarget(self, action: #selector(dayChanged), for: .valueChanged)
         typedView.stageSelection.addTarget(self, action: #selector(stageChanged), for: .valueChanged)
 

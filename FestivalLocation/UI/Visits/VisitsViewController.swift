@@ -17,8 +17,6 @@ class VisitsViewController: TypedViewController<VisitsView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Visits"
-
         typedView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         typedView.tableView.dataSource = self
         typedView.tableView.reloadData()

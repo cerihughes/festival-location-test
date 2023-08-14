@@ -20,8 +20,6 @@ class AreasViewController: TypedViewController<AreasView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Visits"
-
         typedView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         typedView.tableView.dataSource = self
         typedView.tableView.delegate = self

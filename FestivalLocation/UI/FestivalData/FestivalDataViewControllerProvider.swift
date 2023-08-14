@@ -12,6 +12,9 @@ class FestivalDataViewControllerProvider: DefaultViewControllerProvider {
             locationMonitor: locationMonitor,
             lineupLoader: lineupLoader
         )
-        return FestivalDataViewController(context: context, viewModel: viewModel)
+        let viewController = FestivalDataViewController(context: context, viewModel: viewModel)
+        viewController.title = "Lineup"
+        viewController.tabBarItem = .init(title: "Lineup", image: .init(named: "grid-out-many-7"), tag: 0)
+        return viewController
     }
 }
