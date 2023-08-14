@@ -33,6 +33,14 @@ class FestivalDataViewController: TypedViewController<FestivalDataView> {
         reloadData()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if viewModel.updateForLocalStage() {
+            updateStages()
+            reloadData()
+        }
+    }
+
     @objc private func dayChanged(_ segmentedControl: UISegmentedControl) {
         guard let day = GMDay(rawValue: segmentedControl.selectedSegmentIndex) else { return }
         viewModel.selectedDay = day

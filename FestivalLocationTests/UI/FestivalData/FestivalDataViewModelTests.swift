@@ -6,6 +6,7 @@ import XCTest
 final class FestivalDataViewModelTests: XCTestCase {
     private var mockDateFactory: MockDateFactory!
     private var dataRepository: DataRepository!
+    private var locationMonitor: MockLocationMonitor!
     private var lineupLoader: LineupLoader!
     private var viewModel: FestivalDataViewModel!
 
@@ -18,6 +19,7 @@ final class FestivalDataViewModelTests: XCTestCase {
         let config = Realm.Configuration(inMemoryIdentifier: "FestivalDataViewModelTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
+        locationMonitor = MockLocationMonitor()
         lineupLoader = DefaultLineupLoader(source: .local(.greenMan2023FestivalLineup), dataRepository: dataRepository)
     }
 
@@ -134,7 +136,7 @@ final class FestivalDataViewModelTests: XCTestCase {
     }
 
     private func createViewModel() {
-        viewModel = .init(dataRepository: dataRepository, lineupLoader: lineupLoader)
+        viewModel = .init(dataRepository: dataRepository, locationMonitor: locationMonitor, lineupLoader: lineupLoader)
     }
 
     private func assertSlot(

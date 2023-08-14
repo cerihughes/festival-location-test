@@ -55,4 +55,5 @@ extension ServicesProvider {
     var areasLoader: AreasLoader? { services?.areasLoader }
     var locationManager: LocationManager? { services?.locationManager }
     var notificationsManager: NotificationsManager? { services?.notificationsManager }
+    var locationMonitor: LocationMonitor? { services?.locationMonitor }
 }

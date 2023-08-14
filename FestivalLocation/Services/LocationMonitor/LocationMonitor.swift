@@ -1,6 +1,9 @@
 import Foundation
 
 protocol LocationMonitor {
+    var currentLocation: String? { get }
+    var lastEnteredLocation: String? { get }
+
     func start()
     func stop()
 }
@@ -12,6 +15,9 @@ class DefaultLocationMonitor: LocationMonitor {
 
     private var collectionNotificationToken: NSObject?
     private var areaNotificationTokens = [String: NSObject]()
+
+    var currentLocation: String?
+    var lastEnteredLocation: String?
 
     init(
         locationManager: LocationManager,
@@ -68,12 +74,17 @@ class DefaultLocationMonitor: LocationMonitor {
 extension DefaultLocationMonitor: LocationManagerDelegate {
     func locationManager(_ locationManager: LocationManager, didEnter location: Location, name: String) {
         let event = Event.entry(areaName: name)
+        currentLocation = name
+        lastEnteredLocation = name
         dataRepository.add(event)
         notificationsManager.sendLocalNotification(for: event)
     }
 
     func locationManager(_ locationManager: LocationManager, didExit location: Location, name: String) {
         let event = Event.exit(areaName: name)
+        if currentLocation == name {
+            currentLocation = nil
+        }
         dataRepository.add(event)
         notificationsManager.sendLocalNotification(for: event)
     }
