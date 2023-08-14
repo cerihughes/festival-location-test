@@ -135,6 +135,50 @@ final class FestivalDataViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.indexToScrollTo)
     }
 
+    func testUpdateForLocalStage_sameDaySameStage() {
+        mockDateFactory.setCurrentDay(.sunday, time: "20:05")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .chaiWallahs
+        locationMonitor.currentStage = .chaiWallahs
+
+        XCTAssertFalse(viewModel.updateForLocalStage())
+        XCTAssertEqual(viewModel.selectedStage, .chaiWallahs)
+    }
+
+    func testUpdateForLocalStage_sameDayDifferentStage() {
+        mockDateFactory.setCurrentDay(.sunday, time: "20:05")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .mountain
+        locationMonitor.currentStage = .chaiWallahs
+
+        XCTAssertTrue(viewModel.updateForLocalStage())
+        XCTAssertEqual(viewModel.selectedStage, .chaiWallahs)
+    }
+
+    func testUpdateForLocalStage_differentDaySameStage() {
+        mockDateFactory.setCurrentDay(.saturday, time: "20:05")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .mountain
+        locationMonitor.currentStage = .mountain
+
+        XCTAssertFalse(viewModel.updateForLocalStage())
+        XCTAssertEqual(viewModel.selectedStage, .mountain)
+    }
+
+    func testUpdateForLocalStage_differentDayDifferentStage() {
+        mockDateFactory.setCurrentDay(.friday, time: "20:05")
+        createViewModel()
+        viewModel.selectedDay = .sunday
+        viewModel.selectedStage = .walledGarden
+        locationMonitor.currentStage = .roundTheTwist
+
+        XCTAssertFalse(viewModel.updateForLocalStage())
+        XCTAssertEqual(viewModel.selectedStage, .walledGarden)
+    }
+
     private func createViewModel() {
         viewModel = .init(dataRepository: dataRepository, locationMonitor: locationMonitor, lineupLoader: lineupLoader)
     }
@@ -156,6 +200,17 @@ private extension MockDateFactory {
     func setCurrentDay(_ day: GMDay, time: String) {
         let currentDate = "\(day.dateString) \(time)"
         setCurrentDate(currentDate)
+    }
+}
+
+private extension MockLocationMonitor {
+    var currentStage: GMStage? {
+        get {
+            currentLocation.flatMap(GMStage.create)
+        }
+        set {
+            currentLocation = newValue?.identifier
+        }
     }
 }
 

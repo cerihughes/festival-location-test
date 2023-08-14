@@ -51,7 +51,11 @@ class FestivalDataViewModel {
     }
 
     func updateForLocalStage() -> Bool {
-        guard let location = locationMonitor.currentLocation, let stage = GMStage.create(identifier: location) else {
+        guard
+            selectedDay == GMDay.current,
+            let location = locationMonitor.currentLocation,
+            let stage = GMStage.create(identifier: location)
+        else {
             return false
         }
 
