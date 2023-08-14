@@ -6,18 +6,14 @@ protocol VisitsViewModelDelegate: AnyObject {
 }
 
 class VisitsViewModel {
-    struct VisitViewData: Equatable {
-        let title: String
-    }
     private let areaName: String
     private let dataRepository: DataRepository
     private let dateFormatter = DateFormatter.create()
 
     private var collectionNotificationToken: NSObject?
 
-    private var allVisits = [VisitViewData]() {
+    private var allVisits = [AreasTableViewCell.ViewData]() {
         didSet {
-            guard allVisits != oldValue else { return }
             delegate?.visitsViewModelDidUpdate(self)
         }
     }
@@ -35,7 +31,7 @@ class VisitsViewModel {
         allVisits.count
     }
 
-    func visit(at index: Int) -> VisitViewData? {
+    func viewData(at index: Int) -> AreasTableViewCell.ViewData? {
         allVisits[safe: index]
     }
 
@@ -50,8 +46,8 @@ class VisitsViewModel {
             processor.processEvent(event)
         }
 
-        if let visits = processor?.finish() {
-            allVisits = visits.map { $0.asVisitViewData(dateFormatter: dateFormatter) }
+        if let visits = processor?.finish().enumerated() {
+            allVisits = visits.map { $0.element.asVisitViewData(index: $0.offset, dateFormatter: dateFormatter) }
         }
     }
 
@@ -173,8 +169,8 @@ private class VisitBuilder {
 }
 
 private extension Visit {
-    func asVisitViewData(dateFormatter: DateFormatter) -> VisitsViewModel.VisitViewData {
-        .init(title: title(dateFormatter: dateFormatter))
+    func asVisitViewData(index: Int, dateFormatter: DateFormatter) -> AreasTableViewCell.ViewData {
+        .init(isEven: index.isEven, name: title(dateFormatter: dateFormatter))
     }
 
     private func title(dateFormatter: DateFormatter) -> String {

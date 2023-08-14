@@ -47,7 +47,7 @@ class FestivalSlotTableViewCell: UITableViewCell {
     }
 
     func configure(with viewData: ViewData) {
-        backgroundColor = viewData.isEven ? .bg1 : .bg2
+        backgroundColor = viewData.isEven ? .cellBackground1 : .cellBackground2
         nameLabel.text = viewData.name
         nameLabel.textColor = viewData.timeStatus.titleColour
         timeLabel.text = viewData.time
@@ -77,9 +77,4 @@ private extension FestivalSlotTableViewCell.TimeStatus {
             return .black
         }
     }
-}
-
-private extension UIColor {
-    static let bg1 = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
-    static let bg2 = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
 }

@@ -155,9 +155,3 @@ private extension Slot {
         }
     }
 }
-
-private extension Int {
-    var isEven: Bool {
-        self % 2 == 0
-    }
-}

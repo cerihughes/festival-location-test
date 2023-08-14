@@ -35,6 +35,12 @@ extension Sequence {
     }
 }
 
+extension Int {
+    var isEven: Bool {
+        self % 2 == 0
+    }
+}
+
 extension String {
     var trimmed: String {
         self.trimmingCharacters(in: .whitespaces)

@@ -20,7 +20,7 @@ class AreasViewController: TypedViewController<AreasView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        typedView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        typedView.tableView.register(AreasTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         typedView.tableView.dataSource = self
         typedView.tableView.delegate = self
         typedView.tableView.reloadData()
@@ -36,17 +36,19 @@ extension AreasViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        if let areaName = viewModel.areaName(at: indexPath.row) {
-            cell.textLabel?.text = areaName
+        guard let cell = cell as? AreasTableViewCell, let viewData = viewModel.viewData(at: indexPath.row) else {
+            return cell
         }
+
+        cell.configure(with: viewData)
         return cell
     }
 }
 
 extension AreasViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let areaName = viewModel.areaName(at: indexPath.row) else { return }
-        context?.navigateForward(token: .visits(areaName), animated: true)
+        guard let token = viewModel.navigationToken(at: indexPath.row) else { return }
+        context?.navigateForward(token: token, animated: true)
     }
 }
 

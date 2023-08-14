@@ -9,9 +9,8 @@ class AreasViewModel {
 
     private var collectionNotificationToken: NSObject?
 
-    private var areaNames = [String]() {
+    private var areaNames = [AreasTableViewCell.ViewData]() {
         didSet {
-            guard areaNames != oldValue else { return }
             delegate?.areasViewModelDidUpdate(self)
         }
     }
@@ -28,15 +27,20 @@ class AreasViewModel {
         areaNames.count
     }
 
-    func areaName(at index: Int) -> String? {
+    func viewData(at index: Int) -> AreasTableViewCell.ViewData? {
         areaNames[safe: index]
+    }
+
+    func navigationToken(at index: Int) -> Navigation? {
+        guard let viewData = viewData(at: index) else { return nil }
+        return .visits(viewData.name)
     }
 
     private func observe() {
         collectionNotificationToken = dataRepository.areas().observe { [weak self] changes in
             switch changes {
             case .initial(let areas), .update(let areas, _, _, _):
-                self?.areaNames = areas.map { $0.name }
+                self?.areaNames = areas.enumerated().map { .init(isEven: $0.offset.isEven, name: $0.element.name) }
             default:
                 break // No-op
             }

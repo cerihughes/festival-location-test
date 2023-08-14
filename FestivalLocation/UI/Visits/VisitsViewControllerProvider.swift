@@ -12,6 +12,8 @@ class VisitsViewControllerProvider: DefaultViewControllerProvider {
             dataRepository: dataRepository,
             locationManager: locationManager
         )
-        return VisitsViewController(viewModel: viewModel)
+        let viewController = VisitsViewController(viewModel: viewModel)
+        viewController.title = areaName
+        return viewController
     }
 }
