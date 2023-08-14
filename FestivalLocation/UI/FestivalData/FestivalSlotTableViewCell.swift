@@ -1,13 +1,8 @@
 import UIKit
 
 class FestivalSlotTableViewCell: UITableViewCell {
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    let nameLabel = UILabel()
+    let timeLabel = UILabel()
 
     enum TimeStatus {
         case past, pending, current, future
@@ -21,14 +16,42 @@ class FestivalSlotTableViewCell: UITableViewCell {
         let visited: Bool
     }
 
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        commonInit()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+
+    private func commonInit() {
+        backgroundColor = .white
+
+        nameLabel.font = .preferredFont(forTextStyle: .title2)
+        timeLabel.font = .preferredFont(forTextStyle: .title3)
+
+        contentView.addSubviews(nameLabel, timeLabel)
+
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+
+        timeLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(8)
+        }
+    }
+
     func configure(with viewData: ViewData) {
         backgroundColor = viewData.isEven ? .bg1 : .bg2
-        textLabel?.text = viewData.name
-        textLabel?.textColor = viewData.timeStatus.titleColour
-        textLabel?.font = .preferredFont(forTextStyle: .title2)
-        detailTextLabel?.text = viewData.time
-        detailTextLabel?.textColor = viewData.timeStatus.detailColour
-        detailTextLabel?.font = .preferredFont(forTextStyle: .title3)
+        nameLabel.text = viewData.name
+        nameLabel.textColor = viewData.timeStatus.titleColour
+        timeLabel.text = viewData.time
+        timeLabel.textColor = viewData.timeStatus.detailColour
     }
 }
 
