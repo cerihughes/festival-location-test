@@ -15,24 +15,24 @@ class FestivalDataViewModel {
         updateSlots()
     }
 
-    var selectedDay: FestivalDataView.Day = .currentOrThursday {
+    var selectedDay: GMDay = .currentOrThursday {
         didSet {
             updateSlots()
         }
     }
 
-    var selectedStage: FestivalDataView.Stage = .initialStage(for: .currentOrThursday) {
+    var selectedStage: GMStage = .initialStage(for: .currentOrThursday) {
         didSet {
             updateSlots()
         }
     }
 
     var indexOfSelectedDay: Int {
-        FestivalDataView.Day.allCases.firstIndex(of: selectedDay) ?? 0
+        GMDay.allCases.firstIndex(of: selectedDay) ?? 0
     }
 
     var indexOfSelectedStage: Int {
-        FestivalDataView.Stage.allCases.firstIndex(of: selectedStage) ?? 0
+        GMStage.allCases.firstIndex(of: selectedStage) ?? 0
     }
 
     var indexToScrollTo: Int? {
@@ -44,8 +44,8 @@ class FestivalDataViewModel {
         slots.count
     }
 
-    var stagesForSelectedDay: [FestivalDataView.Stage] {
-        FestivalDataView.Stage.stages(for: selectedDay)
+    var stagesForSelectedDay: [GMStage] {
+        GMStage.stages(for: selectedDay)
     }
 
     @discardableResult
@@ -58,45 +58,29 @@ class FestivalDataViewModel {
     }
 
     private func updateSlots() {
-        guard let stage = dataRepository.stage(name: selectedStage.identifier) else { return }
-        let dayStart = selectedDay.start
-        let dayEnd = selectedDay.end
-        slots = stage.slots
-            .filter { dayStart...dayEnd ~= $0.start }
-            .mapWithPrevious {
-                $0.asViewData(timeFormatter: timeFormatter, isPreviousSlotFinished: $1?.isFinished ?? true)
-            }
+        guard
+            let stage = dataRepository.stage(name: selectedStage.identifier),
+            let daySlots = stage.slots(for: selectedDay)
+        else { return }
+
+        slots = daySlots.mapWithPrevious {
+            $0.asViewData(timeFormatter: timeFormatter, isPreviousSlotFinished: $1?.isFinished ?? true)
+        }
     }
 }
 
-private extension FestivalDataView.Day {
-    var start: Date {
-        Calendar.current.date(self)
-    }
-
-    var end: Date {
-        start.addingOneDay()
-    }
-
-    static var current: Self? {
-        let now = dateFactory.currentDate()
-        for day in allCases where day.start...day.end ~= now {
-            return day
-        }
-        return nil
-    }
-
+private extension GMDay {
     static var currentOrThursday: Self {
         current ?? .thursday
     }
 }
 
-private extension FestivalDataView.Stage {
-    static func stages(for day: FestivalDataView.Day) -> [FestivalDataView.Stage] {
-        day == .thursday ? [.farOut, .walledGarden, .chaiWallahs, .roundTheTwist] : FestivalDataView.Stage.allCases
+private extension GMStage {
+    static func stages(for day: GMDay) -> [GMStage] {
+        day == .thursday ? [.farOut, .walledGarden, .chaiWallahs, .roundTheTwist] : GMStage.allCases
     }
 
-    static func initialStage(for day: FestivalDataView.Day) -> FestivalDataView.Stage {
+    static func initialStage(for day: GMDay) -> GMStage {
         stages(for: day).first ?? .mountain
     }
 
@@ -107,23 +91,6 @@ private extension FestivalDataView.Stage {
     var previous: Self? {
         .init(rawValue: rawValue - 1)
     }
-
-    var identifier: String {
-        switch self {
-        case .mountain:
-            return "Mountain Stage"
-        case .farOut:
-            return "Far Out"
-        case .walledGarden:
-            return "Walled Garden"
-        case .rising:
-            return "Rising"
-        case .chaiWallahs:
-            return "Chai Wallahs"
-        case .roundTheTwist:
-            return "Round The Twist"
-        }
-    }
 }
 
 private extension Slot {
@@ -132,9 +99,8 @@ private extension Slot {
     }
 
     func asViewData(timeFormatter: DateFormatter, isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.ViewData {
-        let time = "\(timeFormatter.string(from: start)) - \(timeFormatter.string(from: end))"
         let timeStatus = timeStatus(isPreviousSlotFinished: isPreviousSlotFinished)
-        return .init(name: name, time: time, timeStatus: timeStatus, visited: false)
+        return .init(name: name, time: timeString(timeFormatter: timeFormatter), timeStatus: timeStatus, visited: false)
     }
 
     private func timeStatus(isPreviousSlotFinished: Bool) -> FestivalSlotTableViewCell.TimeStatus {
@@ -151,18 +117,5 @@ private extension Slot {
         case (false, false, false):
             return .future
         }
-    }
-}
-
-private extension Calendar {
-    func date(_ day: FestivalDataView.Day) -> Date {
-        // Assume a festival day runs from 6am to 6am
-        var dateComponents = DateComponents()
-        dateComponents.year = 2023
-        dateComponents.month = 8
-        dateComponents.day = 17 + day.rawValue
-        dateComponents.timeZone = TimeZone(abbreviation: "BST")
-        dateComponents.hour = 6
-        return date(from: dateComponents)!
     }
 }

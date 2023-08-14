@@ -34,14 +34,14 @@ class FestivalDataViewController: TypedViewController<FestivalDataView> {
     }
 
     @objc private func dayChanged(_ segmentedControl: UISegmentedControl) {
-        guard let day = FestivalDataView.Day(rawValue: segmentedControl.selectedSegmentIndex) else { return }
+        guard let day = GMDay(rawValue: segmentedControl.selectedSegmentIndex) else { return }
         viewModel.selectedDay = day
         updateStages()
         reloadData()
     }
 
     @objc private func stageChanged(_ segmentedControl: UISegmentedControl) {
-        guard let stage = FestivalDataView.Stage.allCases[safe: segmentedControl.selectedSegmentIndex] else { return }
+        guard let stage = GMStage.allCases[safe: segmentedControl.selectedSegmentIndex] else { return }
         viewModel.selectedStage = stage
         reloadData()
     }

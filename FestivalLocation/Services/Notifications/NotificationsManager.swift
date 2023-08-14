@@ -7,12 +7,14 @@ protocol NotificationsManager {
 }
 
 class DefaultNotificationsManager: NSObject, NotificationsManager {
+    private let dataRepository: DataRepository
     private let notificationCenter: UNUserNotificationCenter
-    private let dateFormatter: DateFormatter
+    private let timeFormatter: DateFormatter
 
-    init(notificationCenter: UNUserNotificationCenter, dateFormatter: DateFormatter) {
+    init(dataRepository: DataRepository, notificationCenter: UNUserNotificationCenter, timeFormatter: DateFormatter) {
+        self.dataRepository = dataRepository
         self.notificationCenter = notificationCenter
-        self.dateFormatter = dateFormatter
+        self.timeFormatter = timeFormatter
         super.init()
         notificationCenter.delegate = self
     }
@@ -27,9 +29,11 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
     }
 
     func sendLocalNotification(for event: Event) {
+        guard event.kind == .entry, let nowNext = dataRepository.nowNext(for: event.areaName) else { return }
+
         let content = UNMutableNotificationContent()
         content.title = event.title
-        content.body = event.body(dateFormatter: dateFormatter)
+        content.body = nowNext.body(timeFormatter: timeFormatter)
         content.sound = UNNotificationSound.default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
@@ -54,30 +58,41 @@ extension DefaultNotificationsManager: UNUserNotificationCenterDelegate {
 
 private extension Event {
     var title: String {
-        kind.notificationTitle
-    }
-
-    func body(dateFormatter: DateFormatter) -> String {
-        "\(areaName): \(kind.notificationBody) at \(dateFormatter.string(from: timestamp))"
+        switch kind {
+        case .entry:
+            return "Arrived at \(areaName)"
+        case .exit:
+            return "Left \(areaName)"
+        }
     }
 }
 
-private extension Event.Kind {
-    var notificationTitle: String {
-        switch self {
-        case .entry:
-            return "Arrived"
-        case .exit:
-            return "Left"
+private extension NowNext {
+    func body(timeFormatter: DateFormatter) -> String {
+        var body = nowBody(timeFormatter: timeFormatter)
+        if let nextBody = nextBody(timeFormatter: timeFormatter) {
+            body += "\n"
+            body += nextBody
+        }
+        return body
+    }
+
+    private func nowBody(timeFormatter: DateFormatter) -> String {
+        if isNowStarted {
+            return "Now: \(now.name))"
+        } else {
+            return now.body(timeFormatter: timeFormatter)
         }
     }
 
-    var notificationBody: String {
-        switch self {
-        case .entry:
-            return "Arrived"
-        case .exit:
-            return "Left"
-        }
+    private func nextBody(timeFormatter: DateFormatter) -> String? {
+        guard let next else { return nil }
+        return next.body(timeFormatter: timeFormatter)
+    }
+}
+
+private extension Slot {
+    func body(timeFormatter: DateFormatter) -> String {
+        return "\(timeFormatter.string(from: start)): \(name)"
     }
 }
