@@ -43,7 +43,7 @@ extension AuthorisationViewModel: LocationManagerAuthenticationDelegate {
         didChangeAuthorisation authorisation: LocationAuthorisation
     ) {
         switch authorisation {
-        case.initial:
+        case .initial:
             locationManager.requestWhenInUseAuthorisation()
         case .whenInUse:
             locationManager.requestAlwaysAuthorisation()

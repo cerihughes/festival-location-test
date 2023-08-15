@@ -43,7 +43,7 @@ extension Int {
 
 extension String {
     var trimmed: String {
-        self.trimmingCharacters(in: .whitespaces)
+        trimmingCharacters(in: .whitespaces)
     }
 }
 

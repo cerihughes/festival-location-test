@@ -55,7 +55,7 @@ class DefaultLineupLoader: LineupLoader {
 
 private extension String {
     func removingPrefix(_ prefix: String) -> String? {
-        guard self.hasPrefix(prefix) else { return nil }
+        guard hasPrefix(prefix) else { return nil }
         let index = index(startIndex, offsetBy: prefix.count)
         return String(suffix(from: index))
     }
@@ -101,7 +101,7 @@ class LineupBuilder {
 
     func setStartEndTimes(_ startEndTimes: String) -> Bool {
         guard currentStartEndTimes == nil, let startEndTimes = startEndTimes.asStartEndTimes() else { return false }
-        self.currentStartEndTimes = startEndTimes
+        currentStartEndTimes = startEndTimes
         return true
     }
 

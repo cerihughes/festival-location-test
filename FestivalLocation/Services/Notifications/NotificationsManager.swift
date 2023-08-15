@@ -39,7 +39,7 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         let identifier = event.stringIdentifier
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        notificationCenter.add(request, withCompletionHandler: { (error) in
+        notificationCenter.add(request, withCompletionHandler: { error in
             if error != nil {
                 print("Error adding notification with identifier: \(identifier)")
             }
