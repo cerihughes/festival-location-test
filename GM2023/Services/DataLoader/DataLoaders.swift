@@ -6,7 +6,7 @@ extension String {
 }
 
 extension URL {
-    static let github = "https://raw.githubusercontent.com/cerihughes/festival-location-test/main/FestivalLocation/"
+    static let github = "https://raw.githubusercontent.com/cerihughes/festival-location-test/main/GM2023/"
     static let greenMan2023FestivalAreas = URL(string: github + String.greenMan2023FestivalAreas)!
     static let greenMan2023FestivalLineup = URL(string: github + String.greenMan2023FestivalLineup)!
 }

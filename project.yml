@@ -32,10 +32,10 @@ targets:
     type: application
     platform: iOS
     settings:
-      INFOPLIST_FILE: FestivalLocation/Info.plist
+      INFOPLIST_FILE: GM2023/Info.plist
       DEVELOPMENT_TEAM: Y56955G4Q8
     sources:
-      - FestivalLocation
+      - GM2023
     dependencies:
       - package: Realm
         product: RealmSwift
@@ -48,6 +48,6 @@ targets:
   GM2023Tests:
     type: bundle.unit-test
     platform: iOS
-    sources: FestivalLocationTests
+    sources: GM2023Tests
     dependencies:
       - target: GM2023
