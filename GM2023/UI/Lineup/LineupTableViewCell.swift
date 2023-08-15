@@ -29,6 +29,7 @@ class LineupTableViewCell: UITableViewCell {
     private func commonInit() {
         backgroundColor = .white
 
+        nameLabel.adjustsFontSizeToFitWidth = true
         nameLabel.font = .preferredFont(forTextStyle: .title2)
         timeLabel.font = .preferredFont(forTextStyle: .title3)
 

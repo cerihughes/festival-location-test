@@ -21,6 +21,7 @@ class HistoryTableViewCell: UITableViewCell {
     private func commonInit() {
         backgroundColor = .white
 
+        nameLabel.adjustsFontSizeToFitWidth = true
         nameLabel.font = .preferredFont(forTextStyle: .title2)
 
         contentView.addSubview(nameLabel)

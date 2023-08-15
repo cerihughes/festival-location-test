@@ -73,6 +73,6 @@ extension LocalDataSource {
         setStageShowing(.farOut, showing: true)
         setStageShowing(.walledGarden, showing: true)
         setStageShowing(.rising, showing: true)
-        setStageShowing(.chaiWallahs, showing: true)
+        setStageShowing(.cinedrome, showing: true)
     }
 }

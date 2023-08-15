@@ -27,12 +27,14 @@ final class LineupLoaderTests: XCTestCase {
     func testImport() throws {
         let festival = try XCTUnwrap(dataRepository.festival(name: .greenMan2023FestivalName))
         let stageNames = festival.stages.map { $0.name }
-        XCTAssertEqual(stageNames.count, 6)
+        XCTAssertEqual(stageNames.count, 8)
         XCTAssertTrue(stageNames.contains("Mountain Stage"))
         XCTAssertTrue(stageNames.contains("Far Out"))
         XCTAssertTrue(stageNames.contains("Walled Garden"))
         XCTAssertTrue(stageNames.contains("Rising"))
         XCTAssertTrue(stageNames.contains("Chai Wallahs"))
+        XCTAssertTrue(stageNames.contains("Babbling Tongues"))
+        XCTAssertTrue(stageNames.contains("Cinedrome"))
         XCTAssertTrue(stageNames.contains("Round The Twist"))
     }
 
@@ -52,6 +54,7 @@ final class LineupLoaderTests: XCTestCase {
             "Lice b2b PVA",
             "Flying Mojito Bros",
             "Iko Cherie",
+            "TBA",
             "Postmen DJs",
             "Dutty Disco",
             "Celtic Floor Muscles",
@@ -63,7 +66,7 @@ final class LineupLoaderTests: XCTestCase {
             "Ash Kenazi",
             "Joanie",
             "Babymorocco",
-            "Belinduh",
+            "Belinduh Belinduh Belinduh",
             "Spank DJs"
         ])
     }
@@ -77,32 +80,32 @@ final class LineupLoaderTests: XCTestCase {
         let sortedSlots1 = stage1.slots.sorted(by: \.start)
         let sortedSlots2 = stage2.slots.sorted(by: \.start)
 
-        let startBeforeEndOn = try XCTUnwrap(sortedSlots1[safe: 4])
-        let startOnEndAfter = try XCTUnwrap(sortedSlots1[safe: 5])
-        let startAfterEndAfter = try XCTUnwrap(sortedSlots1[safe: 14])
+        let startBeforeEndOn = try XCTUnwrap(sortedSlots1[safe: 6])
+        let startOnEndAfter = try XCTUnwrap(sortedSlots1[safe: 7])
+        let startAfterEndAfter = try XCTUnwrap(sortedSlots1[safe: 18])
         let startBeforeEndAfter = try XCTUnwrap(sortedSlots2[safe: 5])
 
         assertSlot(
             startBeforeEndOn,
-            hasName: "Will & The People",
-            expectedStartDate: "17.08.2023 23:00",
+            hasName: "TC & the Groove Family",
+            expectedStartDate: "17.08.2023 22:45",
             expectedEndDate: "18.08.2023 00:00",
             dateFormatter: dateFormatter
         )
 
         assertSlot(
             startOnEndAfter,
-            hasName: "TC & the Groove Family",
+            hasName: "Diplomats Of Sound DJs",
             expectedStartDate: "18.08.2023 00:00",
-            expectedEndDate: "18.08.2023 01:05",
+            expectedEndDate: "18.08.2023 02:00",
             dateFormatter: dateFormatter
         )
 
         assertSlot(
             startAfterEndAfter,
-            hasName: "Hannabiell & the Midnight Blue Collective",
-            expectedStartDate: "19.08.2023 00:30",
-            expectedEndDate: "19.08.2023 01:30",
+            hasName: "Diplomats Of Sound DJs",
+            expectedStartDate: "19.08.2023 01:00",
+            expectedEndDate: "19.08.2023 04:00",
             dateFormatter: dateFormatter
         )
 

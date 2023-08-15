@@ -81,6 +81,10 @@ extension GMStage {
             return "Rising"
         case .chaiWallahs:
             return "Chai"
+        case .babblingTongues:
+            return "Babbling"
+        case .cinedrome:
+            return "Cine"
         case .roundTheTwist:
             return "Twist"
         }

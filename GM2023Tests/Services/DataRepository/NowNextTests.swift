@@ -68,10 +68,10 @@ class NowNextTests: XCTestCase {
         XCTAssertNil(nowNext.next)
     }
 
-    func testThursday_farOut_afterLast() throws {
+    func testThursday_walledGarden_afterLast() throws {
         mockDateFactory.setCurrentDate("17.08.2023 23:55")
 
-        let nowNext = dataRepository.nowNext(for: .farOut)
+        let nowNext = dataRepository.nowNext(for: .walledGarden)
         XCTAssertNil(nowNext)
     }
 
@@ -109,18 +109,18 @@ class NowNextTests: XCTestCase {
         let nowNext = try XCTUnwrap(dataRepository.nowNext(for: .walledGarden))
         let body = generateBody(nowNext: nowNext)
         XCTAssertEqual(body.count, 2)
-        XCTAssertEqual(body[0], "17:00: Aisha Vaughan")
-        XCTAssertEqual(body[1], "18:15: The Gentle Good")
+        XCTAssertEqual(body[0], "16:00: Aisha Vaughan")
+        XCTAssertEqual(body[1], "17:15: The Gentle Good")
     }
 
     func testNowAndNext() throws {
-        mockDateFactory.setCurrentDate("17.08.2023 18:00")
+        mockDateFactory.setCurrentDate("17.08.2023 17:00")
 
         let nowNext = try XCTUnwrap(dataRepository.nowNext(for: .chaiWallahs))
         let body = generateBody(nowNext: nowNext)
         XCTAssertEqual(body.count, 2)
         XCTAssertEqual(body[0], "Now: The Beatles Dub Club")
-        XCTAssertEqual(body[1], "19:00: Little Thief")
+        XCTAssertEqual(body[1], "18:00: Little Thief")
     }
 
     private func generateBody(nowNext: NowNext) -> [String] {

@@ -96,7 +96,7 @@ private extension GMDay {
 
 private extension GMStage {
     static func stages(for day: GMDay) -> [GMStage] {
-        day == .thursday ? [.farOut, .walledGarden, .chaiWallahs, .roundTheTwist] : GMStage.allCases
+        day == .thursday ? [.farOut, .walledGarden, .chaiWallahs, .cinedrome, .roundTheTwist] : GMStage.allCases
     }
 
     static func initialStage(for day: GMDay, stagesToShow: [GMStage]) -> GMStage {
