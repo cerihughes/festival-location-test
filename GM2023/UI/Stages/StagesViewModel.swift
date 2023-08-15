@@ -7,17 +7,22 @@ protocol StagesViewModelDelegate: AnyObject {
 
 class StagesViewModel {
     private let dataRepository: DataRepository
+    private let timeFormatter: DateFormatter
+
     private var collectionNotificationToken: NSObject?
 
     weak var delegate: StagesViewModelDelegate?
 
-    init(dataRepository: DataRepository) {
+    init(dataRepository: DataRepository, timeFormatter: DateFormatter) {
         self.dataRepository = dataRepository
+        self.timeFormatter = timeFormatter
         observe()
     }
 
     var mapCircles: [MKCircle] {
-        dataRepository.areas().map { $0.asCircularArea().asMapCircle() }
+        dataRepository.areas()
+            .map { $0.asMapCircle() }
+            .map { annotatingWithNowNext(circle: $0)}
     }
 
     private func observe() {
@@ -30,5 +35,12 @@ class StagesViewModel {
                 break // No-op
             }
         }
+    }
+
+    private func annotatingWithNowNext(circle: MKCircle) -> MKCircle {
+        if let title = circle.title, let nowNext = dataRepository.nowNext(for: title) {
+            circle.title = "\(title)\n(\(nowNext.now.name))"
+        }
+        return circle
     }
 }

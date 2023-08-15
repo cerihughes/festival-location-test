@@ -1,4 +1,5 @@
 import Foundation
+import MapKit
 
 extension String {
     static let greenMan2023FestivalName = "Green Man Festival 2023"
@@ -25,6 +26,12 @@ extension Area {
 
     func asCircularArea() -> CircularArea {
         .init(name: name, location: location, radius: radius)
+    }
+
+    func asMapCircle() -> MKCircle {
+        let circle = MKCircle(center: location.asMapCoordinate(), radius: radius)
+        circle.title = name
+        return circle
     }
 }
 

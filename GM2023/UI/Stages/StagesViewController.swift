@@ -26,6 +26,10 @@ class StagesViewController: TypedViewController<StagesView> {
         navigationController?.navigationBar.backgroundColor = .white
 
         viewModel.delegate = self
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         updateMap()
     }
 

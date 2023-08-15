@@ -26,7 +26,7 @@ class StagesView: UIView {
 
         addSubview(mapView)
 
-        mapView.isUserInteractionEnabled = false
+        mapView.mapType = .satellite
         mapView.showsUserLocation = true
         mapView.delegate = mapDelegate
 

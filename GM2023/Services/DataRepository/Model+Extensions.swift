@@ -25,6 +25,8 @@ extension Location {
 
 extension CircularArea {
     func asMapCircle() -> MKCircle {
-        .init(center: location.asMapCoordinate(), radius: radius)
+        let circle = MKCircle(center: location.asMapCoordinate(), radius: radius)
+        circle.title = name
+        return circle
     }
 }

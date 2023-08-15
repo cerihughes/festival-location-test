@@ -10,7 +10,7 @@ class StagesViewControllerProvider: DefaultViewControllerProvider {
         else {
             return nil
         }
-        let viewModel = StagesViewModel(dataRepository: dataRepository)
+        let viewModel = StagesViewModel(dataRepository: dataRepository, timeFormatter: .HH_mm())
         let viewController = StagesViewController(context: context, viewModel: viewModel)
         viewController.title = "Stages"
         viewController.tabBarItem = .init(title: "Stages", image: .init(named: "pin-map-7"), tag: 1)
