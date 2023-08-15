@@ -40,6 +40,22 @@
     "radius" : 50
   },
   {
+    "name" : "Babbling Tongues",
+    "location" : {
+      "longitude" : -3.1937753,
+      "latitude" : 51.4842578
+    },
+    "radius" : 50
+  },
+  {
+    "name" : "Cinedrome",
+    "location" : {
+      "longitude" : -3.1827618,
+      "latitude" : 51.4793951
+    },
+    "radius" : 50
+  },
+  {
     "name" : "Round The Twist",
     "location" : {
       "longitude" : -3.1790851750949058,

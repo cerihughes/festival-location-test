@@ -5,7 +5,7 @@ enum GMDay: Int, CaseIterable {
 }
 
 enum GMStage: Int, CaseIterable {
-    case mountain, farOut, walledGarden, rising, chaiWallahs, roundTheTwist
+    case mountain, farOut, walledGarden, rising, chaiWallahs, babblingTongues, cinedrome, roundTheTwist
 }
 
 extension GMDay {
@@ -46,6 +46,10 @@ extension GMStage {
             return "Rising"
         case .chaiWallahs:
             return "Chai Wallahs"
+        case .babblingTongues:
+            return "Babbling Tongues"
+        case .cinedrome:
+            return "Cinedrome"
         case .roundTheTwist:
             return "Round The Twist"
         }
