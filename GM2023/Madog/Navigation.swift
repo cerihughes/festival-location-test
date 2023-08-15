@@ -8,5 +8,5 @@ enum Navigation: Equatable {
     case histories
     case history(String)
     case settings
-    case reloadData
+    case exportStages
 }

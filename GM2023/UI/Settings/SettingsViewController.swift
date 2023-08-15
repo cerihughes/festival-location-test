@@ -20,15 +20,22 @@ class SettingsViewController: TypedViewController<SettingsView> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        typedView.reloadStagesButton.addTarget(self, action: #selector(reloadTapped), for: .touchUpInside)
+        typedView.reloadDataButton.addTarget(self, action: #selector(reloadDataTapped), for: .touchUpInside)
+        typedView.showStagesJSONButton.addTarget(self, action: #selector(showStagesJSON), for: .touchUpInside)
 
         typedView.stageTableView.register(ShowStageTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         typedView.stageTableView.dataSource = self
         typedView.stageTableView.reloadData()
     }
 
-    @objc private func reloadTapped(_ item: UIButton) {
-        context?.navigateForward(token: .reloadData, animated: true)
+    @objc private func reloadDataTapped(_ item: UIButton) {
+        Task {
+            await viewModel.reloadData()
+        }
+    }
+
+    @objc private func showStagesJSON(_ item: UIButton) {
+        context?.navigateForward(token: .exportStages, animated: true)
     }
 }
 

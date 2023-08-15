@@ -2,13 +2,22 @@ import Foundation
 
 class SettingsViewModel {
     private let localDataSource: LocalDataSource
+    private let areasLoader: AreasLoader
+    private let lineupLoader: LineupLoader
 
     private var stageViewData = [ShowStageTableViewCell.ViewData]()
 
-    init(localDataSource: LocalDataSource) {
+    init(localDataSource: LocalDataSource, areasLoader: AreasLoader, lineupLoader: LineupLoader) {
         self.localDataSource = localDataSource
+        self.areasLoader = areasLoader
+        self.lineupLoader = lineupLoader
 
         createStageViewData()
+    }
+
+    func reloadData() async {
+        _ = await areasLoader.importAreas(loader: .url(.greenMan2023FestivalAreas))
+        _ = await lineupLoader.importLineup(loader: .url(.greenMan2023FestivalLineup))
     }
 
     var numberOfStages: Int {

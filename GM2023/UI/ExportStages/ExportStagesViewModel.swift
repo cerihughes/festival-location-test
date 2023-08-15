@@ -1,28 +1,19 @@
 import Foundation
 
-class ReloadDataViewModel {
+class ExportStagesViewModel {
     private let dataRepository: DataRepository
-    private let areasLoader: AreasLoader
 
     private let encoder = JSONEncoder()
 
-    weak var delegate: StagesViewModelDelegate?
-
-    init(dataRepository: DataRepository, areasLoader: AreasLoader) {
+    init(dataRepository: DataRepository) {
         self.dataRepository = dataRepository
-        self.areasLoader = areasLoader
 
         encoder.outputFormatting = .prettyPrinted
     }
 
-    var jsonString: String? {
+    var areasJSONString: String? {
         guard let data = try? encoder.encode(circularAreas()) else { return nil }
         return .init(data: data, encoding: .utf8)
-    }
-
-    @discardableResult
-    func importAreas() async -> Bool {
-        await areasLoader.importAreas(loader: .url(.greenMan2023FestivalAreas))
     }
 
     private func circularAreas() -> [CircularArea] {
