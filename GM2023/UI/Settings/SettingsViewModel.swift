@@ -20,13 +20,13 @@ class SettingsViewModel {
     }
 
     func updateStagePreference(at index: Int, value: Bool) {
-        guard let identifier = GMStage.allCases[safe: index]?.identifier else { return }
-        localDataSource.setStageShowing(identifier, showing: value)
+        guard let stage = GMStage.allCases[safe: index] else { return }
+        localDataSource.setStageShowing(stage, showing: value)
     }
 
     private func createStageViewData() {
         stageViewData = GMStage.allCases.map {
-            .init(name: $0.identifier, selected: localDataSource.isStageShowing($0.identifier))
+            .init(name: $0.identifier, selected: localDataSource.isStageShowing($0))
         }
     }
 }

@@ -66,3 +66,13 @@ extension ServicesProvider {
     var notificationsManager: NotificationsManager? { services?.notificationsManager }
     var locationMonitor: LocationMonitor? { services?.locationMonitor }
 }
+
+private extension LocalDataSource {
+    func setDefaultValues() {
+        setStageShowing(.mountain, showing: true)
+        setStageShowing(.farOut, showing: true)
+        setStageShowing(.walledGarden, showing: true)
+        setStageShowing(.rising, showing: true)
+        setStageShowing(.chaiWallahs, showing: true)
+    }
+}

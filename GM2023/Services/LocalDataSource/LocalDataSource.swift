@@ -1,9 +1,8 @@
 import Foundation
 
 protocol LocalDataSource {
-    func isStageShowing(_ stageName: String) -> Bool
-    func setStageShowing(_ stageName: String, showing: Bool)
-    func setDefaultValues()
+    func isStageShowing(_ stage: GMStage) -> Bool
+    func setStageShowing(_ stage: GMStage, showing: Bool)
 }
 
 class DefaultLocalDataSource: LocalDataSource {
@@ -13,24 +12,12 @@ class DefaultLocalDataSource: LocalDataSource {
         self.localStorage = localStorage
     }
 
-    func isStageShowing(_ stageName: String) -> Bool {
-        localStorage.bool(forKey: isStageShowingKey(for: stageName))
+    func isStageShowing(_ stage: GMStage) -> Bool {
+        localStorage.bool(forKey: isStageShowingKey(for: stage.identifier))
     }
 
-    func setStageShowing(_ stageName: String, showing: Bool) {
-        localStorage.setBool(showing, forKey: isStageShowingKey(for: stageName))
-    }
-
-    func setDefaultValues() {
-        setDefaultValue(true, for: .mountain)
-        setDefaultValue(true, for: .farOut)
-        setDefaultValue(true, for: .walledGarden)
-        setDefaultValue(true, for: .rising)
-        setDefaultValue(true, for: .chaiWallahs)
-    }
-
-    private func setDefaultValue(_ value: Bool, for stage: GMStage) {
-        setStageShowing(stage.identifier, showing: value)
+    func setStageShowing(_ stage: GMStage, showing: Bool) {
+        localStorage.setBool(showing, forKey: isStageShowingKey(for: stage.identifier))
     }
 
     private func isStageShowingKey(for stageName: String) -> String {
