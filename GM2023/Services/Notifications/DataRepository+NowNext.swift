@@ -7,6 +7,10 @@ struct NowNext {
 }
 
 extension DataRepository {
+    func nowNext(for stage: GMStage) -> NowNext? {
+        nowNext(for: stage.identifier)
+    }
+
     func nowNext(for stageName: String) -> NowNext? {
         let current = dateFactory.currentDate()
 
