@@ -13,24 +13,11 @@ class ReloadDataViewController: TypedViewController<ReloadDataView> {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-        typedView.importButton.addTarget(self, action: #selector(importTapped), for: .touchUpInside)
-        typedView.exportButton.addTarget(self, action: #selector(exportTapped), for: .touchUpInside)
-
-        let jsonString = viewModel.jsonString
+        let jsonString = viewModel.areasJSONString
         typedView.textView.text = jsonString
-    }
-
-    @objc private func importTapped(_ button: UIButton) {
-        Task { @MainActor in
-            await viewModel.importAreas()
-        }
-    }
-
-    @objc private func exportTapped(_ button: UIButton) {
-        let jsonString = viewModel.jsonString
         UIPasteboard.general.string = jsonString
     }
 }
