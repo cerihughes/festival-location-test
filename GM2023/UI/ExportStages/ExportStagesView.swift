@@ -1,7 +1,7 @@
 import SnapKit
 import UIKit
 
-class ReloadDataView: UIView {
+class ExportStagesView: UIView {
     let textView = UITextView()
 
     override init(frame: CGRect) {

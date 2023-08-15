@@ -1,10 +1,10 @@
 import Madog
 import UIKit
 
-class ReloadDataViewController: TypedViewController<ReloadDataView> {
-    private let viewModel: ReloadDataViewModel
+class ExportStagesViewController: TypedViewController<ExportStagesView> {
+    private let viewModel: ExportStagesViewModel
 
-    init(viewModel: ReloadDataViewModel) {
+    init(viewModel: ExportStagesViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

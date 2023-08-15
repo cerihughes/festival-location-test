@@ -35,7 +35,7 @@ class SettingsViewController: TypedViewController<SettingsView> {
     }
 
     @objc private func showStagesJSON(_ item: UIButton) {
-        context?.navigateForward(token: .reloadData, animated: true)
+        context?.navigateForward(token: .exportStages, animated: true)
     }
 }
 

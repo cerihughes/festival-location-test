@@ -16,7 +16,7 @@ class DefaultResolver: Resolver {
             HistoriesViewControllerProvider.init,
             HistoryViewControllerProvider.init,
             SettingsViewControllerProvider.init,
-            ReloadDataViewControllerProvider.init
+            ExportStagesViewControllerProvider.init
         ]
     }
 }

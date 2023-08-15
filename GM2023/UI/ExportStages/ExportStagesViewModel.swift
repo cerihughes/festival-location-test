@@ -1,6 +1,6 @@
 import Foundation
 
-class ReloadDataViewModel {
+class ExportStagesViewModel {
     private let dataRepository: DataRepository
 
     private let encoder = JSONEncoder()
