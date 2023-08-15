@@ -1,12 +1,12 @@
 import Foundation
 
 class SettingsViewModel {
-    private let dataRepository: DataRepository
+    private let localDataSource: LocalDataSource
 
     private var stageViewData = [ShowStageTableViewCell.ViewData]()
 
-    init(dataRepository: DataRepository) {
-        self.dataRepository = dataRepository
+    init(localDataSource: LocalDataSource) {
+        self.localDataSource = localDataSource
 
         createStageViewData()
     }
@@ -20,12 +20,13 @@ class SettingsViewModel {
     }
 
     func updateStagePreference(at index: Int, value: Bool) {
-        
+        guard let identifier = GMStage.allCases[safe: index]?.identifier else { return }
+        localDataSource.setStageShowing(identifier, showing: value)
     }
 
     private func createStageViewData() {
         stageViewData = GMStage.allCases.map {
-            .init(name: $0.identifier, selected: true)
+            .init(name: $0.identifier, selected: localDataSource.isStageShowing($0.identifier))
         }
     }
 }

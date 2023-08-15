@@ -5,6 +5,7 @@ import RealmSwift
 let serviceProviderName = "serviceProviderName"
 
 protocol Services {
+    var localDataSource: LocalDataSource { get }
     var dataRepository: DataRepository { get }
     var lineupLoader: LineupLoader { get }
     var areasLoader: AreasLoader { get }
@@ -15,6 +16,7 @@ protocol Services {
 
 class DefaultServices: ServiceProvider, Services {
     let name = serviceProviderName
+    let localDataSource: LocalDataSource
     let dataRepository: DataRepository
     let lineupLoader: LineupLoader
     let areasLoader: AreasLoader
@@ -28,6 +30,7 @@ class DefaultServices: ServiceProvider, Services {
             fatalError("Cannot create Realm")
         }
 
+        localDataSource = DefaultLocalDataSource(localStorage: UserDefaults.standard)
         dataRepository = RealmDataRepository(realm: realm)
         lineupLoader = DefaultLineupLoader(dataRepository: dataRepository)
         areasLoader = DefaultAreasLoader(dataRepository: dataRepository)
@@ -45,6 +48,7 @@ class DefaultServices: ServiceProvider, Services {
         if !dataRepository.hasGreenMan2023FestivalData() {
             _ = lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup))
             _ = areasLoader.importAreas(loader: .fileName(.greenMan2023FestivalAreas))
+            localDataSource.setDefaultValues()
         }
     }
 }
@@ -54,6 +58,7 @@ protocol ServicesProvider {
 }
 
 extension ServicesProvider {
+    var localDataSource: LocalDataSource? { services?.localDataSource }
     var dataRepository: DataRepository? { services?.dataRepository }
     var lineupLoader: LineupLoader? { services?.lineupLoader }
     var areasLoader: AreasLoader? { services?.areasLoader }
