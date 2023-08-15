@@ -67,7 +67,7 @@ extension ServicesProvider {
     var locationMonitor: LocationMonitor? { services?.locationMonitor }
 }
 
-private extension LocalDataSource {
+extension LocalDataSource {
     func setDefaultValues() {
         setStageShowing(.mountain, showing: true)
         setStageShowing(.farOut, showing: true)
