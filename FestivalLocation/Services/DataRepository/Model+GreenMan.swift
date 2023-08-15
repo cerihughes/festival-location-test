@@ -19,7 +19,7 @@ extension GMDay {
 
     static var current: Self? {
         let now = dateFactory.currentDate()
-        for day in allCases where day.start...day.end ~= now {
+        for day in allCases where day.start ... day.end ~= now {
             return day
         }
         return nil

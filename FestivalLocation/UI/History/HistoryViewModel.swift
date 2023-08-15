@@ -54,7 +54,7 @@ class HistoryViewModel {
     private func observe() {
         collectionNotificationToken = dataRepository.events(areaName: areaName).observe { [weak self] changes in
             switch changes {
-            case .initial(let events), .update(let events, _, _, _):
+            case let .initial(events), let .update(events, _, _, _):
                 self?.createViewData(events: events)
             default:
                 break // No-op

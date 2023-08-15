@@ -5,7 +5,7 @@ protocol DataRepository {
     func getAll<T>(_ type: T.Type) -> Results<T> where T: Object
     func add<T>(_ object: T) where T: Object
     func delete(_ object: Object)
-    func commit(_ block: (() -> Void))
+    func commit(_ block: () -> Void)
 }
 
 extension DataRepository {
@@ -102,7 +102,7 @@ class RealmDataRepository: DataRepository {
         }
     }
 
-    func commit(_ block: (() -> Void)) {
+    func commit(_ block: () -> Void) {
         try? realm.write(block)
     }
 }

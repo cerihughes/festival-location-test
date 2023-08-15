@@ -2,7 +2,6 @@ import Madog
 import UIKit
 
 class AddStageViewControllerProvider: DefaultViewControllerProvider {
-
     override func createViewController(token: Navigation, context: AnyContext<Navigation>) -> ViewController? {
         guard
             token == .addStage,

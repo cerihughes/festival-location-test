@@ -7,6 +7,7 @@ class StagesView: UIView {
         let location: Location
         let distance: Int
     }
+
     let mapView = MKMapView()
     private let mapDelegate = MapViewDelegate()
 

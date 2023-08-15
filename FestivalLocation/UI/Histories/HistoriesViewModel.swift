@@ -39,7 +39,7 @@ class HistoriesViewModel {
     private func observe() {
         collectionNotificationToken = dataRepository.areas().observe { [weak self] changes in
             switch changes {
-            case .initial(let areas), .update(let areas, _, _, _):
+            case let .initial(areas), let .update(areas, _, _, _):
                 self?.viewData = areas.enumerated().map { .init(isEven: $0.offset.isEven, name: $0.element.name) }
             default:
                 break // No-op

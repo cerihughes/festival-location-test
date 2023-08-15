@@ -11,7 +11,7 @@ class LineupViewModel {
     init(dataRepository: DataRepository, locationMonitor: LocationMonitor) {
         self.dataRepository = dataRepository
         self.locationMonitor = locationMonitor
-        updateSlots()
+        updateViewData()
     }
 
     var selectedDay: GMDay = .currentOrThursday {
@@ -36,11 +36,11 @@ class LineupViewModel {
 
     var indexToScrollTo: Int? {
         guard selectedDay == .current else { return nil }
-        return slots.firstIndex { $0.timeStatus == .pending || $0.timeStatus == .current } ?? slots.indices.last
+        return viewData.firstIndex { $0.timeStatus == .pending || $0.timeStatus == .current } ?? viewData.indices.last
     }
 
     var numberOfSlots: Int {
-        slots.count
+        viewData.count
     }
 
     var stagesForSelectedDay: [GMStage] {
@@ -65,7 +65,7 @@ class LineupViewModel {
     }
 
     func viewData(at index: Int) -> LineupTableViewCell.ViewData? {
-        slots[safe: index]
+        viewData[safe: index]
     }
 
     private func updateViewData() {

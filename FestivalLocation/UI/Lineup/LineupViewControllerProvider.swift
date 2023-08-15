@@ -2,7 +2,6 @@ import Madog
 import UIKit
 
 class LineupViewControllerProvider: DefaultViewControllerProvider {
-
     override func createViewController(token: Navigation, context: AnyContext<Navigation>) -> ViewController? {
         guard token == .lineup, let dataRepository, let locationMonitor else {
             return nil

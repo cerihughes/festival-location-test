@@ -44,7 +44,7 @@ extension Event {
 
 extension Stage {
     func slots(for day: GMDay) -> [Slot]? {
-        slots.filter { day.start...day.end ~= $0.start }
+        slots.filter { day.start ... day.end ~= $0.start }
     }
 
     var todaySlots: [Slot]? {
