@@ -104,7 +104,7 @@ final class LineupViewModelTests: XCTestCase {
     }
 
     func testInitialData_saturday() throws {
-        mockDateFactory.setCurrentDay(.saturday, time: "13:00")
+        mockDateFactory.setCurrentDay(.saturday, time: "12:30")
         createViewModel()
         XCTAssertEqual(viewModel.selectedDay, .saturday)
         XCTAssertEqual(viewModel.numberOfSlots, 8)
@@ -113,7 +113,7 @@ final class LineupViewModelTests: XCTestCase {
     }
 
     func testInitialData_sunday() throws {
-        mockDateFactory.setCurrentDay(.sunday, time: "13:00")
+        mockDateFactory.setCurrentDay(.sunday, time: "13:30")
         createViewModel()
         XCTAssertEqual(viewModel.selectedDay, .sunday)
         XCTAssertEqual(viewModel.numberOfSlots, 8)
@@ -156,7 +156,7 @@ final class LineupViewModelTests: XCTestCase {
         viewModel.selectedDay = .sunday
         viewModel.selectedStage = .rising
 
-        XCTAssertEqual(viewModel.indexToScrollTo, 6)
+        XCTAssertEqual(viewModel.indexToScrollTo, 7)
     }
 
     func testIndexToScrollTo_wrongDay() throws {
