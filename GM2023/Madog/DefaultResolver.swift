@@ -10,12 +10,13 @@ class DefaultResolver: Resolver {
     func viewControllerProviderFunctions() -> [() -> AnyViewControllerProvider<Navigation>] {
         [
             AuthorisationViewControllerProvider.init,
+            LineupViewControllerProvider.init,
             StagesViewControllerProvider.init,
-            ReloadDataViewControllerProvider.init,
             AddStageViewControllerProvider.init,
             HistoriesViewControllerProvider.init,
             HistoryViewControllerProvider.init,
-            LineupViewControllerProvider.init
+            SettingsViewControllerProvider.init,
+            ReloadDataViewControllerProvider.init
         ]
     }
 }

@@ -7,5 +7,6 @@ enum Navigation: Equatable {
     case addStage
     case histories
     case history(String)
+    case settings
     case reloadData
 }
