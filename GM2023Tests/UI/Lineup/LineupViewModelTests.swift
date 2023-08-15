@@ -5,6 +5,8 @@ import XCTest
 
 final class LineupViewModelTests: XCTestCase {
     private var mockDateFactory: MockDateFactory!
+    private var mockLocalStorage: MockLocalStorage!
+    private var localDataSource: LocalDataSource!
     private var dataRepository: DataRepository!
     private var locationMonitor: MockLocationMonitor!
     private var lineupLoader: LineupLoader!
@@ -16,6 +18,10 @@ final class LineupViewModelTests: XCTestCase {
         mockDateFactory = MockDateFactory()
         dateFactory = mockDateFactory
 
+        mockLocalStorage = .init()
+        localDataSource = DefaultLocalDataSource(localStorage: mockLocalStorage)
+        localDataSource.setDefaultValues()
+
         let config = Realm.Configuration(inMemoryIdentifier: "FestivalDataViewModelTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
@@ -25,7 +31,11 @@ final class LineupViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        mockDateFactory = nil
+        mockLocalStorage = nil
+        localDataSource = nil
         dataRepository = nil
+        locationMonitor = nil
         lineupLoader = nil
         viewModel = nil
         try super.tearDownWithError()
@@ -165,7 +175,7 @@ final class LineupViewModelTests: XCTestCase {
         viewModel.selectedStage = .chaiWallahs
         locationMonitor.currentStage = .chaiWallahs
 
-        XCTAssertFalse(viewModel.updateForLocalStage())
+        viewModel.updateForLocalStage()
         XCTAssertEqual(viewModel.selectedStage, .chaiWallahs)
     }
 
@@ -176,7 +186,7 @@ final class LineupViewModelTests: XCTestCase {
         viewModel.selectedStage = .mountain
         locationMonitor.currentStage = .chaiWallahs
 
-        XCTAssertTrue(viewModel.updateForLocalStage())
+        viewModel.updateForLocalStage()
         XCTAssertEqual(viewModel.selectedStage, .chaiWallahs)
     }
 
@@ -187,7 +197,7 @@ final class LineupViewModelTests: XCTestCase {
         viewModel.selectedStage = .mountain
         locationMonitor.currentStage = .mountain
 
-        XCTAssertFalse(viewModel.updateForLocalStage())
+        viewModel.updateForLocalStage()
         XCTAssertEqual(viewModel.selectedStage, .mountain)
     }
 
@@ -198,12 +208,16 @@ final class LineupViewModelTests: XCTestCase {
         viewModel.selectedStage = .walledGarden
         locationMonitor.currentStage = .roundTheTwist
 
-        XCTAssertFalse(viewModel.updateForLocalStage())
+        viewModel.updateForLocalStage()
         XCTAssertEqual(viewModel.selectedStage, .walledGarden)
     }
 
     private func createViewModel() {
-        viewModel = .init(dataRepository: dataRepository, locationMonitor: locationMonitor)
+        viewModel = .init(
+            localDataSource: localDataSource,
+            dataRepository: dataRepository,
+            locationMonitor: locationMonitor
+        )
     }
 
     private func assertSlot(

@@ -1,6 +1,7 @@
 import Foundation
 
 class LineupViewModel {
+    private let localDataSource: LocalDataSource
     private let dataRepository: DataRepository
     private let locationMonitor: LocationMonitor
 
@@ -8,9 +9,11 @@ class LineupViewModel {
 
     private var viewData = [LineupTableViewCell.ViewData]()
 
-    init(dataRepository: DataRepository, locationMonitor: LocationMonitor) {
+    init(localDataSource: LocalDataSource, dataRepository: DataRepository, locationMonitor: LocationMonitor) {
+        self.localDataSource = localDataSource
         self.dataRepository = dataRepository
         self.locationMonitor = locationMonitor
+        selectedStage = .initialStage(for: .currentOrThursday, stagesToShow: stagesToShow)
         updateViewData()
     }
 
@@ -20,7 +23,7 @@ class LineupViewModel {
         }
     }
 
-    var selectedStage: GMStage = .initialStage(for: .currentOrThursday) {
+    var selectedStage: GMStage = .mountain {
         didSet {
             updateViewData()
         }
@@ -43,25 +46,24 @@ class LineupViewModel {
         viewData.count
     }
 
+    var stagesToShow: [GMStage] {
+        localDataSource.stagesToShow
+    }
+
     var stagesForSelectedDay: [GMStage] {
         GMStage.stages(for: selectedDay)
     }
 
-    func updateForLocalStage() -> Bool {
+    func updateForLocalStage() {
         guard
             selectedDay == GMDay.current,
             let location = locationMonitor.currentLocation,
             let stage = GMStage.create(identifier: location)
         else {
-            return false
-        }
-
-        if selectedStage == stage {
-            return false
+            return
         }
 
         selectedStage = stage
-        return true
     }
 
     func viewData(at index: Int) -> LineupTableViewCell.ViewData? {
@@ -97,8 +99,8 @@ private extension GMStage {
         day == .thursday ? [.farOut, .walledGarden, .chaiWallahs, .roundTheTwist] : GMStage.allCases
     }
 
-    static func initialStage(for day: GMDay) -> GMStage {
-        stages(for: day).first ?? .mountain
+    static func initialStage(for day: GMDay, stagesToShow: [GMStage]) -> GMStage {
+        stages(for: day).filter { stagesToShow.contains($0) }.first ?? .mountain
     }
 
     var next: Self? {
@@ -145,5 +147,11 @@ private extension Slot {
         case (false, false, false):
             return .future
         }
+    }
+}
+
+private extension LocalDataSource {
+    var stagesToShow: [GMStage] {
+        GMStage.allCases.filter { isStageShowing($0) }
     }
 }

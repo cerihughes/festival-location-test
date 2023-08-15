@@ -21,9 +21,6 @@ class StagesViewController: TypedViewController<StagesView> {
         let addArea = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         navigationItem.rightBarButtonItem = addArea
 
-        let share = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
-        navigationItem.leftBarButtonItem = share
-
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
         navigationController?.navigationBar.backgroundColor = .white
@@ -38,10 +35,6 @@ class StagesViewController: TypedViewController<StagesView> {
 
     @objc private func addTapped(_ item: UIBarButtonItem) {
         context?.navigateForward(token: .addStage, animated: true)
-    }
-
-    @objc private func shareTapped(_ item: UIBarButtonItem) {
-        context?.navigateForward(token: .reloadData, animated: true)
     }
 }
 

@@ -15,6 +15,14 @@ class LineupView: UIView {
         commonInit()
     }
 
+    func showStages(_ stages: [GMStage]) {
+        let stageTitles = stages.map { $0.displayName }
+        stageSelection.removeAllSegments()
+        for stage in stages.reversed() {
+            stageSelection.insertSegment(withTitle: stage.displayName, at: 0, animated: false)
+        }
+    }
+
     func enableStages(_ stages: [GMStage]) {
         let stageTitles = stages.map { $0.displayName }
         for index in 0 ..< stageSelection.numberOfSegments {

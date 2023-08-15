@@ -27,32 +27,36 @@ class LineupViewController: TypedViewController<LineupView> {
         typedView.tableView.dataSource = self
 
         typedView.daySelection.selectedSegmentIndex = viewModel.indexOfSelectedDay
-        updateStages()
+        updateStageSelection()
         reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if viewModel.updateForLocalStage() {
-            updateStages()
-            reloadData()
-        }
+        viewModel.updateForLocalStage()
+        updateStages()
+        reloadData()
     }
 
     @objc private func dayChanged(_ segmentedControl: UISegmentedControl) {
         guard let day = GMDay(rawValue: segmentedControl.selectedSegmentIndex) else { return }
         viewModel.selectedDay = day
-        updateStages()
+        updateStageSelection()
         reloadData()
     }
 
     @objc private func stageChanged(_ segmentedControl: UISegmentedControl) {
-        guard let stage = GMStage.allCases[safe: segmentedControl.selectedSegmentIndex] else { return }
+        guard let stage = viewModel.stagesToShow[safe: segmentedControl.selectedSegmentIndex] else { return }
         viewModel.selectedStage = stage
         reloadData()
     }
 
     private func updateStages() {
+        typedView.showStages(viewModel.stagesToShow)
+        updateStageSelection()
+    }
+
+    private func updateStageSelection() {
         typedView.enableStages(viewModel.stagesForSelectedDay)
         typedView.stageSelection.selectedSegmentIndex = viewModel.indexOfSelectedStage
     }
