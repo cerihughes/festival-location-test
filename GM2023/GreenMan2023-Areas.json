@@ -2,7 +2,7 @@
   {
     "name" : "Mountain Stage",
     "location" : {
-      "longitude" : -3.170161,
+      "longitude" : -3.1701609999999998,
       "latitude" : 51.868257
     },
     "radius" : 50
@@ -10,8 +10,8 @@
   {
     "name" : "Far Out",
     "location" : {
-      "longitude" : -3.177342,
-      "latitude" : 51.870296
+      "longitude" : -3.1773419999999999,
+      "latitude" : 51.870296000000003
     },
     "radius" : 50
   },
@@ -19,46 +19,46 @@
     "name" : "Walled Garden",
     "location" : {
       "longitude" : -3.172428,
-      "latitude" : 51.869752
+      "latitude" : 51.869751999999998
     },
     "radius" : 50
   },
   {
     "name" : "Rising",
     "location" : {
-      "longitude" : -3.170735,
-      "latitude" : 51.869814
+      "longitude" : -3.1707350000000001,
+      "latitude" : 51.869813999999998
     },
     "radius" : 50
   },
   {
     "name" : "Chai Wallahs",
     "location" : {
-      "longitude" : -3.179616,
-      "latitude" : 51.869399
+      "longitude" : -3.1796160000000002,
+      "latitude" : 51.869399000000001
     },
     "radius" : 50
   },
   {
     "name" : "Babbling Tongues",
     "location" : {
-      "longitude" : -3.173188,
-      "latitude" : 51.868475
+      "longitude" : -3.1731880000000001,
+      "latitude" : 51.868474999999997
     },
     "radius" : 50
   },
   {
     "name" : "Cinedrome",
     "location" : {
-      "longitude" : -3.173808,
-      "latitude" : 51.870215
+      "longitude" : -3.1738080000000002,
+      "latitude" : 51.870215000000002
     },
     "radius" : 50
   },
   {
     "name" : "Round The Twist",
     "location" : {
-      "longitude" : -3.178071,
+      "longitude" : -3.1780710000000001,
       "latitude" : 51.868319
     },
     "radius" : 50
