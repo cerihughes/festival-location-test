@@ -32,16 +32,24 @@ targets:
     type: application
     platform: iOS
     settings:
-      INFOPLIST_FILE: GM2023/Info.plist
+      INFOPLIST_FILE: Source/Secret.plist
       DEVELOPMENT_TEAM: Y56955G4Q8
     sources:
-      - GM2023
+      - path: GM2023
+      - path: Source
+        buildPhase: none
+        includes:
+          - "Info.plist"
+          - "Secret.plist"
     dependencies:
       - package: Realm
         product: RealmSwift
       - package: Madog
       - package: SnapKit
     postCompileScripts:
+      - script: $PROJECT_DIR/ios-tools/copy-plist.sh
+        name: Copy Plist
+        basedOnDependencyAnalysis: false
       - script: export PATH="/opt/homebrew/bin:$PATH";swiftlint
         name: Swift Lint
         basedOnDependencyAnalysis: false
