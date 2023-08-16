@@ -8,7 +8,7 @@ class AuthorisationView: UIView {
     let backgroundImageView = UIImageView.createBackground()
     let textContainer = UIView.createContainer()
     let titleLabel = UILabel.createLabel(text: "Green Man 2023", style: .title1)
-    let descriptionLabel = UILabel.createLabel(text:.descriptionText, style: .title3)
+    let descriptionLabel = UILabel.createLabel(text: .descriptionText, style: .title3)
     let instructionLabel = UILabel.createLabel(style: .body)
 
     let buttonsContainer = UIView.createContainer()
