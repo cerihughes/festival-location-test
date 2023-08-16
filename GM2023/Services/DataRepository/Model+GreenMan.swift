@@ -24,6 +24,23 @@ extension GMDay {
         }
         return nil
     }
+
+    var dateString: String {
+        switch self {
+        case .thursday:
+            return "17.08.2023"
+        case .friday:
+            return "18.08.2023"
+        case .saturday:
+            return "19.08.2023"
+        case .sunday:
+            return "20.08.2023"
+        }
+    }
+
+    func dd_MM_yyyy_HH_mm(time: String) -> String {
+        "\(dateString) \(time)"
+    }
 }
 
 extension GMStage {

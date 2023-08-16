@@ -14,7 +14,7 @@ class NowNextTests: XCTestCase {
         mockDateFactory = MockDateFactory()
         dateFactory = mockDateFactory
 
-        let config = Realm.Configuration(inMemoryIdentifier: "LineupLoaderTests")
+        let config = Realm.Configuration(inMemoryIdentifier: "NowNextTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
         timeFormatter = .HH_mm()

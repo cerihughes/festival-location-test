@@ -8,7 +8,6 @@ protocol HistoryViewModelDelegate: AnyObject {
 class HistoryViewModel {
     private let areaName: String
     private let dataRepository: DataRepository
-    private let dateFormatter = DateFormatter.create()
 
     private var collectionNotificationToken: NSObject?
 
@@ -46,9 +45,14 @@ class HistoryViewModel {
             processor.processEvent(event)
         }
 
-        if let visits = processor?.finish().enumerated() {
-            viewData = visits.map { $0.element.asVisitViewData(index: $0.offset, dateFormatter: dateFormatter) }
-        }
+        guard let visits = processor?.finish() else { return }
+
+        viewData = visits.map { dataRepository.slotTimings(during: $0) }
+            .reduce([:]) { $0.mergingAndAdding(other: $1) }
+            .map { $0 }
+            .sorted { $0.key.start < $1.key.start }
+            .enumerated()
+            .compactMap { HistoryTableViewCell.ViewData.create(index: $0.offset, tuple: $0.element) }
     }
 
     private func observe() {
@@ -60,6 +64,40 @@ class HistoryViewModel {
                 break // No-op
             }
         }
+    }
+}
+
+private extension DataRepository {
+    func slots(during visit: Visit) -> [Slot] {
+        guard let stage = stage(name: visit.areaName) else { return [] }
+        return stage.slots
+            .filter { visit.didSee(slot: $0) }
+            .asArray()
+    }
+
+    func slotTimings(during visit: Visit) -> [Slot: TimeInterval] {
+        slots(during: visit).reduce(into: [:]) {
+            $0[$1] = visit.secondsSpent(at: $1)
+        }
+    }
+}
+
+private extension Visit {
+    func secondsSpent(at slot: Slot) -> TimeInterval? {
+        guard let end else { return nil }
+        let overlapStart = max(start, slot.start)
+        let overlapEnd = min(end, slot.end)
+        return overlapEnd.timeIntervalSince(overlapStart)
+    }
+
+    func didSee(slot: Slot) -> Bool {
+        guard let range else { return false }
+        return range ~= slot.start || range ~= slot.end
+    }
+
+    var range: ClosedRange<Date>? {
+        guard let end else { return nil }
+        return start ... end
     }
 }
 
@@ -168,16 +206,12 @@ private class VisitBuilder {
     }
 }
 
-private extension Visit {
-    func asVisitViewData(index: Int, dateFormatter: DateFormatter) -> HistoryTableViewCell.ViewData {
-        .init(isEven: index.isEven, name: title(dateFormatter: dateFormatter))
-    }
+private extension HistoryTableViewCell.ViewData {
+    static func create(index: Int, tuple: (key: Slot, value: TimeInterval)) -> HistoryTableViewCell.ViewData? {
+        let minutes = Int(tuple.value / 60.0)
+        guard minutes >= 20 else { return nil }
 
-    private func title(dateFormatter: DateFormatter) -> String {
-        if let end {
-            return "Visit from \(dateFormatter.string(from: start)) to \(dateFormatter.string(from: end))"
-        } else {
-            return "Ongoing visit from \(dateFormatter.string(from: start))"
-        }
+        let name = tuple.key.name
+        return .init(isEven: index.isEven, title: "\(name) for \(minutes) minutes")
     }
 }

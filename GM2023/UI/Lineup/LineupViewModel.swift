@@ -5,7 +5,7 @@ class LineupViewModel {
     private let dataRepository: DataRepository
     private let locationMonitor: LocationMonitor
 
-    private let timeFormatter = DateFormatter.create(dateStyle: .none)
+    private let timeFormatter = DateFormatter.HH_mm()
 
     private var viewData = [LineupTableViewCell.ViewData]()
 

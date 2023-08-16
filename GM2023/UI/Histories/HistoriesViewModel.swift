@@ -33,14 +33,14 @@ class HistoriesViewModel {
 
     func navigationToken(at index: Int) -> Navigation? {
         guard let viewData = viewData(at: index) else { return nil }
-        return .history(viewData.name)
+        return .history(viewData.title)
     }
 
     private func observe() {
         collectionNotificationToken = dataRepository.areas().observe { [weak self] changes in
             switch changes {
             case let .initial(areas), let .update(areas, _, _, _):
-                self?.viewData = areas.enumerated().map { .init(isEven: $0.offset.isEven, name: $0.element.name) }
+                self?.viewData = areas.enumerated().map { .init(isEven: $0.offset.isEven, title: $0.element.name) }
             default:
                 break // No-op
             }
