@@ -4,20 +4,39 @@ class SettingsViewModel {
     private let localDataSource: LocalDataSource
     private let areasLoader: AreasLoader
     private let lineupLoader: LineupLoader
+    private let locationManager: LocationManager
+    private let notificationsManager: NotificationsManager
 
     private var stageViewData = [ShowStageTableViewCell.ViewData]()
 
-    init(localDataSource: LocalDataSource, areasLoader: AreasLoader, lineupLoader: LineupLoader) {
+    init(
+        localDataSource: LocalDataSource,
+        areasLoader: AreasLoader,
+        lineupLoader: LineupLoader,
+        locationManager: LocationManager,
+        notificationsManager: NotificationsManager
+    ) {
         self.localDataSource = localDataSource
         self.areasLoader = areasLoader
         self.lineupLoader = lineupLoader
+        self.locationManager = locationManager
+        self.notificationsManager = notificationsManager
 
+        locationManager.authorisationDelegate = self
         createStageViewData()
     }
 
     func reloadData() async {
         _ = await areasLoader.importAreas(loader: .url(.greenMan2023FestivalAreas))
         _ = await lineupLoader.importLineup(loader: .url(.greenMan2023FestivalLineup))
+    }
+
+    func authoriseLocation() {
+        locationManager.requestWhenInUseAuthorisation()
+    }
+
+    func authoriseForNotifications() async -> Bool {
+        await notificationsManager.authorise()
     }
 
     var numberOfStages: Int {
@@ -36,6 +55,17 @@ class SettingsViewModel {
     private func createStageViewData() {
         stageViewData = GMStage.allCases.map {
             .init(name: $0.identifier, selected: localDataSource.isStageShowing($0))
+        }
+    }
+}
+
+extension SettingsViewModel: LocationManagerAuthorisationDelegate {
+    func locationManager(
+        _ locationManager: LocationManager,
+        didChangeAuthorisation authorisation: LocationAuthorisation
+    ) {
+        if authorisation == .whenInUse {
+            locationManager.requestAlwaysAuthorisation()
         }
     }
 }

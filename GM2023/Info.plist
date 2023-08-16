@@ -21,11 +21,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Monitor Location</string>
+	<string>Allow the app to give you location-specific lineup details</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Monitor Location</string>
+	<string>Allow the app to give you location-specific lineup details</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Monitor Location</string>
+	<string>Allow the app to give you location-specific lineup details</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

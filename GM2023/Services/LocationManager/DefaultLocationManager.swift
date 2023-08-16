@@ -1,4 +1,5 @@
 import CoreLocation
+import UIKit
 
 class DefaultLocationManager: NSObject, LocationManager {
     private let locationManager = CLLocationManager()
@@ -7,7 +8,8 @@ class DefaultLocationManager: NSObject, LocationManager {
     private var getLocationContinuation: CheckedContinuation<Location, Never>?
 
     weak var delegate: LocationManagerDelegate?
-    weak var authenticationDelegate: LocationManagerAuthenticationDelegate?
+    weak var authorisationDelegate: LocationManagerAuthorisationDelegate?
+    var lastAuthorisationStatus: LocationAuthorisation?
 
     override init() {
         super.init()
@@ -21,6 +23,14 @@ class DefaultLocationManager: NSObject, LocationManager {
 
     func requestAlwaysAuthorisation() {
         locationManager.requestAlwaysAuthorization()
+        // hacky workaround for requestAlwaysAuthorization() being a no-op when "Allow Once" was chosen
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self else { return }
+            if UIApplication.shared.applicationState == .active {
+                self.lastAuthorisationStatus = .denied
+                self.authorisationDelegate?.locationManager(self, didChangeAuthorisation: .denied)
+            }
+        }
     }
 
     func getLocation() async -> Location? {
@@ -52,7 +62,8 @@ class DefaultLocationManager: NSObject, LocationManager {
 extension DefaultLocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let authorisation = manager.authorizationStatus.asLocationAuthorisation()
-        authenticationDelegate?.locationManager(self, didChangeAuthorisation: authorisation)
+        lastAuthorisationStatus = authorisation
+        authorisationDelegate?.locationManager(self, didChangeAuthorisation: authorisation)
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

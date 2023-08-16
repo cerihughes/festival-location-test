@@ -1,7 +1,7 @@
 import Madog
 import UIKit
 
-class AuthorisationViewController: UIViewController {
+class AuthorisationViewController: TypedViewController<AuthorisationView> {
     private weak var context: AnyContext<Navigation>?
     private let viewModel: AuthorisationViewModel
 
@@ -17,12 +17,31 @@ class AuthorisationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        typedView.initialButton.addTarget(self, action: #selector(authoriseInitial), for: .touchUpInside)
+        typedView.alwaysButton.addTarget(self, action: #selector(authoriseAlways), for: .touchUpInside)
+        typedView.notificationsButton.addTarget(self, action: #selector(authoriseNotifications), for: .touchUpInside)
+        typedView.skipButton.addTarget(self, action: #selector(skip), for: .touchUpInside)
+
         viewModel.delegate = self
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        viewModel.authoriseLocation()
+    @objc private func authoriseInitial(_ button: UIButton) {
+        viewModel.authoriseInUse()
+    }
+
+    @objc private func authoriseAlways(_ button: UIButton) {
+        viewModel.authoriseAlways()
+    }
+
+    @objc private func authoriseNotifications(_ button: UIButton) {
+        Task {
+            await viewModel.authoriseNotifications()
+        }
+    }
+
+    @objc private func skip(_ button: UIButton) {
+        context?.showMainUI()
     }
 }
 
@@ -32,6 +51,17 @@ extension AuthorisationViewController: AuthorisationViewModelDelegate {
         didCompleteWithLocationAuthorisation: LocationAuthorisation,
         notificationAuthorisation: Bool
     ) {
-        context?.change(to: .tabBarNavigation(), tokenData: .multi([.lineup, .stages, .histories, .settings]))
+        if viewModel.canContinue {
+            context?.showMainUI()
+        } else {
+            typedView.instructionLabel.text = viewModel.instruction
+            typedView.visibleButton = viewModel.visibleButton
+        }
+    }
+}
+
+private extension Context where T == Navigation {
+    func showMainUI() {
+        change(to: .tabBarNavigation(), tokenData: .multi([.lineup, .stages, .histories, .settings]))
     }
 }

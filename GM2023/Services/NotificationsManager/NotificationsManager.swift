@@ -2,6 +2,8 @@ import Foundation
 import UserNotifications
 
 protocol NotificationsManager {
+    var lastAuthorisationStatus: Bool? { get }
+
     func authorise() async -> Bool
     func sendLocalNotification(for event: Event)
 }
@@ -10,6 +12,8 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
     private let dataRepository: DataRepository
     private let notificationCenter: UNUserNotificationCenter
     private let timeFormatter: DateFormatter
+
+    var lastAuthorisationStatus: Bool?
 
     init(dataRepository: DataRepository, notificationCenter: UNUserNotificationCenter, timeFormatter: DateFormatter) {
         self.dataRepository = dataRepository
@@ -20,6 +24,12 @@ class DefaultNotificationsManager: NSObject, NotificationsManager {
     }
 
     func authorise() async -> Bool {
+        let result = await doAuthorise()
+        lastAuthorisationStatus = result
+        return result
+    }
+
+    private func doAuthorise() async -> Bool {
         let options: UNAuthorizationOptions = [.alert, .sound]
         do {
             return try await notificationCenter.requestAuthorization(options: options)
