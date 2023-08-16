@@ -6,7 +6,7 @@ class SettingsViewControllerProvider: DefaultViewControllerProvider {
     override func createViewController(token: Navigation, context: AnyContext<Navigation>) -> ViewController? {
         guard
             token == .settings,
-            let localDataSource, let areasLoader, let lineupLoader,
+            let localDataSource, let areasLoader, let lineupLoader, let locationManager, let notificationsManager,
             let context = context as? AnyForwardBackNavigationContext<Navigation>
         else {
             return nil
@@ -15,7 +15,9 @@ class SettingsViewControllerProvider: DefaultViewControllerProvider {
         let viewModel = SettingsViewModel(
             localDataSource: localDataSource,
             areasLoader: areasLoader,
-            lineupLoader: lineupLoader
+            lineupLoader: lineupLoader,
+            locationManager: locationManager,
+            notificationsManager: notificationsManager
         )
         let viewController = SettingsViewController(context: context, viewModel: viewModel)
         viewController.title = "Settings"

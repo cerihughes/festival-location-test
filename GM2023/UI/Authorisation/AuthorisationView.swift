@@ -16,7 +16,7 @@ class AuthorisationView: UIView {
     let initialButton = UIButton.createButton(text: "Give Location Access")
     let alwaysButton = UIButton.createButton(text: "Give \"Always\" Location Access")
     let notificationsButton = UIButton.createButton(text: "Give Notifications Access")
-    let skipButton = UIButton.createButton(text: "Skip Notification")
+    let skipButton = UIButton.createButton(text: "Skip Permissions")
 
     override init(frame: CGRect) {
         super.init(frame: frame)

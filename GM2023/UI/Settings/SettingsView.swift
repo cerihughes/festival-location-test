@@ -2,8 +2,10 @@ import SnapKit
 import UIKit
 
 class SettingsView: UIView {
-    let reloadDataButton = UIButton(type: .roundedRect)
-    let showStagesJSONButton = UIButton(type: .roundedRect)
+    let reloadDataButton = UIButton.createButton(title: "Reload Data")
+    let showStagesJSONButton = UIButton.createButton(title: "Show Stages JSON")
+    let locationButton = UIButton.createButton(title: "Location Permissions")
+    let notificationsButton = UIButton.createButton(title: "Notification Permissions")
     let label = UILabel()
     let stageTableView = UITableView()
 
@@ -20,17 +22,12 @@ class SettingsView: UIView {
     private func commonInit() {
         backgroundColor = .white
 
-        reloadDataButton.backgroundColor = .cellBackground1
-        reloadDataButton.setTitle("Reload Data", for: .normal)
-        showStagesJSONButton.backgroundColor = .cellBackground1
-        showStagesJSONButton.setTitle("Show Stages JSON", for: .normal)
-
         label.font = .preferredFont(forTextStyle: .title1)
         label.text = "Stages to show:"
         stageTableView.separatorStyle = .none
         stageTableView.allowsSelection = false
 
-        addSubviews(reloadDataButton, showStagesJSONButton, label, stageTableView)
+        addSubviews(reloadDataButton, showStagesJSONButton, locationButton, notificationsButton, label, stageTableView)
 
         reloadDataButton.snp.makeConstraints { make in
             make.top.leading.equalTo(safeAreaLayoutGuide).inset(16)
@@ -42,8 +39,18 @@ class SettingsView: UIView {
             make.width.equalTo(reloadDataButton)
         }
 
-        label.snp.makeConstraints { make in
+        locationButton.snp.makeConstraints { make in
             make.top.equalTo(reloadDataButton.snp.bottom).offset(16)
+            make.leading.trailing.equalTo(reloadDataButton)
+        }
+
+        notificationsButton.snp.makeConstraints { make in
+            make.top.equalTo(locationButton)
+            make.leading.trailing.equalTo(showStagesJSONButton)
+        }
+
+        label.snp.makeConstraints { make in
+            make.top.equalTo(locationButton.snp.bottom).offset(16)
             make.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
         }
 
@@ -51,5 +58,14 @@ class SettingsView: UIView {
             make.top.equalTo(label.snp.bottom).offset(8)
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide)
         }
+    }
+}
+
+private extension UIButton {
+    static func createButton(title: String) -> UIButton {
+        let button = UIButton(type: .roundedRect)
+        button.backgroundColor = .cellBackground1
+        button.setTitle(title, for: .normal)
+        return button
     }
 }
