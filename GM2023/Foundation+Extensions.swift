@@ -21,17 +21,27 @@ extension Collection where Element: Equatable {
 
 extension Sequence where Element: Hashable {
     func uniqued() -> [Element] {
-        Array(Set(self))
+        Set(self).asArray()
     }
 }
 
 extension Sequence {
+    func asArray() -> [Element] {
+        Array(self)
+    }
+
     @inlinable func mapWithPrevious<T>(_ transform: (Element, Element?) -> T) -> [T] {
         var lastElement: Element?
         return reduce(into: []) { partialResult, element in
             partialResult.append(transform(element, lastElement))
             lastElement = element
         }
+    }
+}
+
+extension Dictionary where Value: AdditiveArithmetic {
+    func mergingAndAdding(other: [Key: Value]) -> Self {
+        merging(other) { $0 + $1 }
     }
 }
 
@@ -66,16 +76,6 @@ extension NumberFormatter {
 }
 
 extension DateFormatter {
-    static func create(
-        dateStyle: DateFormatter.Style = .short,
-        timeStyle: DateFormatter.Style = .short
-    ) -> DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = dateStyle
-        dateFormatter.timeStyle = timeStyle
-        return dateFormatter
-    }
-
     static func HH_mm() -> DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"

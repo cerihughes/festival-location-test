@@ -22,7 +22,7 @@ final class LineupViewModelTests: XCTestCase {
         localDataSource = DefaultLocalDataSource(localStorage: mockLocalStorage)
         localDataSource.setDefaultValues()
 
-        let config = Realm.Configuration(inMemoryIdentifier: "FestivalDataViewModelTests")
+        let config = Realm.Configuration(inMemoryIdentifier: "LineupViewModelTests")
         let realm = try Realm(configuration: config)
         dataRepository = RealmDataRepository(realm: realm)
         locationMonitor = MockLocationMonitor()
@@ -235,8 +235,7 @@ final class LineupViewModelTests: XCTestCase {
 
 private extension MockDateFactory {
     func setCurrentDay(_ day: GMDay, time: String) {
-        let currentDate = "\(day.dateString) \(time)"
-        setCurrentDate(currentDate)
+        setCurrentDate(day.dd_MM_yyyy_HH_mm(time: time))
     }
 }
 
@@ -247,21 +246,6 @@ private extension MockLocationMonitor {
         }
         set {
             currentLocation = newValue?.identifier
-        }
-    }
-}
-
-private extension GMDay {
-    var dateString: String {
-        switch self {
-        case .thursday:
-            return "17.08.2023"
-        case .friday:
-            return "18.08.2023"
-        case .saturday:
-            return "19.08.2023"
-        case .sunday:
-            return "20.08.2023"
         }
     }
 }

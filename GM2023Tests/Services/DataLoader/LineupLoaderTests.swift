@@ -45,7 +45,9 @@ final class LineupLoaderTests: XCTestCase {
         let slotNames = stage.slots
             .sorted(by: \.start)
             .map { $0.name }
-        XCTAssertEqual(Array(slotNames), [
+            .asArray()
+
+        XCTAssertEqual(slotNames, [
             "Stone Club DJs",
             "Moof Magazine",
             "Pet Deaths Disco",

@@ -35,6 +35,7 @@ class AuthorisationViewModel {
         locationManager.requestAlwaysAuthorisation()
     }
 
+    @MainActor
     func authoriseNotifications() async {
         guard let locationAuthorisation = locationManager.lastAuthorisationStatus else { return }
         let result = await notificationsManager.authorise()

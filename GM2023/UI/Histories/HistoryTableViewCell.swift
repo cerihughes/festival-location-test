@@ -5,7 +5,7 @@ class HistoryTableViewCell: UITableViewCell {
 
     struct ViewData {
         let isEven: Bool
-        let name: String
+        let title: String
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -34,6 +34,6 @@ class HistoryTableViewCell: UITableViewCell {
 
     func configure(with viewData: ViewData) {
         backgroundColor = viewData.isEven ? .cellBackground1 : .cellBackground2
-        nameLabel.text = viewData.name
+        nameLabel.text = viewData.title
     }
 }
