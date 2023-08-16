@@ -5,11 +5,11 @@ class AuthorisationView: UIView {
     enum VisibleButton {
         case initial, always, notifications
     }
-    let backgroundImageView = UIImageView()
+    let backgroundImageView = UIImageView.createBackground()
     let textContainer = UIView.createContainer()
-    let titleLabel = UILabel.createLabel(textStyle: .title1)
-    let descriptionLabel = UILabel.createLabel(textStyle: .title3)
-    let instructionLabel = UILabel.createLabel(textStyle: .body)
+    let titleLabel = UILabel.createLabel(text: "Green Man 2023", style: .title1)
+    let descriptionLabel = UILabel.createLabel(text:.descriptionText, style: .title3)
+    let instructionLabel = UILabel.createLabel(style: .body)
 
     let buttonsContainer = UIView.createContainer()
     let skipButtonContainer = UIView.createContainer()
@@ -31,12 +31,6 @@ class AuthorisationView: UIView {
     private func commonInit() {
         backgroundColor = .white
 
-        backgroundImageView.alpha = 0.2
-        backgroundImageView.contentMode = .scaleAspectFill
-        backgroundImageView.image = .init(named: "background")
-
-        titleLabel.text = "Green Man 2023"
-        descriptionLabel.text = .descriptionText
         instructionLabel.textColor = .darkGray
 
         addSubviews(backgroundImageView, textContainer, buttonsContainer, skipButtonContainer)
@@ -127,12 +121,23 @@ private extension UIButton {
 }
 
 private extension UILabel {
-    static func createLabel(textStyle: UIFont.TextStyle) -> UILabel {
+    static func createLabel(text: String? = nil, style: UIFont.TextStyle) -> UILabel {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.font = .preferredFont(forTextStyle: textStyle)
+        label.text = text
+        label.font = .preferredFont(forTextStyle: style)
         return label
+    }
+}
+
+private extension UIImageView {
+    static func createBackground() -> UIImageView {
+        let imageView = UIImageView()
+        imageView.alpha = 0.2
+        imageView.contentMode = .scaleAspectFill
+        imageView.image = .init(named: "background")
+        return imageView
     }
 }
 
