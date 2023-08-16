@@ -11,6 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         let window = UIWindow()
+        window.overrideUserInterfaceStyle = .light
         window.makeKeyAndVisible()
 
         self.window = window
