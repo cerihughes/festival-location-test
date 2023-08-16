@@ -16,6 +16,12 @@ class ExportStagesViewModel {
         return .init(data: data, encoding: .utf8)
     }
 
+    func deleteAllStages() {
+        for area in dataRepository.areas() {
+            dataRepository.delete(area)
+        }
+    }
+
     private func circularAreas() -> [CircularArea] {
         dataRepository.areas().map { $0.asCircularArea() }
     }
