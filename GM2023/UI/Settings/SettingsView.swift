@@ -2,10 +2,10 @@ import SnapKit
 import UIKit
 
 class SettingsView: UIView {
-    let reloadDataButton = UIButton.createButton(title: "Reload Data")
-    let showStagesJSONButton = UIButton.createButton(title: "Show Stages JSON")
-    let locationButton = UIButton.createButton(title: "Location Permissions")
-    let notificationsButton = UIButton.createButton(title: "Notification Permissions")
+    let reloadDataButton = UIButton.settingsButton(title: "Reload Data")
+    let showStagesJSONButton = UIButton.settingsButton(title: "Show Stages JSON")
+    let locationButton = UIButton.settingsButton(title: "Location Permissions")
+    let notificationsButton = UIButton.settingsButton(title: "Notification Permissions")
     let label = UILabel()
     let stageTableView = UITableView()
 
@@ -58,14 +58,5 @@ class SettingsView: UIView {
             make.top.equalTo(label.snp.bottom).offset(8)
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide)
         }
-    }
-}
-
-private extension UIButton {
-    static func createButton(title: String) -> UIButton {
-        let button = UIButton(type: .roundedRect)
-        button.backgroundColor = .cellBackground1
-        button.setTitle(title, for: .normal)
-        return button
     }
 }
