@@ -30,3 +30,10 @@ extension CircularArea {
         return circle
     }
 }
+
+extension Visit {
+    var dateRange: ClosedRange<Date>? {
+        guard let end else { return nil }
+        return start ... end
+    }
+}

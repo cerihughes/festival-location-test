@@ -91,13 +91,8 @@ private extension Visit {
     }
 
     func didSee(slot: Slot) -> Bool {
-        guard let range else { return false }
-        return range ~= slot.start || range ~= slot.end
-    }
-
-    var range: ClosedRange<Date>? {
-        guard let end else { return nil }
-        return start ... end
+        guard let dateRange else { return false }
+        return dateRange.overlaps(slot.dateRange)
     }
 }
 

@@ -59,3 +59,9 @@ extension Stage {
         return slots(for: current)
     }
 }
+
+extension Slot {
+    var dateRange: ClosedRange<Date> {
+        start ... end
+    }
+}
