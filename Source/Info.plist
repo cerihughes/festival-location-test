@@ -26,6 +26,8 @@
 	<string>Allow the app to give you location-specific lineup details</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow the app to give you location-specific lineup details</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
