@@ -2,65 +2,65 @@
   {
     "name" : "Mountain Stage",
     "location" : {
-      "longitude" : -3.170161,
-      "latitude" : 51.868257
+      "longitude" : -3.1699757214462165,
+      "latitude" : 51.868889645238774
     },
-    "radius" : 50
+    "radius" : 70.251625411797875
   },
   {
     "name" : "Far Out",
     "location" : {
-      "longitude" : -3.177342,
-      "latitude" : 51.870296
+      "longitude" : -3.1737797937244547,
+      "latitude" : 51.867487516131021
     },
-    "radius" : 50
-  },
-  {
-    "name" : "Walled Garden",
-    "location" : {
-      "longitude" : -3.172428,
-      "latitude" : 51.869752
-    },
-    "radius" : 50
-  },
-  {
-    "name" : "Rising",
-    "location" : {
-      "longitude" : -3.170735,
-      "latitude" : 51.869814
-    },
-    "radius" : 50
+    "radius" : 61.9854736328125
   },
   {
     "name" : "Chai Wallahs",
     "location" : {
-      "longitude" : -3.179616,
-      "latitude" : 51.869399
+      "longitude" : -3.1719708846836792,
+      "latitude" : 51.866678959695157
     },
-    "radius" : 50
-  },
-  {
-    "name" : "Babbling Tongues",
-    "location" : {
-      "longitude" : -3.173188,
-      "latitude" : 51.868475
-    },
-    "radius" : 50
+    "radius" : 37.455027981172677
   },
   {
     "name" : "Cinedrome",
     "location" : {
-      "longitude" : -3.173808,
-      "latitude" : 51.870215
+      "longitude" : -3.1705299523563624,
+      "latitude" : 51.866869413007286
     },
-    "radius" : 50
+    "radius" : 30.114542202680848
   },
   {
     "name" : "Round The Twist",
     "location" : {
-      "longitude" : -3.178071,
-      "latitude" : 51.868319
+      "longitude" : -3.1748146703982916,
+      "latitude" : 51.869306689739474
     },
-    "radius" : 50
+    "radius" : 27.051246336833305
+  },
+  {
+    "name" : "Babbling Tongues",
+    "location" : {
+      "longitude" : -3.1737508067832887,
+      "latitude" : 51.869913503723332
+    },
+    "radius" : 33.244773639572379
+  },
+  {
+    "name" : "Walled Garden",
+    "location" : {
+      "longitude" : -3.1725906843020679,
+      "latitude" : 51.869601067291576
+    },
+    "radius" : 31.883558657914786
+  },
+  {
+    "name" : "Rising",
+    "location" : {
+      "longitude" : -3.1707445554930436,
+      "latitude" : 51.86984850491023
+    },
+    "radius" : 29.957335731405195
   }
 ]
