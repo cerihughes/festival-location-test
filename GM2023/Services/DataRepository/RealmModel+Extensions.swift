@@ -2,12 +2,12 @@ import Foundation
 import MapKit
 
 extension String {
-    static let greenMan2023FestivalName = "Green Man Festival 2023"
+    static let greenMan2024FestivalName = "Green Man Festival 2024"
 }
 
 extension DataRepository {
-    func hasGreenMan2023FestivalData() -> Bool {
-        festival(name: .greenMan2023FestivalName) != nil
+    func hasGreenMan2024FestivalData() -> Bool {
+        festival(name: .greenMan2024FestivalName) != nil
     }
 }
 

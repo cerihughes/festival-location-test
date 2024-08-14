@@ -22,8 +22,8 @@ final class HistoryViewModelTests: XCTestCase {
 
         let lineupLoader = DefaultLineupLoader(dataRepository: dataRepository)
         let areasLoader = DefaultAreasLoader(dataRepository: dataRepository)
-        XCTAssertTrue(lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup)))
-        XCTAssertTrue(areasLoader.importAreas(loader: .fileName(.greenMan2023FestivalAreas)))
+        XCTAssertTrue(lineupLoader.importLineup(loader: .fileName(.greenMan2024FestivalLineup)))
+        XCTAssertTrue(areasLoader.importAreas(loader: .fileName(.greenMan2024FestivalAreas)))
     }
 
     override func tearDownWithError() throws {

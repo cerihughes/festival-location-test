@@ -27,8 +27,8 @@ class SettingsViewModel {
     }
 
     func reloadData() async {
-        _ = await areasLoader.importAreas(loader: .url(.greenMan2023FestivalAreas))
-        _ = await lineupLoader.importLineup(loader: .url(.greenMan2023FestivalLineup))
+        _ = await areasLoader.importAreas(loader: .url(.greenMan2024FestivalAreas))
+        _ = await lineupLoader.importLineup(loader: .url(.greenMan2024FestivalLineup))
     }
 
     func authoriseLocation() {

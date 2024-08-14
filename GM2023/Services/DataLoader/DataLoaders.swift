@@ -1,14 +1,14 @@
 import Foundation
 
 extension String {
-    static let greenMan2023FestivalAreas = "GreenMan2023-Areas.json"
-    static let greenMan2023FestivalLineup = "GreenMan2023-Lineup.txt"
+    static let greenMan2024FestivalAreas = "GreenMan2023-Areas.json"
+    static let greenMan2024FestivalLineup = "GreenMan2023-Lineup.txt"
 }
 
 extension URL {
     static let github = "https://raw.githubusercontent.com/cerihughes/festival-location-test/main/GM2023/"
-    static let greenMan2023FestivalAreas = URL(string: github + String.greenMan2023FestivalAreas)!
-    static let greenMan2023FestivalLineup = URL(string: github + String.greenMan2023FestivalLineup)!
+    static let greenMan2024FestivalAreas = URL(string: github + String.greenMan2024FestivalAreas)!
+    static let greenMan2024FestivalLineup = URL(string: github + String.greenMan2024FestivalLineup)!
 }
 
 class LocalDataLoader {

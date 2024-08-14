@@ -28,13 +28,13 @@ extension GMDay {
     var dateString: String {
         switch self {
         case .thursday:
-            return "17.08.2023"
+            return "15.08.2024"
         case .friday:
-            return "18.08.2023"
+            return "16.08.2024"
         case .saturday:
-            return "19.08.2023"
+            return "17.08.2024"
         case .sunday:
-            return "20.08.2023"
+            return "18.08.2024"
         }
     }
 
@@ -77,9 +77,9 @@ extension Calendar {
     func date(_ day: GMDay) -> Date {
         // Assume a festival day runs from 6am to 6am
         var dateComponents = DateComponents()
-        dateComponents.year = 2023
+        dateComponents.year = 2024
         dateComponents.month = 8
-        dateComponents.day = 17 + day.rawValue
+        dateComponents.day = 15 + day.rawValue
         dateComponents.timeZone = TimeZone(abbreviation: "BST")
         dateComponents.hour = 6
         return date(from: dateComponents)!

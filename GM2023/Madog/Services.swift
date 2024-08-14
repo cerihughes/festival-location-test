@@ -45,9 +45,9 @@ class DefaultServices: ServiceProvider, Services {
             dataRepository: dataRepository,
             notificationsManager: notificationsManager
         )
-        if !dataRepository.hasGreenMan2023FestivalData() {
-            _ = lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup))
-            _ = areasLoader.importAreas(loader: .fileName(.greenMan2023FestivalAreas))
+        if !dataRepository.hasGreenMan2024FestivalData() {
+            _ = lineupLoader.importLineup(loader: .fileName(.greenMan2024FestivalLineup))
+            _ = areasLoader.importAreas(loader: .fileName(.greenMan2024FestivalAreas))
             localDataSource.setDefaultValues()
         }
     }

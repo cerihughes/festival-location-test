@@ -26,7 +26,7 @@ class DefaultLineupLoader: LineupLoader {
 
     func importLineup(data: Data) -> Bool {
         guard let string = String(data: data, encoding: .utf8) else { return false }
-        builder.createFestival(name: .greenMan2023FestivalName)
+        builder.createFestival(name: .greenMan2024FestivalName)
 
         let lines = string.split(separator: "\n")
         for line in lines {
