@@ -20,7 +20,7 @@ class NowNextTests: XCTestCase {
         timeFormatter = .HH_mm()
 
         let lineupLoader = DefaultLineupLoader(dataRepository: dataRepository)
-        XCTAssertTrue(lineupLoader.importLineup(loader: .fileName(.greenMan2023FestivalLineup)))
+        XCTAssertTrue(lineupLoader.importLineup(loader: .fileName(.greenMan2024FestivalLineup)))
     }
 
     override func tearDownWithError() throws {

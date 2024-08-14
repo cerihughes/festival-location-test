@@ -6,7 +6,7 @@ class MockDateFactory: DateFactory {
     private let dateFormatter = DateFormatter.dd_MM_yyyy_HH_mm()
 
     init() {
-        setCurrentDate("13.08.2023 12:00")
+        setCurrentDate("11.08.2024 12:00")
     }
 
     private var date: Date?
